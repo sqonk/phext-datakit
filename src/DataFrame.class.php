@@ -81,6 +81,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $this->row($index);
 	}
 	
+	/* 
+		Converting the DataFrame to a string produces the report.
+	
+		See: report()
+	*/
+    public function __toString()
+    {
+        return $this->report();
+    }
+	
 	// ------- Main class methods
     
     public function __construct(array $data, array $headers = null)
@@ -221,7 +231,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		$columns		One or more columns that should be used in the
 						resulting array, all columns if null is supplied.
 	*/
-    public function flattened(bool $includeIndex = true, $columns = null)
+    public function flattened(bool $includeIndex = true, ...$columns)
     {
         $columns = $this->determineColumns($columns);
         $out = [];
@@ -427,10 +437,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             throw new \LengthException("filtering requires at least one column");
         $filtered = [];
         foreach ($this->data as $index => $row) {
-            $pass = true;
+            $pass = false;
             foreach ($columns as $column) {
-                if (! isset($row[$column]) or ! $callback($row[$column], $column, $index)) {
-                    $pass = false;
+                if (isset($row[$column]) and $callback($row[$column], $column, $index)) {
+                    $pass = true;
                     break;
                 }
             }
@@ -458,10 +468,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             throw new \LengthException("filtering requires at least one column");
         $filtered = [];
         foreach ($this->data as $index => $row) {
-            $pass = false;
+            $pass = true;
             foreach ($columns as $column) {
-                if (isset($row[$column]) and $callback($row[$column], $column, $index)) {
-                    $pass = true;
+				if (! isset($row[$column]) or ! $callback($row[$column], $column, $index)) {
+                    $pass = false;
                     break;
                 }
             }
@@ -516,17 +526,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 				[$a, $b] = [$b, $a];
             foreach ($columns as $column)
             {
-				$a_isset = array_key_exists($column, $a);
-				$b_isset = array_key_exists($column, $b);
-                if (! $a_isset && ! $b_isset)
-                    continue;
-                else if (! $a_isset)
-                    return -1;
-                else if (! $b_isset)
-                    return 1;
-            
-                if (! $cmp = $a[$column] <=> $b[$column]);
-                    break; // result of 0 will break out.
+				$cmp = arrays::get($a, $column) <=> arrays::get($b, $column);
+                if ($cmp !== 0)
+                    break; // non-0 result will break out.
             }
             return $cmp;
         });
@@ -536,26 +538,20 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	/*
 		Sort the DataFrame using a callback and one or more columns.
 	
-		Callback format: myFunc($value1, $value2) -> bool
+		Callback format: myFunc($value1, $value2, $column) -> bool
 	*/
     public function usort(callable $callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
         if (count($columns) == 0)
             throw new \LengthException("sorting requires at least one column");
+		
         uasort($this->data, function($a, $b) use ($columns, $callback) {
             $cmp = 0;
             foreach ($columns as $column)
             {
-                if (! isset($a[$column]) && ! isset($b[$column]))
-                    continue;
-                else if (! isset($a[$column]))
-                    return -1;
-                else if (! isset($b[$column]))
-                    return 1;
-            
-                $cmp = $callback($a[$column], $b[$column]);
-                if ($cmp != 0)
+                $cmp = $callback(arrays::get($a, $column), arrays::get($b, $column), $column);
+                if ($cmp !== 0)
                     break;
             }
             return $cmp;
@@ -654,16 +650,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $r[] = $values;
         }
         return (count($r) == 1) ? $r[0] : $r;
-    }
-    
-	/* 
-		Converting the DataFrame to a string produces the report.
-	
-		See: report()
-	*/
-    public function __toString()
-    {
-        return $this->report();
     }
 
 	/*
@@ -1217,15 +1203,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         else
         {
-            $r = [];
-            foreach ($columns as $h) {
+            $r = $this->data();
+            foreach ($columns as $h) 
+			{
                 if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::cumulative_sum($values);
-                    $r[$h] = $std;
+                    $sum_values = math::cumulative_sum($this->values($h));
+					foreach ($sum_values as $i => $v)
+						$r[$i][$h] = $v;
                 }
             }
-            return $this->clone([$r]);
+            return $this->clone($r);
         }
     }
     
@@ -1342,15 +1329,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         else
         {
-            $r = [];
+            $r = $this->data();
             foreach ($columns as $h) {
                 if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::cumulative_max($values);
-                    $r[$h] = $std;
+                    $max_values = math::cumulative_max($this->values($h));
+					foreach ($max_values as $i => $v)
+						$r[$i][$h] = $v;
                 }
             }
-            return $this->clone([$r]);
+            return $this->clone($r);
         }
     }
     
@@ -1374,15 +1361,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         else
         {
-            $r = [];
+            $r = $this->data();
             foreach ($columns as $h) {
                 if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::cumulative_min($values);
-                    $r[$h] = $std;
+                    $min_values = math::cumulative_min($this->values($h));
+					foreach ($min_values as $i => $v)
+						$r[$i][$h] = $v;
                 }
             }
-            return $this->clone([$r]);
+            return $this->clone($r);
         }
     }
     
@@ -1467,15 +1454,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         else
         {
-            $r = [];
+            $r = $this->data();
             foreach ($columns as $h) {
                 if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::cumulative_prod($values);
-                    $r[$h] = $std;
+                    $prod_values = math::cumulative_prod($this->values($h));
+					foreach ($prod_values as $i => $v)
+						$r[$i][$h] = $v;
                 }
             }
-            return $this->clone([$r]);
+            return $this->clone($r);
         }
     }
     
@@ -2133,7 +2120,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $xcolumn = arrays::safe_value($options, 'xcolumn', null);
         $oneChart = arrays::safe_value($options, 'one', false);
         
-        $plot = new Plot($title);
+        $plot = new BulkPlot($title);
         if ($oneChart)
             $all_series = [];
         
@@ -2218,7 +2205,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $xtr = $this->transformers[$this->indexHeader] ?? null;
         }
 		
-		$plot = new Plot($title);
+		$plot = new BulkPlot($title);
 		$plot->add('stock', $series, array_merge($options, [
 			'xseries' => $xseries, 
 			'xformatter' => $xtr
@@ -2232,10 +2219,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		appearance that illustrates the place of the 25%, 50% and 75% quartiles
 		as well as the outer whiskers.
 	*/
-    public function box($columns = null)
+    public function box(...$columns)
     {
         $columns = $this->determineColumns($columns);
-        $plot = new Plot('box');
+        $plot = new BulkPlot('box');
         
         foreach ($columns as $h)
         {
@@ -2245,7 +2232,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $whisker = ($q75-$q25) * 1.5;
             $series = [$q25, $q75, $q25-$whisker, $q75+$whisker, $q50];
             
-            $plot->add('box', [$series], ['legend' => $h, 'hideAllTicks' => true]);
+            $plot->add('box', [$series], ['title' => $h, 'hideAllTicks' => true]);
         }
         
         return $plot;
@@ -2268,7 +2255,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $bins = count($b_array)-1;
         }
         
-        $plot = new Plot('hist');
+        $plot = new BulkPlot('hist');
         
         foreach ($columns as $h)
         {
@@ -2317,14 +2304,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 $plot->add('barstacked', [$dist, $dist2], [
                     'legend' => [$h, 'accumulated'], 
                     'matchBorder' => true,
-                    'width' => 1.0
+                    'width' => 1.0,
+					'title' => "$h accumulated"
                 ]); 
             }
             else {
                 $plot->add('bar', [$dist], [
-                    'legend' => $h, 
+                    'title' => $h, 
                     'matchBorder' => true,
-                    'width' => 1.0
+                    'width' => 1.0,
                 ]); 
             }
             
@@ -2343,32 +2331,36 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function export(string $filePath, array $columns = null, string $delimeter = ',')
     {
         $columns = $this->determineColumns($columns);
-        with (file_context($filePath, 'w+'), function($fh) use($columns, $delimeter) 
+		
+		$fh = fopen($filePath, 'w+');
+		defer ($_, function() use ($fh) {
+			if ($fh)
+				fclose($fh);
+		});
+       	
+        if ($this->showHeaders) {
+            $headers = array_merge([''], $columns);
+            fputcsv($fh, $headers, $delimeter);
+        }
+
+        foreach ($this->data as $index => $row)
         {
-            if ($this->showHeaders) {
-                $headers = array_merge([''], $columns);
-                fputcsv($fh, $headers, $delimeter);
+            $index = ($this->showGenericIndexes || ! is_int($index)) ? $index : '';
+            if ($index && $this->indexHeader && isset($this->transformers[$this->indexHeader])) {
+                $tr = $this->transformers[$this->indexHeader];
+                $index = $tr($index);
             }
- 
-            foreach ($this->data as $index => $row)
-            {
-                $index = ($this->showGenericIndexes || ! is_int($index)) ? $index : '';
-                if ($index && $this->indexHeader && isset($this->transformers[$this->indexHeader])) {
-                    $tr = $this->transformers[$this->indexHeader];
-                    $index = $tr($index);
+            $out = [$index];
+            foreach ($columns as $h) {
+                $value = $row[$h] ?? '';
+                if ($value && isset($this->transformers[$h])) {
+                    $tr = $this->transformers[$h];
+                    $value = $tr($value);
                 }
-                $out = [$index];
-                foreach ($columns as $h) {
-                    $value = $row[$h] ?? '';
-                    if ($value && isset($this->transformers[$h])) {
-                        $tr = $this->transformers[$h];
-                        $value = $tr($value);
-                    }
-                    $out[] = $value;
-                }
-                    
-                fputcsv($fh, $out, $delimeter);
+                $out[] = $value;
             }
-        });
+                
+            fputcsv($fh, $out, $delimeter);
+        }
     }
 }  
