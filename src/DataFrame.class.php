@@ -21,7 +21,7 @@ namespace sqonk\phext\datakit;
 * permissions and limitations under the License.
 */
 
-use sqonk\phptext\plotlib\BulkPlot;
+use sqonk\phext\plotlib\BulkPlot;
 use sqonk\phext\core\{arrays,strings};
 
     
