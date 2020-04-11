@@ -1,0 +1,32 @@
+{
+    "name": "sqonk/phext-datakit",
+    "description": "Datakit is a library that assists with data analysis and research.",
+    "type": "library",
+    "require": {
+		"php": "^7.3",
+        "sqonk/phext-core": "^0.3.2",
+        "sqonk/phext-plotlib": "^0.3.0",
+        "php-defer/php-defer": "^5.0"
+    },
+	"keywords": ["data analysis","matrix"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Theo Howell",
+            "email": "sqonk@sqonk.com.au"
+        }
+    ],
+	"autoload": {
+		"files": [
+			"src/Importer.class.php", 
+			"src/math.php", 
+			"src/SMA.class.php", 
+			"src/EMA.class.php",
+			"src/DOMScraper.class.php",
+			"src/DataFrame.class.php",
+			"src/GroupedDataFrame.class.php",
+			"src/Vector.class.php",
+			"src/global_functions.php"
+		]
+    }
+}
