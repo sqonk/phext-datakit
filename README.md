@@ -67,7 +67,7 @@ Datakit Features
 	- [Transforms](#dataframe---transforms)
 		* [Pivot and Depivot](#dataframe---transforms---pivot-and-depivot)
 		* [Group-by and recombination](#dataframe---transforms---groupby)
-		* [Transpose](#dataframe---transforms---tranpose)
+		* [Transpose](#dataframe---transforms---transpose)
 		* [Flatten](#dataframe---transforms---flatten)
 	- [Plotting Data on Charts](#dataframe---charting)
 		* [Histogram](#dataframe---charting---hist)
