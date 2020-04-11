@@ -24,11 +24,6 @@ namespace sqonk\phext\datakit;
 use sqonk\phptext\plotlib\BulkPlot;
 use sqonk\phext\core\{arrays,strings};
 
-define('OOB_ALL', 2);
-define('OOB_UPPER', 1);
-define('OOB_LOWER', 0);
-define('LAST_ROW', '__LASTROW__');
-define('FIRST_ROW', '__FIRSTROW__');
     
 /*
 	A class for managing and manipulating a series of rows and columns. Arithmetic 

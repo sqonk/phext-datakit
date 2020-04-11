@@ -23,6 +23,11 @@
 
 define('ASCENDING', true);
 define('DESCENDING', false);
+define('OOB_ALL', 2);
+define('OOB_UPPER', 1);
+define('OOB_LOWER', 0);
+define('LAST_ROW', '__LASTROW__');
+define('FIRST_ROW', '__FIRSTROW__');
 
 // Create a new sequential array.
 function vector(...$items)
