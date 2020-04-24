@@ -643,7 +643,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         {
             $values = [];
             foreach ($this->data as $row) {
-                $v = isset($row[$h]) ? $row[$h] : null;
+                $v = array_key_exists($h, $row) ? $row[$h] : null;
                 if ($v !== null || ! $filterNAN)
                     $values[] = $v;
             }
