@@ -377,35 +377,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function reindex_rows(array $labels, bool $inPlace = false)
     { 
-        $current = array_keys($this->data);
-        
-        if ($inPlace)
-        {
-            for ($i = 0; $i < count($current) && $i < count($labels); $i++)
-            {
-                if ($current[$i] !== $labels[$i]) {
-                    $this->data[$labels[$i]] = $this->data[$current[$i]];
-                    unset($this->data[$current[$i]]);
-                }
-            }
-            for (; $i < count($labels); $i++)
-                $this->data[$labels[$i]] = []; // pad out empty rows for any additional labels.
-            
-            return $this;
-        }
-        else
-        {
-            $data = $this->data;
-            for ($i = 0; $i < count($current) && $i < count($labels); $i++)
-            {
-                $data[$labels[$i]] = $data[$current[$i]];
-                unset($data[$current[$i]]);
-            }
-            for (; $i < count($labels); $i++)
-                $data[$labels[$i]] = []; // pad out empty rows for any additional labels.
-            
-            return $this->clone($data);
-        }
+		$values = array_values($this->data);
+		if (count($labels) > count($values))
+			$labels = array_slice($labels, 0, count($values));
+		
+		$data = array_combine($labels, $values);
+		if ($inPlace) {
+			$this->data = $data;
+			return $this;
+		}
+			
+		return $this->clone($data);
     }
     
 	/*
