@@ -8,7 +8,7 @@
         "sqonk/phext-plotlib": "^0.3.0",
         "php-defer/php-defer": "^5.0"
     },
-	"keywords": ["data analysis","matrix"],
+	"keywords": ["data analysis","matrix","matrices","dataframe","vector","pandas"],
     "license": "MIT",
     "authors": [
         {
