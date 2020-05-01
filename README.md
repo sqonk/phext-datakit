@@ -81,7 +81,7 @@ Datakit Features
 Via Composer
 
 ``` bash
-$ composer require sqonk\phext-datakit
+$ composer require sqonk/phext-datakit
 ```
 
 Usage
