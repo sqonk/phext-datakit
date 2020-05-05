@@ -495,6 +495,37 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new Vector(array_diff($this->_array, ...$adjusted));
 	}
 	
+	/* 
+		Return a copy of the vector containing only the values for the specified keys,
+		with index association being maintained.
+	
+		This method is primarily designed for non-sequential vectors but can also be used
+		with sequential 2-dimensional vectors. If the vector is sequential and the elements
+		contained within are arrays or vectors then the operation is performed on them, 
+		otherwise it is performed on the top level of the vector.
+	
+		It should be noted that if a key is not  present in the current vector then it will 
+		not be present in the resulting vector.
+	
+		
+	*/
+	public function only_keys(...$keys)
+	{
+		if ($this->isSequential) 
+		{	
+			return $this->map(function($element) use ($keys) {
+				if (is_array($element))
+					return arrays::only_keys($element, ...$keys);
+				
+				else if ($element instanceof Vector)
+					return $element->only_keys(...$keys);
+				
+				return $element;
+			});
+		}
+		return new Vector(arrays::only_keys($this->_array, ...$keys));
+	}
+	
     /* 
 		Search the array for the given needle (subject). This function is an
 		alias of Vector::any().
@@ -519,7 +550,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     // Trim all entries in the array (assumes all entries are strings)/
     public function trim()
     {
-        return array_map('trim', $this->_array);
+        return new Vector(array_map('trim', $this->_array));
     }
 	
 	/*
@@ -529,9 +560,31 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		This assumes all elements in the vector are capable of being cast to a 
 		string.
 	*/
-	public function implode(string $delimier = '')
+	public function implode(string $delimier = '', string $subDelimiter = '')
 	{
-		return implode($delimier, $this->_array);
+		$transformed = $this->map(function($element) use ($subDelimiter) {
+			if (is_array($element)) 
+				return arrays::implode($subDelimiter, $element);
+			
+			else if ($element instanceof Vector)
+				return $element->implode($subDelimiter);
+			
+			return $element;
+		});
+		
+		return implode($delimier, $transformed->array());
+	}
+	
+	/*
+		Implode the vector using the desired delimiter and subdelimiter. 
+	
+		This method is primarily intended for non-senquential/associative vectors
+		and differs from the standard implode in that it will only implode the values
+		associated with the specified keys/indexes.
+	*/
+	public function implode_only(string $delimier, array $keys, string $subDelimiter = '')
+	{
+		return $this->only_keys(...$keys)->implode($delimier, $subDelimiter);
 	}
 
 	/*
