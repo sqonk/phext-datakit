@@ -26,6 +26,9 @@ class SMA
 {
 	protected $values;
 	
+	/*
+	    Construct a new SMA with the specified maximum number of values.
+	*/
 	public function __construct(int $maxItems)
 	{
 		$this->values = vector()->constrain($maxItems);

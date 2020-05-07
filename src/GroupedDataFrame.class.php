@@ -24,7 +24,7 @@ namespace sqonk\phext\datakit;
 	normal DataFrame objects. Normal actions on the DataFrame can be
 	called and actioned against all objects within the set.
 
-	This class is used internall by DataFrame and you should not
+	This class is used internally by DataFrame and you should not
 	need to instanciate it yourself under most conditions.
 */
 
@@ -81,6 +81,12 @@ class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 	
 	// -------- Main class methods
     
+    /*
+        Construct a new GroupedDataFrame containing multiple DataFrame objects.
+    
+        The $groupedColumn maintains a record of the singular DataFrame column
+        that was used to split the original frame.
+    */
     public function __construct(array $groups, string $groupedColumn)
     {
         $this->sets = $groups;

@@ -76,6 +76,9 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// ------- Main class methods
 	
+	/*
+		Contruct a new vector with the provided array.
+	*/
 	public function __construct(array $startingArray = [])
 	{
 		$this->_array = $startingArray;

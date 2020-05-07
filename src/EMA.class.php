@@ -29,12 +29,18 @@ class EMA
 	protected $previous = 0;
 	protected $latest = 0;
 	
+	/*
+	    Construct a new EMA with the specified maximum number of values.
+	*/
 	public function __construct(int $maxItems)
 	{
 		$this->values = vector()->constrain($maxItems);
 		$this->limit = $maxItems;
 	}
 	
+	/* 
+		Add a new value to the EMA. The value must be numerical in nature.
+	*/
 	public function add($value)
 	{
 		if (! is_numeric($value))
@@ -62,6 +68,10 @@ class EMA
 		}
 	}
 	
+	/*
+		Return the calculated result of the EMA as it currently stands. You can optionally pass in a value to 
+		$precision to control the amount of decimal places that the result is rounded to.
+	*/
 	public function result(?int $precision = null)
 	{
 		return ($precision !== null) ? round($this->latest, $precision) : $this->latest;

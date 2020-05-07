@@ -93,6 +93,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// ------- Main class methods
     
+    /*
+        Construct a new dataframe with the provided data. You may optionally
+        provided the set of column headers in the second parameter. If you 
+        choose to do this then they should match the keys in the array.
+
+        NOTE: The provided array must have at least one element/row and
+        must also be 2-dimensional in structure.
+    */
     public function __construct(array $data, array $headers = null)
     {
         if ($data === null)
