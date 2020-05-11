@@ -121,7 +121,12 @@ import::csv_file(function($row) {
 Using a foreach loop with a generator, instead of a callback.
 
 ```php
+use sqonk\phext\datakit\Importer as import;
 
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+foreach (import::yield_csv('docs/iris.data', false, $iris_columns) as $row)
+    println($row['class'], $row['sepal-length']);
 ```
 
 #### Importer - CSV - Data
