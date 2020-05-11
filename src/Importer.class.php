@@ -186,6 +186,65 @@ class Importer
     }
     
     /*
+        Import a CSV from a local file on disk or a URL and yield one row at a time
+        as a generator to an outer loop.
+         
+        Each yielded row is an array of the values retrieved from the current row in 
+        the CSV. When the first row is indicated as containing the column headers then 
+        the supplied array will be indexed with the column headers as the keys. 
+
+        In the cases were the CSV has no column headers then the supplied array will be in simple
+        sequential order.
+    
+        @param $filePath                Path or URL to the file.
+        @param $headersAreFirstRow      TRUE or FALSE, where are not the first row contains headers.
+        @param $customHeaders           If the headers are not in the first row then you may optionally 
+                                        pass in an array of headers to be used in place.
+		@param $skipRows				Skip over a specified number of rows at the start. Defaults to 0.
+        
+        This method will throw an exception if an error is encountered at any point in the process.
+    */
+    static public function yield_csv(string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
+    {
+		$fh = @fopen($filePath, 'r');
+		if (! is_resource($fh))
+			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
+		
+		@flock($fh, LOCK_SH);
+		defer ($_, function() use ($fh) {
+			@flock($fh, LOCK_UN);
+			@fclose($fh);
+		});
+        
+        // Skip over a specified number of rows at the start. Defaults to 0.
+		if ($skipRows > 0) 
+			foreach (sequence(0, $skipRows) as $i)
+				fgetcsv($fh); 
+		
+        if ($headersAreFirstRow || is_array($customHeaders))
+            $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
+        
+        while (($row = fgetcsv($fh)) !== false)
+        {
+            if (count($row) == 0 or $row[0] === null)
+                continue; // ignore blank lines.
+            
+			if ($headers)
+			{
+	            $out = [];
+	            foreach (range(0, count($row)-1) as $i) {
+	                $h = ($i < count($headers)) ? $headers[$i] : $i;
+	                $out[$h] = $row[$i];
+	            }
+				$row = $out;
+				unset($out);
+			}
+            
+            yield $row;
+        }
+    }
+    
+    /*
         Split a string of raw data down into rows and columns.
     
         Each row is returned to your callback method as an array of values, where you may do

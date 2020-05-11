@@ -118,6 +118,12 @@ import::csv_file(function($row) {
 'docs/iris.data', false, $iris_columns);
 ```
 
+Using a foreach loop with a generator, instead of a callback.
+
+```php
+
+```
+
 #### Importer - CSV - Data
 
 Import a CSV already loaded into memory and print out some of the columns.
@@ -2115,6 +2121,27 @@ static public function csv_data(?callable $callback, string $data, bool $headers
     This method will throw an exception if an error is encountered at any point in the process.
 */
 static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow, $customHeaders = null, int $skipRows = 0);
+
+/*
+    Import a CSV from a local file on disk or a URL and yield one row at a time
+    as a generator to an outer loop.
+ 
+    Each yielded row is an array of the values retrieved from the current row in 
+    the CSV. When the first row is indicated as containing the column headers then 
+    the supplied array will be indexed with the column headers as the keys. 
+
+    In the cases were the CSV has no column headers then the supplied array will be in simple
+    sequential order.
+
+    @param $filePath                Path or URL to the file.
+    @param $headersAreFirstRow      TRUE or FALSE, where are not the first row contains headers.
+    @param $customHeaders           If the headers are not in the first row then you may optionally 
+                                    pass in an array of headers to be used in place.
+    @param $skipRows                Skip over a specified number of rows at the start. Defaults to 0.
+
+    This method will throw an exception if an error is encountered at any point in the process.
+*/
+static public function yield_csv(string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
 
 /*
     Split a string of raw data down into rows and columns.
