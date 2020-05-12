@@ -25,7 +25,7 @@ $ composer require sqonk/phext-datakit
 Method Index
 ------------
 
-* [Importer](#importer-method)
+* [Importer](#importer-methods)
 * [SMA](#sma-methods)
 * [EMA](#ema-methods)
 * [DOMScraper](#domscraper-methods)
