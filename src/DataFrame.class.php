@@ -2106,7 +2106,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function plot(string $type, array $options = [])
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
-        $title = arrays::safe_value($options, 'title');
+        $title = arrays::safe_value($options, 'title', '');
         $xcolumn = arrays::safe_value($options, 'xcolumn', null);
         $oneChart = arrays::safe_value($options, 'one', false);
         
