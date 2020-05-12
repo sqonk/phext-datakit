@@ -2151,7 +2151,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
         if ($oneChart)
             $plot->add($type, $all_series, array_merge($options, ['xseries' => $xseries, 'xformatter' => $xtr,
-                 'legend' => $columns, 'one' => true]));
+                 'legend' => $columns]));
 		       
         
         return $plot;
