@@ -2222,7 +2222,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $whisker = ($q75-$q25) * 1.5;
             $series = [$q25, $q75, $q25-$whisker, $q75+$whisker, $q50];
             
-            $plot->add('box', [$series], ['title' => $h, 'hideAllTicks' => true]);
+            $plot->add('box', [$series], ['legend' => $h, 'hideAllTicks' => true]);
         }
         
         return $plot;
@@ -2295,12 +2295,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     'legend' => [$h, 'accumulated'], 
                     'matchBorder' => true,
                     'width' => 1.0,
-					'title' => "$h accumulated"
                 ]); 
             }
             else {
                 $plot->add('bar', [$dist], [
-                    'title' => $h, 
+                    'legend' => $h,
                     'matchBorder' => true,
                     'width' => 1.0,
                 ]); 
