@@ -238,9 +238,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 						keys in the array.
 		$columns		One or more columns that should be used in the
 						resulting array, all columns if null is supplied.
+        
+        The columns can be supplied as a set of variable arguments or an
+        array as the second argument.
 	*/
     public function flattened(bool $includeIndex = true, ...$columns)
     {
+        if (count($columns) == 1 and is_array($columns[0]))
+            $columns = $columns[0];
         $columns = $this->determineColumns($columns);
         $out = [];
         foreach ($this->data as $index => $row) 
