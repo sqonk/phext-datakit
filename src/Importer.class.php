@@ -223,6 +223,8 @@ class Importer
 		
         if ($headersAreFirstRow || is_array($customHeaders))
             $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
+        else
+            $headers = null;
         
         while (($row = fgetcsv($fh)) !== false)
         {
