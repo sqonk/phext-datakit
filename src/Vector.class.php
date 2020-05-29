@@ -444,7 +444,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		$isCallback = is_callable($match);
 		foreach ($this->_array as $value) {
 			if (($isCallback and ! $match($value)) or 
-				(! $strict && $value != $match) or ($strict && $value !== $match))
+				(! $isCallback and (! $strict && $value != $match) or ($strict && $value !== $match)))
 				return false;
 		}
 		return true;
