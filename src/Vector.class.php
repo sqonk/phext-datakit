@@ -414,7 +414,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		For basic (non-callback) matches, setting $strict to TRUE will enforce 
 		type-safe comparisons.
 	*/
-	public function any($match, $strict = false)
+	public function any($match, bool $strict = false)
 	{
 		if (is_callable($match))
 		{
@@ -439,7 +439,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		For basic (non-callback) matches, setting $strict to TRUE will enforce 
 		type-safe comparisons.
 	*/
-	public function all($match, $strict = false)
+	public function all($match, bool $strict = false)
 	{
 		$isCallback = is_callable($match);
 		foreach ($this->_array as $value) {
