@@ -703,8 +703,10 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		Sort the vector in either ASCENDING or DESCENDING direction. If the
 		vector is associative then index association is maintained, otherwise
 		new indexes are generated.
+    
+        Refer to the PHP documentation for all possible values on the $flags.
 	*/
-	public function sort($dir = ASCENDING, $flags = SORT_REGULAR)
+	public function sort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
 	{
 		if ($this->isSequential) {
 			if ($dir == ASCENDING) 
