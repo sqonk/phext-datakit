@@ -722,16 +722,33 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		}
 		return $this;
 	}
+    
+	/*
+		Sort the vector by the indexes in either ASCENDING or DESCENDING direction. 
+    
+        Refer to the PHP documentation for all possible values on the $flags.
+	*/
+	public function ksort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
+	{
+		if ($dir == ASCENDING) 
+			ksort($this->_array, $flags);
+		else
+			krsort($this->_array, $flags);
+        
+		return $this;
+	}
 	
 	/*
-		Designed for multi-dimensional vectors or vectors of objects.
-	
-		Sort the vector based on the value of a key inside of the sub-array/object.
+        Sort the vector based on the value of a key inside of the sub-array/object.
 	
 		$key can be a singular string, specifying one key, or an array of keys.
 		
 		If the vector is associative then index association is maintained, otherwise new  
 		indexes are generated.
+    
+        NOTE: This method is designed for multi-dimensional vectors or vectors of objects.
+    
+        See ksort for sorting the vector based on the array indexes.
 	*/
 	public function keyed_sort($key)
 	{
