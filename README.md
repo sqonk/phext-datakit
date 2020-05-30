@@ -2011,6 +2011,7 @@ $options represent the chart configuation.
 - _barColor_:		The colour of the bars dataset, default is 'lightgray'.
 - _barWidth_:		The width of each bar in the bars dataset, default is 7.
 					
+
 $type represents the type of chart (e.g line, box, bar etc). Possible values:
 - _line_: 		line chart.
 - _linefill_: 	line chart with filled area.
@@ -2590,21 +2591,32 @@ public function transpose(string $groupKey, array $mergeMap);
 public function groupby($keys, bool $keepEmptyKeys = false);
 
 /*
-    Sort the vector in either ASCENDING or DESCENDING direction. If the
-    vector is associative then index association is maintained, otherwise
-    new indexes are generated.
+  Sort the vector in either ASCENDING or DESCENDING direction. If the
+  vector is associative then index association is maintained, otherwise
+  new indexes are generated.
+
+  Refer to the PHP documentation for all possible values on the $flags.
 */
-public function sort($dir = ASCENDING, $flags = SORT_REGULAR);
+public function sort(int $dir = ASCENDING, int $flags = SORT_REGULAR);
 
 /*
-    Designed for multi-dimensional vectors or vectors of objects.
+  Sort the vector by the indexes in either ASCENDING or DESCENDING direction. 
 
-    Sort the vector based on the value of a key inside of the sub-array/object.
+  Refer to the PHP documentation for all possible values on the $flags.
+*/
+public function ksort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
 
-    $key can be a singular string, specifying one key, or an array of keys.
+/*
+  Sort the vector based on the value of a key inside of the sub-array/object.
 
-    If the vector is associative then index association is maintained, otherwise new  
-    indexes are generated.
+  $key can be a singular string, specifying one key, or an array of keys.
+
+  If the vector is associative then index association is maintained, otherwise new  
+  indexes are generated.
+
+  NOTE: This method is designed for multi-dimensional vectors or vectors of objects.
+
+  See 'ksort' for sorting the vector based on the array indexes.
 */
 public function keyed_sort($key);
 
@@ -3522,7 +3534,7 @@ public function combine(bool $keepIndexes = true);
 Theo Howell
 
 **NOTE:** Portions of the mathematical methods are borrowed from various freely available open source projects and code snippets. Appropriate credit and links are given where applicable in the relevant sections of the code.
- 
+
 ## License
 
 The MIT License (MIT). Please see [License File](license.txt) for more information.
