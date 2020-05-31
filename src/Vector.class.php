@@ -261,7 +261,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	// Return all indexes of the array.
 	public function keys()
 	{
-		return vector(array_keys($this->_array));
+		return new Vector(array_keys($this->_array));
 	}
 	
 	// Returns TRUE if there are 0 elements in the array, FALSE otherwise.
