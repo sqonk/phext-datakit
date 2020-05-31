@@ -219,7 +219,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
 	
 	/*
-		Remove one or more elements from the array.
+		Remove one or more elements from the vector.
 	*/
 	public function remove(...$keys)
 	{
@@ -235,6 +235,32 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		
 		return $this;
 	}
+    
+    /*
+        Remove a range of values from the vector from the index at $start and
+        extending for $length.
+    
+        This method is primarily designed to work with sequential indexes but
+        will also work with associative arrays by and running the start and length
+        through the extracted array keys.
+    */
+    public function remove_range(int $start, int $length)
+    {
+        $keys = array_keys($this->_array);
+        if ($start + $length > count($keys)-1)
+            throw new \InvalidArgumentException('range exceeds length of array.');
+        if ($length < 1 or $start < 1)
+            throw new \InvalidArgumentException('start and length must be 1 or greater.');
+        
+        foreach (sequence($start, $start+$length-1) as $key) {
+            unset($this->_array[$key]);
+        }
+        
+        if ($this->isSequential)
+            $this->_array = $this->_values(); // re-index the array.
+        
+        return $this;
+    }
 	
 	// Remove all elements from the array.
 	public function clear()
