@@ -101,11 +101,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         NOTE: The provided array must have at least one element/row and
         must also be 2-dimensional in structure.
     */
-    public function __construct(array $data, array $headers = null)
+    public function __construct(array $data, ?array $headers = null)
     {
         if ($data === null)
             throw new \InvalidArgumentException("Data array can not be null. A valid array must be given.");
-        else if (count($data) == 0)
+        else if (count($data) == 0 and ($headers === null or count($headers) == 0))
             throw new \LengthException("A DataFrame needs at least one row of data.");
         $this->data = $data;
         $this->validate();  
