@@ -864,7 +864,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     else if ($upper !== null && is_numeric($value) && $value > $upper) 
                         $r['upper'] = $value;
                     
-                    $data[$index] = $r;
+                    if ($r['lower'] !== null or $r['upper'] !== null)
+                        $data[$index] = $r;
                 }
             }
             else 
