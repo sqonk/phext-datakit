@@ -142,7 +142,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         foreach ($this->data as $item)
         {
             if (! is_array($item))
-                throw new \UnexpectedValueException("Invalid array format. Each item of the provided data array must be a sub-array.");
+                throw new \UnexpectedValueException('Invalid array format. Each item of the provided data array must be a sub-array.');
         }
     }
     
@@ -429,7 +429,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $columns = $this->determineColumns($columns);
         if (count($columns) == 0)
-            throw new \LengthException("filtering requires at least one column");
+            throw new \LengthException('filtering requires at least one column.');
         $filtered = [];
         foreach ($this->data as $index => $row) {
             $pass = false;
@@ -443,7 +443,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 $filtered[$index] = $row;
             
         }
-        return (count($filtered) > 0) ? $this->clone($filtered) : null;
+        return count($filtered) > 0 ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -473,7 +473,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($pass)
                 $filtered[$index] = $row;
         }
-        return (count($filtered) > 0) ? $this->clone($filtered) : null;
+        return count($filtered) > 0 ? $this->clone($filtered) : null;
     }
     
 	/*
