@@ -3058,6 +3058,12 @@ public function oob_region($theshhold, $direction, string $column);
 public function gaps($amount, string $usingColumn, string $resultColumn = '');
 
 /*
+	Produces a new DataFrame containing counts for the number of times each value 
+	occurs in the given column.
+*/
+public function frequency(string $column);
+    
+/*
     Returns TRUE if ANY of the rows for a given column match
     the given value.
 

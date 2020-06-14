@@ -995,6 +995,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
+		Produces a new DataFrame containing counts for the number of times each value
+		occurs in the given column.
+	*/
+	public function frequency(string $column)
+	{
+        $out = [];
+        foreach (array_count_values($this->values($column)) as $col => $value)
+            $out[] = [$column => $col, 'Frequency' => $value];
+		return new DataFrame($out);
+	}
+    
+	/*
 		Returns TRUE if ANY of the rows for a given column match
 		the given value.
 	
