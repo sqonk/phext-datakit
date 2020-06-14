@@ -128,7 +128,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function clone($data)
     {
-        $copy = new DataFrame($data);
+        $copy = new DataFrame($data, $this->headers);
         $copy->transformers = $this->transformers;
         $copy->indexHeader = $this->indexHeader;
         $copy->showGenericIndexes = $this->showGenericIndexes;
@@ -443,7 +443,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 $filtered[$index] = $row;
             
         }
-        return count($filtered) > 0 ? $this->clone($filtered) : null;
+        
+        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -473,7 +474,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($pass)
                 $filtered[$index] = $row;
         }
-        return count($filtered) > 0 ? $this->clone($filtered) : null;
+        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -495,7 +496,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($callback($row, $index)) 
                 $filtered[$index] = $row;
         }
-        return (count($filtered) > 0) ? $this->clone($filtered) : null;
+        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -877,7 +878,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                             'column' => $key,
                             'lower' => $value,
                             'upper' => null
-                        ];
+                        ]; 
                     }
                     else if ($upper !== null && is_numeric($value) && $value > $upper) {
                         $r = [
@@ -891,7 +892,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }
             }
         }
-        return new DataFrame($data);
+        return new DataFrame($data, ['index', 'column', 'lower', 'upper']);
     }
     
 	/*
@@ -944,7 +945,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $data[] = $current;
         }
         
-        return count($data) > 0 ? new DataFrame($data) : null;
+        return (count($data) > 0 or defined('EMPTY_DATAFRAMES')) ? new DataFrame($data, ['start', 'end']) : null;
     }
     
 	/*
@@ -989,7 +990,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $last = $current;
             $lastRow = $row;
         }
-        return count($result) > 0 ? new DataFrame($result) : null;
+        return (count($result) > 0 or defined('EMPTY_DATAFRAMES')) ? new DataFrame($result, ['start', 'end', 'segments']) : null;
     }
     
 	/*
