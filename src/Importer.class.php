@@ -50,7 +50,7 @@ class Importer
     
         @returns                        TRUE upon successful completion or the imported data array when no callback is being used. 
     */
-    static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow, $customHeaders = null)
+    static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow, ?array $customHeaders = null)
     {
         $imported = ($callback) ? null : [];
         $lines = explode("\n", trim($data));
@@ -136,7 +136,7 @@ class Importer
     
         This method will throw an exception if an error is encountered at any point in the process.
     */
-    static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow, $customHeaders = null, int $skipRows = 0)
+    static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
     {
         $data = ($callback) ? null : [];
 		$fh = @fopen($filePath, 'r');
