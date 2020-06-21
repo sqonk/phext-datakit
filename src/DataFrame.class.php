@@ -23,13 +23,13 @@ namespace sqonk\phext\datakit;
 
 use sqonk\phext\plotlib\BulkPlot;
 use sqonk\phext\core\{arrays,strings};
-
+use sqonk\phext\context\context;
     
 /*
 	A class for managing and manipulating a series of rows and columns. Arithmetic 
 	operations align on both row and column labels where applicable.	
 */
-class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
+final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     protected $data;
     protected $headers = [];
@@ -144,11 +144,26 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	// Internal method.
     protected function validate()
     {
-        foreach ($this->data as $item)
+        foreach ($this->data as $index => $item)
         {
-            if (! is_array($item))
-                throw new \UnexpectedValueException('Invalid array format. Each item of the provided data array must be a sub-array.');
+            if (is_array($item))
+                $this->data[$index] = $this->_encode($item);    
         }
+    }
+    
+    protected function _encode(string $input)
+    {
+        context::file('php://temp', 'r+b')->do(function($fh) use (&$out, $input) {
+            fputcsv($fh, $input);
+            rewind($fh);
+            $out = rtrim(stream_get_contents($fh));
+        });
+        return $out;
+    }
+    
+    protected function _decode(string $input)
+    {
+        return str_getcsv($input);
     }
     
 	/* 
@@ -218,7 +233,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function column_is_numeric(string $column)
     {
         $count = 0;
-        foreach ($this->data as &$row) {
+        foreach ($this->data as $row) {
+            $row = $this->_decode($row);
             if (isset($row[$column]) && is_numeric($row[$column]))
                 $count++;
             if ($count > 1)
@@ -255,6 +271,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $out = [];
         foreach ($this->data as $index => $row) 
         {
+            $row = $this->_decode($row);
             $r = [];
             if ($includeIndex)
                 $r[] = $index;
@@ -278,7 +295,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		else
 			$row = $this->data[$index] ?? null;
 		
-		return $row;
+		return $this->_decode($row);
     }
     
 	// Return an array of all the current row indexes.
