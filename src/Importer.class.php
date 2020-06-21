@@ -173,7 +173,6 @@ class Importer
 	                $out[$h] = $row[$i];
 	            }
 				$row = $out;
-				unset($out);
 			}
             
             if ($callback)
