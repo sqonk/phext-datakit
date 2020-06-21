@@ -38,7 +38,7 @@ function vector(...$items)
 }
 
 // Create a new DataFrame with the supplied rows & columns.
-function dataframe(array $data, array $headers = null)
+function dataframe(?array $data = null, array $headers = null)
 {
 	return new \sqonk\phext\datakit\DataFrame($data, $headers);
 }
