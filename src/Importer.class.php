@@ -152,7 +152,7 @@ class Importer
 		// Skip over a specified number of rows at the start. Defaults to 0.
 		if ($skipRows > 0) {
 			foreach (sequence(0, $skipRows) as $i)
-				fgetcsv($fh); 
+				fgets($fh); 
 		}
 		
         if ($headersAreFirstRow || is_array($customHeaders))
@@ -219,7 +219,7 @@ class Importer
         // Skip over a specified number of rows at the start. Defaults to 0.
 		if ($skipRows > 0) 
 			foreach (sequence(0, $skipRows) as $i)
-				fgetcsv($fh); 
+				fgets($fh); 
 		
         if ($headersAreFirstRow || is_array($customHeaders))
             $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
