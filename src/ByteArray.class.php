@@ -205,13 +205,15 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
         else if ($index > $count-1 or $index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
         
-        if ($index < $count-1)
+        if ($index <= $count-1)
         {
             $this->buffer->fseek($index * $this->itemSize);
             $this->write($value);
         }
-        else 
+        else {
             $this->add($value);
+        }
+            
         
         return $this;
     }
