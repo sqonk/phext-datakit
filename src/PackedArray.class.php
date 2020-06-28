@@ -22,13 +22,11 @@ namespace sqonk\phext\datakit;
 class PackedArray implements \ArrayAccess, \Countable, \Iterator
 {
     protected $buffer;
-    protected $_currentPosition;
     protected $size;
     protected $indexes;
     protected $lengths;
-    
-    const INT_SIZE = 4;
-    
+    protected $types;
+        
     protected $_iteratorIndex = 0;
     
 	public function offsetSet($index, $value)
@@ -46,7 +44,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	
 	public function offsetExists($index)
 	{
-		return $index < $this->_count;
+		return $index < $this->count();
 	}
 	
 	public function offsetUnset($index)
@@ -76,178 +74,511 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     }
 
     public function valid() {
-        return $this->_iteratorIndex < $this->_count;
+        return $this->_iteratorIndex < $this->count();
     }
     
-    public function count()
-    {
-        return $this->_count;
-    }
     
     public function __construct(array $startingArray = [])
     {
         $this->buffer = new \SplFileObject('php://memory', 'rw+');
-        $this->indexes = new ByteArray('l');
-        $this->lengths = new ByteArray('l');
+        $this->indexes = new PackedSequence('I');
+        $this->lengths = new PackedSequence('I');
+        $this->types = new PackedSequence(1);
         
-        $this->_currentPosition = 0;
         $this->size = 0;
         
         foreach ($startingArray as $item)
             $this->add($item);
     }
-
-    public function add($value)
+    
+    // Print all values to the output buffer.
+    public function print()
     {
-        if ($this->_currentPosition != $this->size) {
-            $this->buffer->fseek(SEEK_END);
-        }
-            
-        // write out the index of the new value.
-        $this->indexes->add($this->size);
-        
-        // serialise the value if it is either an array or object.
-        if (is_array($value) || is_object($value))
-            $value = serialize($value);
-        
-        $len = strlen($value);
-        $this->buffer->fwrite(pack('l', $len).$value);
-        
-        $this->size += $len + self::INT_SIZE;
-        $this->_currentPosition = $this->size;
-        $this->_count++;
+        foreach ($this as $index => $value)
+            println("[$index]", $value);
     }
     
+    public function count()
+    {
+        return $this->indexes->count();
+    }
+    
+    protected function encode($value)
+    {
+        if (is_int($value))
+            return [pack('l', $value), 'i'];
+        else if (is_real($value))
+            return [pack('d', $value), 'r'];
+        else if (is_array($value) || is_object($value))
+            return [serialize($value), 'o'];
+        
+        return [$value, 's'];
+    }
+    
+    protected function decode($value, $type)
+    {
+        if ($type == 'i')
+            return unpack('l', $value)[1];
+        else if ($type == 'r')
+            return unpack('d', $value)[1];
+        else if ($type == 'o')
+            return unserialize($value);
+        
+        return $value;
+    }
+
+    /* 
+        Add a value to the end of the array. If the value is an array or a 
+        traversable object then it will be serialised prior to being stored.
+    */
+    public function add($value)
+    {
+        if (! var_is_stringable($value))
+            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
+        
+        $this->buffer->fseek($this->size);
+            
+        // write out the index for the new value.
+        $this->indexes->add($this->size);
+        
+        [$value, $type] = $this->encode($value);
+        
+        $len = strlen($value);
+        $this->lengths->add($len);
+        $this->types->add($type);
+        $written = $this->buffer->fwrite($value); 
+        
+        $this->size += $len;
+    }
+    
+    // Insert a new item into the array at a given index anywhere up to the end of the array.
     public function insert(int $index, $newVal)
     {
-        if ($index < $this->_count-1)
+        $count = $this->count();
+        
+        if (! var_is_stringable($value))
+            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
+        
+        else if ($index > $count-1 or $index < 0)
+            throw new \InvalidArgumentException('Index out of bounds.');
+        
+        if ($index < $count-1)
         {
-            // serialise the value if it is either an array or object.
-            if (is_array($newVal) || is_object($newVal))
-                $value = serialize($newVal);
-            
+            [$newVal, $type] = $this->encode($newVal);
             $newLen = strlen($newVal);
             
             // move everything after the insertion point along by the length of the new value.
-            $currentIdx = $this->_count-1;
-            while ($currentIdx > $index)
+            $this->size += $newLen;
+            for ($i = $count-1; $i >= $index; $i--) 
             {
-                // get the position from the index.
-                $this->indexes->fseek($currentIdx * self::INT_SIZE);
-                $pos = unpack('l', $this->indexes->fread(self::INT_SIZE))[1];
-                println("pos = $pos");
-                
-                // get the length and value from the buffer.
-                $this->buffer->fseek($pos);
-                $len = (int)unpack('l', $this->buffer->fread(self::INT_SIZE))[1]; 
-                $value = $this->buffer->fread($len);
-                println("len = $len", $value);
-                
-                // write the length and value back, shifted along.
-                $this->buffer->fseek($pos+$newLen); println('writing out to', $pos+$newLen);
-                $this->buffer->fwrite(pack('l', $newLen).$value);
-                
-                // update the index.
-                $this->indexes->fseek($currentIdx+1 * self::INT_SIZE);
-                $this->indexes->fwrite(pack('l', $pos+$newLen));
-
-                $currentIdx--;
+                [$val, $length] = $this->_get($i);
+                $this->buffer->fseek($newLen, SEEK_CUR);
+                $this->lengths->set($i+1, $length);
+                $this->types->set($i+1, $length);
+                $this->indexes->set($i+1, $this->buffer->ftell());
+                $this->buffer->fwrite($val);
             }
             
-            // Insert the new value.
-            $this->indexes->fseek($index * self::INT_SIZE);
-            $pos = unpack('l', $this->indexes->fread(self::INT_SIZE))[1];
-            
-            $this->buffer->fseek($pos+$newLen);
-            $this->buffer->fwrite(pack('l', $newLen).$newVal);
-            
-            $this->size += $newLen + self::INT_SIZE;
-            $this->_currentPosition = $this->buffer->ftell();
-            $this->_count++;
+            $this->buffer->fseek($this->indexes->get($index));
+            $this->lengths->set($index, $newLen);
+            $this->types->set($index, $type);
+            $this->buffer->fwrite($newVal); 
         }
-        
+
         else
             $this->add($newVal);
     }
     
+    /* 
+        Overwrite an existing value with the one provided. If $index is greater than the current
+        count then the value is appended to the end.
+    */
+    public function set(int $index, $value)
+    {
+        $count = $this->count();
+        
+        if (! var_is_stringable($value))
+            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
+        
+        else if ($index > $count-1 or $index < 0)
+            throw new \InvalidArgumentException('Index out of bounds.');
+        
+        if ($index <= $count-1)
+        {
+            $this->delete($index);
+            $this->insert($index, $value);
+        }
+        else {
+            $this->add($value);
+        }
+        
+        return $this;
+    }
+    
+    // Return an item from the array at the given index.
     public function get(int $index)
     {
         [$value] = $this->_get($index);
         
-        /* FIXME: unserialize value once detected. */
-        
-        return $value;
+        return $this->decode($value, $this->types->get($index));
     }
     
     protected function _get(int $index)
     {
-        $this->indexes->fseek($index * self::INT_SIZE);
-        $pos = unpack('l', $this->indexes->fread(self::INT_SIZE))[1];
+        $pos = $this->indexes->get($index);
+        $len = $this->lengths->get($index);
         
-        if ($this->_currentPosition != $pos)
-            $this->buffer->fseek($pos);
-        
-        $len = (int)unpack('l', $this->buffer->fread(self::INT_SIZE))[1]; 
-        
+        $this->buffer->fseek($pos);
         $value = $this->buffer->fread($len);
-        $this->_currentPosition = $pos + $len + self::INT_SIZE;
                 
         return [$value, $len, $pos];
     }
     
-    public function remove(int $index)
+    // Remove an item from the array  at the given index.
+    public function delete(int $index)
     {
-        // shift to starting position, where the element we wish to remove is.
-        $this->indexes->fseek($index * self::INT_SIZE);
-        $start = unpack('l', $this->indexes->fread(self::INT_SIZE))[1];
-        $this->buffer->fseek($start);
+        $count = $this->count();
         
-        if ($index < $this->_count-1)
+        if ($index > $count-1 or $index < 0)
+            throw new \InvalidArgumentException('Index out of bounds.');
+        
+        $len = $this->lengths->get($index);
+        
+        if ($index < $count-1) 
         {
-            /*
-                If we're removing an element somewhere before the end then
-                back-shift everything that comes after.
-            */
-            $lastPos = $start;
-            $len = (int)unpack('l', $this->buffer->fread(self::INT_SIZE))[1]; 
-            
-            foreach (sequence($index+1, $this->_count-1) as $i)
-            {
-                $this->buffer->fseek($len, SEEK_CUR);
-
-                $lenBytes = $this->buffer->fread(self::INT_SIZE); 
-                $len = (int)unpack('l', $lenBytes)[1]; 
-                $segment = $this->buffer->fread($len);
-                $this->buffer->fseek($lastPos);
-                $this->buffer->fwrite($lenBytes.$segment);
-                
-                $lastPos = $this->buffer->ftell();
-                $len = (int)unpack('l', $this->buffer->fread(self::INT_SIZE))[1]; 
+            // item is somewhere before the end..
+            foreach (sequence($index+1, $count-1) as $next) {
+                [$itemVal, $itemLen, $itemPos] = $this->_get($next);
+                $this->buffer->fseek($itemPos - $len); // shift back by the length being removed. 
+                $this->buffer->fwrite($itemVal);
             }
-            
-            // fix the position so it's ready for the deleting the last block of memory.
-            $start = $lastPos;
         }
-
-        // Delete last segment
-        $this->size = $start;
-        $this->buffer->ftruncate($this->size);
-        $this->buffer->fseek($start);
         
-        $this->_currentPosition = $this->size;
-        $this->_count--;
+        // remove last item.
+        $this->size -= $len;
+        $this->buffer->ftruncate($this->size);
+        $this->indexes->delete($index);
+        $this->lengths->delete($index);
+        $this->types->delete($index);
     }
     
+    /* 
+        Pop an item off the end of the array. If $poppedValue is provided 
+        then it is filled with the value that was removed.
+    */
+    public function pop(&$poppedValue = null)
+    {
+        $idx = $this->count()-1;
+        if ($poppedValue)
+            $poppedValue = $this->get($idx);
+        return $this->delete($idx);
+    }
+    
+    /* 
+        Shift an item off the start of the array. If $shiftedItem is provided 
+        then it is filled with the value that was removed.
+    */
+    public function shift(&$shiftedItem = null)
+    {
+        if ($shiftedItem)
+            $shiftedItem = $this->get(0);
+        return $this->delete(0);
+    }
+    
+    // Remove all elements from the array.
     public function clear()
     {
-        $this->indexes->ftruncate(0);
-        $this->indexes->rewind();
+        $this->indexes->clear();
+        $this->lengths->clear();
         
         $this->buffer->ftruncate(0);
         $this->buffer->rewind();
         
-        $this->_currentPosition = 0;
         $this->size = 0;
-        $this->_count = 0;
+    }
+    
+	// Return a new vector containing all indexes.
+	public function keys()
+	{
+		return new Vector(range(0, $this->count()-1));
+	}
+    
+	// Returns TRUE if there are 0 elements in the array, FALSE otherwise.
+	public function empty()
+	{
+		return $this->count() == 0;
+	}
+    
+	// Return the first value in the array.
+	public function first()
+	{
+		return $this->get(0);
+	}
+	
+	// Return the last value in the array.
+	public function last()
+	{
+		return $this->get($this->count()-1);
+	}
+    
+	/*
+		Returns TRUE if any of the values within the array are equal to the value
+		provided, FALSE otherwise.
+	
+		A callback may be provided as the match to perform more complex testing.
+	
+		Callback format: myFunc($value) -> bool
+	
+		For basic (non-callback) matches, setting $strict to TRUE will enforce 
+		type-safe comparisons.
+	*/
+	public function any($match, bool $strict = false)
+	{
+		if (is_callable($match))
+		{
+			foreach ($this as $value) {
+				if ($match($value))
+					return true;
+			}
+		}
+		
+		else
+        {
+            foreach ($this as $value) {
+                if ((! $strict and $value == $match) or ($strict and $value === $match))
+                    return true;
+            }
+        }
+        
+        return false;
+	}
+	
+	/*
+		Returns TRUE if all of the values within the array are equal to the value
+		provided, FALSE otherwise.
+	
+		A callback may be provided as the match to perform more complex testing.
+	
+		Callback format: myFunc($value) -> bool
+	
+		For basic (non-callback) matches, setting $strict to TRUE will enforce 
+		type-safe comparisons.
+	*/
+	public function all($match, bool $strict = false)
+	{
+		$isCallback = is_callable($match);
+		foreach ($this as $value) {
+			if (($isCallback and ! $match($value)) or 
+				(! $isCallback and (! $strict && $value != $match) or ($strict && $value !== $match)))
+				return false;
+		}
+		return true;
+	}
+    
+    /* 
+		Search the array for the given needle (subject). This function is an
+		alias of any().
+	*/
+    public function contains($needle)
+    {
+        return self::any($needle);
+    }
+    
+    // Determines if the array ends with the needle.
+    public function ends_with($needle)
+    {
+        return $this->last() == $needle;
+    }
+    
+    // Determines if the array starts with the needle.
+    public function starts_with($needle)
+    {
+        return $this->first() == $needle;
+    }
+    
+	/*
+		Filter the contents of the array using the provided callback. 
+    
+        Callback format: myFunc($value, $index) -> bool
+	*/
+	public function filter(callable $callback)
+	{
+        $filtered = new PackedArray;
+		foreach ($this as $index => $value)
+            if ($callback($value, $index))
+                $filtered[] = $value;
+        return $filtered;
+	}
+    
+	/*
+		Apply a callback function to the array.
+	
+		Callback format: myFunc($value, $index) -> mixed
+	*/
+    public function map(callable $callback)
+    {
+        $mapped = new PackedArray;
+        foreach ($this as $index => $value)
+            $mapped[] = $callback($value, $index);
+        return $mapped;        
+    }
+    
+	/*
+		Pad the array to the specified length with a value. If $count is positive then 
+		the array is padded on the right, if it's negative then on the left. 
+	*/
+	public function pad(int $count, $value)
+	{
+        if ($count > 0)
+        {
+            foreach (sequence($count-1) as $i)
+                $this->add($value);
+        }
+        else
+        {
+            foreach (sequence(abs($count)-1) as $i)
+                $this->insert(0, $value);
+        }  
+		
+		return $this;
+	}
+    
+	/* 
+		Return a copy of the array only containing the number
+		of rows from the start as specified by $count.
+	*/
+    public function head(int $count)
+    {
+        if ($count >= $this->count()) 
+            return $this->slice(0);
+            
+        return $this->slice(0, $count);
+    }
+    
+	/* 
+		Return a copy of the array only containing the number
+		of rows from the end as specified by $count.
+	*/
+    public function tail(int $count)
+    {
+        if ($count >= $this->count()) 
+            return $this->slice(0);
+            
+        return $this->slice($this->count() - $count, $count);
+    }
+    
+	/* 
+		Return a copy of the array only containing the the rows
+		starting from $start through to the given length.
+	*/
+    public function slice(int $start, ?int $length = null)
+    {
+        $total = $this->count();
+        if ($start >= $total)
+            throw new \InvalidArgumentException('Start of slice is greater than the length of the array.');
+		
+        if (! $length || ($length && $start + $length > $total-1)) 
+            $length = $total - $start;
+        
+        $slice = new PackedArray;
+        for ($i = $start; $i < $start+$length; $i++)
+            $slice->add($this->get($i));
+        
+        return $slice;
+    }
+    
+	/*
+		Return a copy of the array containing a random subset of the elements. The minimum and 
+		maximum values can be supplied to focus the random sample to a more constrained subset. 
+	*/
+    public function sample(int $minimum, ?int $maximum = null)
+    {
+        $count = $this->count();
+        if ($maximum != null && $maximum < $count)
+            $count = $maximum;
+        
+        $start = $count+1;
+        while ($count-$start < $minimum)
+            $start = rand(0, $count);
+        
+        $length = rand($minimum, $count-$start);
+        return $this->slice($start, $length);
+    }
+    
+	/*
+		Provide a maximum or minimum (or both) constraint for the values in the array.
+	
+		If a value exceeds that constraint then it will be set to the constraint.
+	
+		If either the lower or upper constraint is not needed then passing in null will 
+		ignore it.
+	
+		If $inPlace is TRUE then this operation modifies this array otherwise a copy is 
+		returned.
+	*/
+    public function clip($lower, $upper = null)
+    {
+        foreach ($this as $key => $value)
+        {
+            if ($lower !== null && is_numeric($value) && $value < $lower) 
+                $this[$key] = $lower;
+			
+            else if ($upper !== null && is_numeric($value) && $value > $upper) 
+                $this[$key] = $upper;
+        }
+        return $this;
+    }
+    
+    /*
+        Swap the positions of 2 values within the array.
+    */
+    public function swap(int $index1, int $index2)
+    {
+        $val1 = $this->get($index1);
+        $this->set($index1, $this->get($index2));
+        $this->set($index2, $val1);
+        return $this;
+    }
+    
+	/*
+		Sort the array in either ASCENDING or DESCENDING direction.
+	*/
+    public function sort(int $dir = ASCENDING)
+    {
+        $start = 0;
+        $end = $this->count()-1;
+        
+        while ($start < $end)
+        {
+            $minMax = ($dir == ASCENDING) ? PHP_INT_MAX : -PHP_INT_MAX;
+            $selectedIndex = 0;
+            foreach (sequence($start, $end) as $index)
+            {
+                $value = $this->get($index);
+                if (($dir == ASCENDING and $value < $minMax) or ($dir == DESCENDING and $value > $minMax)) {
+                    $selectedIndex = $index;
+                    $minMax = $value;
+                }
+            }
+        
+            $this->swap($selectedIndex, $start);
+            $start++;
+        }
+        
+        return $this;
+    }
+    
+    // Reserve the order of the elements.
+    public function reverse()
+    {
+        $count = $this->count();
+        
+        for ($i = 0; $i < ($count / 2); $i++)
+        {
+            if ($i != $count-1-$i)
+                $this->swap($i, $count-1-$i);
+        }
+        
+        return $this;
     }
 }
