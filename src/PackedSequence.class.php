@@ -219,7 +219,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         return $this;
     }
     
-     // Return an item from the array at the given index.
+    // Return an item from the array at the given index.
     public function get(int $index)
     {
         $count = $this->count();
