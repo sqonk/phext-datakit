@@ -574,6 +574,20 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
         return $this;
     }
     
+    // Reserve the order of the elements.
+    public function reverse()
+    {
+        $count = $this->count();
+        
+        for ($i = 0; $i < ($count / 2); $i++)
+        {
+            if ($i != $count-1-$i)
+                $this->swap($i, $count-1-$i);
+        }
+        
+        return $this;
+    }
+    
 	/*
 		Compute a sum of the values within the array.
 	*/
