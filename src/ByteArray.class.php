@@ -558,19 +558,26 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function sort(int $dir = ASCENDING)
     {
-        foreach (sequence(0, $this->count()-1) as $idx1)
+        $start = 0;
+        $end = $this->count()-1;
+        
+        while ($start < $end)
         {
-            $val1 = $this->get($idx1);
-            foreach (sequence(0, $this->count()-1) as $idx2)
+            $minMax = ($dir == ASCENDING) ? PHP_INT_MAX : -PHP_INT_MAX;
+            $selectedIndex = 0;
+            foreach (sequence($start, $end) as $index)
             {
-                if ($idx1 == $idx2)
-                    continue;
-                
-                $val2 = $this->get($idx2);
-                if (($dir == ASCENDING and $val1 > $val2) or ($dir == DESCENDING and $val1 < $val2))
-                    $this->swap($idx1, $idx2);
+                $value = $this->get($index);
+                if (($dir == ASCENDING and $value < $minMax) or ($dir == DESCENDING and $value > $minMax)) {
+                    $selectedIndex = $index;
+                    $minMax = $value;
+                }
             }
+        
+            $this->swap($selectedIndex, $start);
+            $start++;
         }
+        
         return $this;
     }
     
