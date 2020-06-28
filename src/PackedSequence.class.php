@@ -19,11 +19,12 @@ namespace sqonk\phext\datakit;
 */
 
 /*
-    A fast, memory-efficient, variable-length list of fixed size elements.
+    A fast, memory-efficient, variable-length array of fixed size elements.
 
-    A ByteArray is sequentially indexed and non-associative.
+    A PackedSequence is sequentially indexed and non-associative.
 
-    All elements within the array must be the same amount of bytes. 
+    All elements within the array must be the same amount of bytes. NULL values
+    are not accepted.
 
     Auto-packing and unpacking is available for values going in and out of 
     the array.
@@ -31,7 +32,7 @@ namespace sqonk\phext\datakit;
     It is particularly useful for large numerical arrays or indexes.
 */
 
-class ByteArray implements \ArrayAccess, \Countable, \Iterator
+class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 {
     protected $buffer;
     protected $size = 0;
@@ -69,7 +70,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
     public function __toString()
     {
         $count = $this->count();
-        return sprintf("ByteArray(%d) %s...%s", $count, $this->get(0), $this->get($count-1));
+        return sprintf("PackedSequence(%d) %s...%s", $count, $this->get(0), $this->get($count-1));
     }
     
     public function rewind() {
@@ -149,7 +150,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
                 $this->add($item);
         }
         else if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a ByteArray must be capable of being converted to a string.');
+            throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
         
         else {
             $this->buffer->fseek($this->size);
@@ -166,7 +167,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
         $count = $this->count();
         
         if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a ByteArray must be capable of being converted to a string.');
+            throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
         
         else if ($index > $count-1 or $index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
@@ -200,7 +201,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
         $count = $this->count();
         
         if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a ByteArray must be capable of being converted to a string.');
+            throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
         
         else if ($index > $count-1 or $index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
@@ -398,7 +399,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
 	public function filter(callable $callback)
 	{
         $size = $this->packCode ?? $this->itemSize;
-        $filtered = new ByteArray($size);
+        $filtered = new PackedSequence($size);
 		foreach ($this as $index => $value)
             if ($callback($value, $index))
                 $filtered[] = $value;
@@ -413,7 +414,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
     public function map(callable $callback)
     {
         $size = $this->packCode ?? $this->itemSize;
-        $mapped = new ByteArray($size);
+        $mapped = new PackedSequence($size);
         foreach ($this as $index => $value)
             $mapped[] = $callback($value, $index);
         return $mapped;        
@@ -477,7 +478,7 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
             $length = $total - $start;
         
         $size = $this->packCode ?? $this->itemSize;
-        $slice = new ByteArray($size);
+        $slice = new PackedSequence($size);
         for ($i = $start; $i < $start+$length; $i++)
             $slice->add($this->get($i));
         
