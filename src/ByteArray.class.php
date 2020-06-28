@@ -513,33 +513,17 @@ class ByteArray implements \ArrayAccess, \Countable, \Iterator
 		If $inPlace is TRUE then this operation modifies this array otherwise a copy is 
 		returned.
 	*/
-    public function clip($lower, $upper, bool $inplace = false)
+    public function clip($lower, $upper = null)
     {
-        if ($inplace)
+        foreach ($this as $key => $value)
         {
-            foreach ($this as $key => $value)
-            {
-                if ($lower !== null && is_numeric($value) && $value < $lower) 
-                    $this[$key] = $lower;
-				
-                else if ($upper !== null && is_numeric($value) && $value > $upper) 
-                    $this[$key] = $upper;
-            }
-            return $this;
+            if ($lower !== null && is_numeric($value) && $value < $lower) 
+                $this[$key] = $lower;
+			
+            else if ($upper !== null && is_numeric($value) && $value > $upper) 
+                $this[$key] = $upper;
         }
-        else
-        {
-            return $this->map(function($value) use ($lower, $upper) 
-			{
-                if ($lower !== null && is_numeric($value) && $value < $lower) 
-                    return $lower;
-				
-                else if ($upper !== null && is_numeric($value) && $value > $upper) 
-                    return $upper;
-				
-				return $value;
-			});
-        }
+        return $this;
     }
     
     /*
