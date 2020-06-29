@@ -203,8 +203,8 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         if (! var_is_stringable($value))
             throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
         
-        else if ($index > $count-1 or $index < 0)
-            throw new \InvalidArgumentException('Index out of bounds.');
+        else if ($index < 0)
+            throw new \InvalidArgumentException("Index [$index] out of bounds.");
         
         if ($index <= $count-1)
         {
