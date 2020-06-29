@@ -107,7 +107,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         if (is_int($value))
             return [pack('l', $value), 'i'];
-        else if (is_real($value))
+        else if (is_float($value))
             return [pack('d', $value), 'r'];
         else if (is_array($value) || is_object($value))
             return [serialize($value), 'o'];
@@ -156,11 +156,11 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         $count = $this->count();
         
-        if (! var_is_stringable($value))
+        if (! var_is_stringable($newVal))
             throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
         
         else if ($index > $count-1 or $index < 0)
-            throw new \InvalidArgumentException('Index out of bounds.');
+            throw new \InvalidArgumentException("Index [$index] out of bounds.");
         
         if ($index < $count-1)
         {
@@ -168,16 +168,16 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             $newLen = strlen($newVal);
             
             // move everything after the insertion point along by the length of the new value.
-            $this->size += $newLen;
             for ($i = $count-1; $i >= $index; $i--) 
             {
-                [$val, $length] = $this->_get($i);
-                $this->buffer->fseek($newLen, SEEK_CUR);
-                $this->lengths->set($i+1, $length);
-                $this->types->set($i+1, $length);
-                $this->indexes->set($i+1, $this->buffer->ftell());
+                [$val, $length, $pos] = $this->_get($i);
+                $this->buffer->fseek($pos+$newLen);
+                $this->lengths->set($i+1, $length); 
+                $this->types->set($i+1, $this->types->get($i)); 
+                $this->indexes->set($i+1, $pos+$newLen);
                 $this->buffer->fwrite($val);
             }
+            $this->size += $newLen;
             
             $this->buffer->fseek($this->indexes->get($index));
             $this->lengths->set($index, $newLen);
@@ -187,6 +187,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 
         else
             $this->add($newVal);
+        
+        return $this;
     }
     
     /* 
@@ -200,7 +202,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         if (! var_is_stringable($value))
             throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
         
-        else if ($index > $count-1 or $index < 0)
+        else if ($index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
         
         if ($index <= $count-1)
@@ -251,15 +253,18 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
                 [$itemVal, $itemLen, $itemPos] = $this->_get($next);
                 $this->buffer->fseek($itemPos - $len); // shift back by the length being removed. 
                 $this->buffer->fwrite($itemVal);
+                $this->indexes->set($next-1, $itemPos - $len);
             }
         }
         
         // remove last item.
         $this->size -= $len;
         $this->buffer->ftruncate($this->size);
-        $this->indexes->delete($index);
+        $this->indexes->pop();
         $this->lengths->delete($index);
         $this->types->delete($index);
+        
+        return $this;
     }
     
     /* 
