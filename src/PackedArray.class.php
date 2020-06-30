@@ -106,7 +106,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     protected function encode($value)
     {
         if (is_int($value))
-            return [pack('l', $value), 'i'];
+            return [pack('i', $value), 'i'];
         else if (is_float($value))
             return [pack('d', $value), 'r'];
         else if (is_array($value) || is_object($value))
@@ -118,7 +118,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     protected function decode($value, $type)
     {
         if ($type == 'i')
-            return unpack('l', $value)[1];
+            return unpack('i', $value)[1];
         else if ($type == 'r')
             return unpack('d', $value)[1];
         else if ($type == 'o')
@@ -131,24 +131,29 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         Add a value to the end of the array. If the value is an array or a 
         traversable object then it will be serialised prior to being stored.
     */
-    public function add($value)
+    public function add(...$values)
     {
-        if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
+        foreach ($values as $value)
+        {
+            if ($value === null or $value === '')
+                throw new \InvalidArgumentException('Null or empty string values are accepted.');
         
-        $this->buffer->fseek($this->size);
+            $this->buffer->fseek($this->size);
             
-        // write out the index for the new value.
-        $this->indexes->add($this->size);
+            // write out the index for the new value.
+            $this->indexes->add($this->size);
         
-        [$value, $type] = $this->encode($value);
+            [$value, $type] = $this->encode($value);
         
-        $len = strlen($value);
-        $this->lengths->add($len);
-        $this->types->add($type);
-        $written = $this->buffer->fwrite($value); 
+            $len = strlen($value);
+            $this->lengths->add($len);
+            $this->types->add($type);
+            $written = $this->buffer->fwrite($value); 
         
-        $this->size += $len;
+            $this->size += $len;
+        }
+        
+        return $this;
     }
     
     // Insert a new item into the array at a given index anywhere up to the end of the array.
@@ -156,11 +161,11 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         $count = $this->count();
         
-        if (! var_is_stringable($newVal))
-            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
+        if ($newVal === null or $newVal === '')
+            throw new \InvalidArgumentException('Null or empty string values are accepted.');
         
         else if ($index > $count-1 or $index < 0)
-            throw new \InvalidArgumentException("Index [$index] out of bounds.");
+            throw new \InvalidArgumentException("Index [$index] out of bounds, count [$count].");
         
         if ($index < $count-1)
         {
@@ -205,10 +210,14 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         else if ($index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
         
-        if ($index <= $count-1)
+        if ($index < $count-1)
         {
             $this->delete($index);
             $this->insert($index, $value);
+        }
+        else if ($index == $count-1) {
+            $this->delete($index);
+            $this->add($value);
         }
         else {
             $this->add($value);
@@ -295,11 +304,14 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         $this->indexes->clear();
         $this->lengths->clear();
+        $this->types->clear();
         
         $this->buffer->ftruncate(0);
         $this->buffer->rewind();
         
         $this->size = 0;
+        
+        return $this;
     }
     
 	// Return a new vector containing all indexes.
@@ -539,9 +551,14 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     */
     public function swap(int $index1, int $index2)
     {
-        $val1 = $this->get($index1);
-        $this->set($index1, $this->get($index2));
-        $this->set($index2, $val1);
+        if ($index1 == $index2)
+            throw new \InvalidArgumentException('index 1 and 2 can not be the same.');
+        else if ($index1 > $index2)
+            [$index1, $index2] = [$index2, $index1];
+        
+        $val2 = $this->get($index2);
+        $this->set($index2, $this->get($index1));
+        $this->set($index1, $val2);
         return $this;
     }
     
@@ -584,6 +601,103 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
                 $this->swap($i, $count-1-$i);
         }
         
+        return $this;
+    }
+    
+	/*
+		Compute a sum of the values within the array.
+	*/
+    public function sum()
+	{
+		$sum = 0;
+        foreach ($this as $value)
+            if (is_numeric($value))
+                $sum += $value;
+        return $sum;
+	}
+	
+	/*
+		Compute the average of the values within the array.
+	*/
+    public function avg()
+    {
+        $count = $this->count();
+        return ($count > 0) ? $this->sum() / $count : $count;
+    }
+	
+	/*
+		Return the maximum value present within the array.
+	*/
+    public function max()
+    {
+        $max = 0;
+        foreach ($this as $value)
+            if (is_numeric($value) and $value > $max)
+                $max = $value;
+        return $max;
+    }
+    
+	/*
+		Return the minimum value present within the array.
+	*/
+    public function min()
+    {
+        $min = 0;
+        foreach ($this as $value)
+            if (is_numeric($value) and $value < $min)
+                $min = $value;
+        return $min;
+    }
+    
+	/*
+		Compute the product of the values within the array.
+	*/
+    public function product()
+	{
+		$product = null;
+        foreach ($this as $value)
+        {
+            if (is_numeric($value))
+            {
+                if ($product === null)
+                    $product = $value;
+                else
+                    $product *= $value;
+            }
+        }
+            
+        return $product;
+	}
+
+	/*
+		Compute the variance of values within the array.
+	*/
+	public function variance()
+	{
+        $variance = 0.0;
+        $average = $this->avg();
+
+        foreach ($this as $i)
+        {
+            // sum of squares of differences between 
+            // all numbers and means.
+            if (is_numeric($i))
+                $variance += pow(($i - $average), 2);
+        }
+
+        return $variance;
+	}
+	
+	/*
+		Round all values in the array up or down to the given decimal point precesion.
+	*/
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP)
+    {
+        foreach ($this as $key => $value)
+        {
+            if (is_numeric($value)) 
+                $this[$key] = round($value, $precision, $mode);
+        }
         return $this;
     }
 }
