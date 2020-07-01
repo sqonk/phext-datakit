@@ -624,7 +624,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function max()
     {
-        $max = 0;
+        $max = -PHP_INT_MAX;
         foreach ($this as $value)
             if (is_numeric($value) and $value > $max)
                 $max = $value;
@@ -636,7 +636,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function min()
     {
-        $min = 0;
+        $min = PHP_INT_MAX;
         foreach ($this as $value)
             if (is_numeric($value) and $value < $min)
                 $min = $value;
