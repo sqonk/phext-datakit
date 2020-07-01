@@ -164,34 +164,32 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         if ($newVal === null or $newVal === '')
             throw new \InvalidArgumentException('Null or empty string values are accepted.');
         
-        else if ($index > $count-1 or $index < 0)
+        else if ($index < 0)
             throw new \InvalidArgumentException("Index [$index] out of bounds, count [$count].");
         
-        if ($index < $count-1)
-        {
-            [$newVal, $type] = $this->encode($newVal);
-            $newLen = strlen($newVal);
-            
-            // move everything after the insertion point along by the length of the new value.
-            for ($i = $count-1; $i >= $index; $i--) 
-            {
-                [$val, $length, $pos] = $this->_get($i);
-                $this->buffer->fseek($pos+$newLen);
-                $this->lengths->set($i+1, $length); 
-                $this->types->set($i+1, $this->types->get($i)); 
-                $this->indexes->set($i+1, $pos+$newLen);
-                $this->buffer->fwrite($val);
-            }
-            $this->size += $newLen;
-            
-            $this->buffer->fseek($this->indexes->get($index));
-            $this->lengths->set($index, $newLen);
-            $this->types->set($index, $type);
-            $this->buffer->fwrite($newVal); 
-        }
+        else if ($index > $count)
+            $index = $count;
 
-        else
-            $this->add($newVal);
+        [$newVal, $type] = $this->encode($newVal);
+        $newLen = strlen($newVal);
+        
+        // move everything after the insertion point along by the length of the new value.
+        for ($i = $count-1; $i >= $index; $i--) 
+        {
+            [$val, $length, $pos] = $this->_get($i);
+            $this->buffer->fseek($pos+$newLen);
+            $this->lengths->set($i+1, $length); 
+            $this->types->set($i+1, $this->types->get($i)); 
+            $this->indexes->set($i+1, $pos+$newLen);
+            $this->buffer->fwrite($val);
+        }
+        $this->size += $newLen;
+        
+        $this->buffer->fseek($this->indexes->get($index));
+        $this->lengths->set($index, $newLen);
+        $this->types->set($index, $type);
+        $this->buffer->fwrite($newVal); 
+        
         
         return $this;
     }
@@ -551,14 +549,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     */
     public function swap(int $index1, int $index2)
     {
-        if ($index1 == $index2)
-            throw new \InvalidArgumentException('index 1 and 2 can not be the same.');
-        else if ($index1 > $index2)
-            [$index1, $index2] = [$index2, $index1];
+        $val1 = $this->get($index1);
+        $this->set($index1, $this->get($index2));
+        $this->set($index2, $val1);
         
-        $val2 = $this->get($index2);
-        $this->set($index2, $this->get($index1));
-        $this->set($index1, $val2);
         return $this;
     }
     
@@ -582,7 +576,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
                     $minMax = $value;
                 }
             }
-        
+            
             $this->swap($selectedIndex, $start);
             $start++;
         }
