@@ -178,9 +178,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         $newLen = strlen($newVal);
         
         // move everything after the insertion point along by the length of the new value.
-        $this->size += $newLen;
         $this->buffer->fseek($this->size);
         $this->buffer->fwrite(str_repeat('0', $newLen));
+        $this->size += $newLen;
         for ($i = $count-1; $i >= $index; $i--) 
         {
             [$val, $length, $pos] = $this->_get($i);
