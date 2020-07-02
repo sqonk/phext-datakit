@@ -157,7 +157,6 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         
             $this->size += $len;
         }
-        
         return $this;
     }
     
@@ -179,6 +178,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         $newLen = strlen($newVal);
         
         // move everything after the insertion point along by the length of the new value.
+        $this->size += $newLen;
+        $this->buffer->fseek($this->size);
+        $this->buffer->fwrite(str_repeat('0', $newLen));
         for ($i = $count-1; $i >= $index; $i--) 
         {
             [$val, $length, $pos] = $this->_get($i);
@@ -188,13 +190,11 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             $this->indexes->set($i+1, $pos+$newLen);
             $this->buffer->fwrite($val);
         }
-        $this->size += $newLen;
         
         $this->buffer->fseek($this->indexes->get($index));
         $this->lengths->set($index, $newLen);
         $this->types->set($index, $type);
-        $this->buffer->fwrite($newVal); 
-        
+        $this->buffer->fwrite($newVal);
         
         return $this;
     }
@@ -583,7 +583,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             }
             
             $this->swap($selectedIndex, $start);
-            $start++;
+            $start++; 
         }
         
         return $this;
