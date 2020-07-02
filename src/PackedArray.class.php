@@ -91,9 +91,14 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             $this->add($item);
     }
     
-    // Print all values to the output buffer.
-    public function print()
+    /* 
+        Print all values to the output buffer. Optionally pass in a
+        title/starting message to print out first.
+    */
+    public function print(string $prependMessage = '')
     {
+        if ($prependMessage)
+            println($prependMessage);
         foreach ($this as $index => $value)
             println("[$index]", $value);
     }
