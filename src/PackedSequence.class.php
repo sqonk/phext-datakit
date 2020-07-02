@@ -31,7 +31,6 @@ namespace sqonk\phext\datakit;
 
     It is particularly useful for large numerical arrays or indexes.
 */
-
 class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 {
     protected $buffer;

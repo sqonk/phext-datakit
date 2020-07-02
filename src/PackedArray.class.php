@@ -18,7 +18,32 @@ namespace sqonk\phext\datakit;
 * permissions and limitations under the License.
 */
 
+/*
+    A fast, memory-efficient, variable-length array of variable-sized elements.
 
+    A PackedArray is sequentially indexed and non-associative.
+
+    Elements within the array may vary in their byte length. NULL values
+    are not accepted.
+
+    Auto-packing and unpacking is available for values going in and out of 
+    the array.
+
+    Auto-Packing works as follows:
+        - integers are either encoded as 32bit/4 byte or 64bit/8-byte sequences.
+        - decimal numbers are always encoded as double precision 8-byte sequences.
+        - strings are input directly.
+        - objects and arrays are serialised.
+
+    This class should not be considered a blanket replacement for native arrays,
+    instead the key is identify when it is a better fit for any particularl problem.
+
+    In general native arrays offer flexibility over memory consumption, where as
+    a packed array priotises memory usage for a little less flexibility. PackedArrays
+    are built to address situations where working with large data sets that challenge
+    the available RAM on the running machine can not be practically solved by other
+    means.
+*/
 class PackedArray implements \ArrayAccess, \Countable, \Iterator
 {
     protected $buffer;
