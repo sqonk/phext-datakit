@@ -24,13 +24,14 @@ namespace sqonk\phext\datakit;
     A PackedArray is sequentially indexed and non-associative.
 
     Elements within the array may vary in their byte length. NULL values
-    are not accepted.
+    are not accepted. Empty strings are internally stored as a 1-byte entry.
 
     Auto-packing and unpacking is available for values going in and out of 
     the array.
 
     Auto-Packing works as follows:
-        - integers are either encoded as 32bit/4 byte or 64bit/8-byte sequences.
+        - integers are either encoded as 32bit/4 byte or 64bit/8-byte sequences, 
+            depending on the hardware being used.
         - decimal numbers are always encoded as double precision 8-byte sequences.
         - strings are input directly.
         - objects and arrays are serialised.
