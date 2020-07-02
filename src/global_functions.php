@@ -42,3 +42,21 @@ function dataframe(?array $data = null, array $headers = null)
 {
 	return new \sqonk\phext\datakit\DataFrame($data, $headers);
 }
+
+/*
+    Create a new PackedArray with an optional set of elements to 
+    prefil the array with.
+*/
+function packedarray(array $data = [])
+{
+    return new \sqonk\phext\datakit\PackedArray($data);
+}
+
+/*
+    Create a new PackedSequence with an optional set of elements to 
+    prefil the array with.
+*/
+function packedsequence(array $data = [])
+{
+    return new \sqonk\phext\datakit\PackedSequence($data);
+}
