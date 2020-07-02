@@ -141,6 +141,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             return [pack('d', $value), 'r'];
         else if (is_array($value) || is_object($value))
             return [serialize($value), 'o'];
+        else if (is_string($value) and $value === '')
+            return [' ', 'e'];
         
         return [$value, 's'];
     }
@@ -153,6 +155,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             return unpack('d', $value)[1];
         else if ($type == 'o')
             return unserialize($value);
+        else if ($type == 'e')
+            return '';
         
         return $value;
     }
@@ -165,8 +169,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         foreach ($values as $value)
         {
-            if ($value === null or $value === '')
-                throw new \InvalidArgumentException('Null or empty string values are accepted.');
+            if ($value === null)
+                throw new \InvalidArgumentException('Null values are not accepted.');
         
             $this->buffer->fseek($this->size);
             
@@ -190,8 +194,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         $count = $this->count();
         
-        if ($newVal === null or $newVal === '')
-            throw new \InvalidArgumentException('Null or empty string values are accepted.');
+        if ($newVal === null)
+            throw new \InvalidArgumentException('Null values are not accepted.');
         
         else if ($index < 0)
             throw new \InvalidArgumentException("Index [$index] out of bounds, count [$count].");
