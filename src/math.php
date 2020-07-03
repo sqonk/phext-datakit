@@ -56,12 +56,10 @@ class math
     static public function standard_deviation(array $a, $sample = false) {
         $n = count($a);
         if ($n === 0) {
-            trigger_error("The array has zero elements", E_USER_WARNING);
-            return false;
+            throw new \Exception('The array has zero elements');
         }
         if ($sample && $n === 1) {
-            trigger_error("The array has only 1 element", E_USER_WARNING);
-            return false;
+            throw new \Exception('The array has only 1 element');
         }
         $mean = array_sum($a) / $n;
         $carry = 0.0;
