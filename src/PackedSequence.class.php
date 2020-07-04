@@ -92,6 +92,11 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         return $this->_iteratorIndex < $this->count();
     }
     
+    public function __clone()
+    {
+        $this->buffer = clone $this->buffer;
+    }
+    
     // ----- Class methods
     
     /*

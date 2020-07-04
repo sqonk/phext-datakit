@@ -103,6 +103,13 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         return $this->_iteratorIndex < $this->count();
     }
     
+    public function __clone()
+    {
+        $this->buffer = clone $this->buffer;
+        $this->indexes = clone $this->indexes;
+        $this->lengths = clone $this->lengths;
+        $this->types = clone $this->types;
+    }
     
     public function __construct(array $startingArray = [])
     {
@@ -649,7 +656,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         foreach ($this as $value)
             if (is_numeric($value))
                 $sum += $value;
-            else if ($key !== null)
+            else if ($key !== null and is_numeric($value[$key]))
                 $sum += $value[$key];
         return $sum;
 	}
@@ -681,7 +688,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         {
             if (is_numeric($value) and $value > $max)
                 $max = $value;
-            else if ($key !== null)
+            else if ($key !== null and is_numeric($value[$key]))
             {
                 $val = $value[$key] ?? $max;
                 if ($val > $max)
@@ -706,7 +713,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         {
             if (is_numeric($value) and $value < $min)
                 $min = $value;
-            else if ($key !== null)
+            else if ($key !== null and is_numeric($value[$key]))
             {
                 $val = $value[$key] ?? $min;
                 if ($val < $min)
@@ -739,10 +746,13 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             else if ($key !== null)
             {
                 $val = $value[$key] ?? null;
-                if ($product === null)
-                    $product = $val;
-                else
-                    $product *= $val;
+                if (is_numeric($val))
+                {
+                    if ($product === null)
+                        $product = $val;
+                    else
+                        $product *= $val;
+                }
             }
         }
             
@@ -767,7 +777,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             // all numbers and means.
             if (is_numeric($i))
                 $variance += pow(($i - $average), 2);
-            else if ($key !== null)
+            else if ($key !== null and is_numeric($value[$key]))
             {
                 $i = $value[$key] ?? null;
                 if ($i !== null)

@@ -72,9 +72,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	public function offsetSet($index, $row)
 	{
 		if ($index === null)
-			$this->data[] = $row;
+			$this->data->add($row);
 		else
-			$this->data[$index] = $row;
+			$this->data->set($index, $row);
 	}
 	
 	public function offsetExists($index)
@@ -119,7 +119,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         NOTE: The provided array must have at least one element/row and
         must also be 2-dimensional in structure.
     */
-    public function __construct(?array $data = null, ?array $headers = null)
+    public function __construct($data = null, ?array $headers = null)
     {
         if ($data === null) {
             if (! defined('EMPTY_DATAFRAMES'))
@@ -130,13 +130,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         else if (! defined('EMPTY_DATAFRAMES') and count($data) == 0 and ($headers === null or count($headers) == 0))
             throw new \LengthException('A DataFrame needs at least one row of data.');
         
-        $this->data = $data;
-        $this->validate();  
+        if ($data instanceof PackedArray)
+            $this->data = $data;
+        else
+            $this->data = new PackedArray($data);
+        
         $this->headers = $headers;
-        if (! $this->headers and count($data) > 1) {
-            $indexes = array_keys($this->data);
-            $this->headers = array_keys($this->data[$indexes[0]]);
-        }
+        if (! $this->headers and count($data) > 1) 
+            $this->headers = array_keys($this->data[0]);
     }
 	
 	// Produce an exact replica of the dataframe.
@@ -157,31 +158,6 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $copy->showGenericIndexes = $this->showGenericIndexes;
         $copy->showHeaders = $this->showHeaders;
         return $copy;
-    }
-    
-	// Internal method.
-    protected function validate()
-    {
-        foreach ($this->data as $index => $item)
-        {
-            if (is_array($item))
-                $this->data[$index] = $this->_encode($item);    
-        }
-    }
-    
-    protected function _encode(string $input)
-    {
-        context::file('php://temp', 'r+b')->do(function($fh) use (&$out, $input) {
-            fputcsv($fh, $input);
-            rewind($fh);
-            $out = rtrim(stream_get_contents($fh));
-        });
-        return $out;
-    }
-    
-    protected function _decode(string $input)
-    {
-        return str_getcsv($input);
     }
     
 	/* 
@@ -250,12 +226,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function column_is_numeric(string $column)
     {
-        $count = 0;
         foreach ($this->data as $row) {
-            $row = $this->_decode($row);
             if (isset($row[$column]) && is_numeric($row[$column]))
-                $count++;
-            if ($count > 1)
                 return true;
         }
         return false;
@@ -289,7 +261,6 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $out = [];
         foreach ($this->data as $index => $row) 
         {
-            $row = $this->_decode($row);
             $r = [];
             if ($includeIndex)
                 $r[] = $index;
@@ -313,7 +284,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 		else
 			$row = $this->data[$index] ?? null;
 		
-		return $this->_decode($row);
+		return $row;
     }
     
 	// Return an array of all the current row indexes.
@@ -335,10 +306,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
     public function head(int $count)
     {
         if ($count >= count($this->data))
-            return $this->clone($this->data);
+            return $this->clone(clone $this->data);
         
-        $slice = array_slice($this->data, 0, $count, true);
-        return $this->clone($slice);
+        return $this->clone($this->data->head($count));
     }
     
 	/* 
@@ -347,12 +317,10 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function tail(int $count)
     {
-        $total = count($this->data);
-        if ($count >= $total)
-            return $this->clone($this->data);
+        if ($count >= count($this->data))
+            return $this->clone(clone $this->data);
         
-        $slice = array_slice($this->data, $total-$count, $count, true);
-        return $this->clone($slice);
+        return $this->clone($this->data->tail($count));
     }
     
 	/* 
@@ -367,8 +335,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         if ($length and $start + $length >= $total-1) 
             $length = null;
 		
-        $slice = array_slice($this->data, $start, $length, true);
-        return $this->clone($slice);
+        return $this->clone($this->data()->slice($start, $length));
     }
     
 	/*
@@ -1187,20 +1154,35 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function std(bool $sample = false, ...$columns)
     {
+        $_std = function($sample, $column) {
+            $n = $this->data->count();
+            if ($n === 0) 
+                throw new \Exception('The array has zero elements');
+        
+            if ($sample && $n === 1) 
+                throw new \Exception('The array has only 1 element');
+        
+            $mean = $this->sum($column) / $n;
+            $carry = 0.0;
+            foreach ($this as $index => $row) { println($index, $row);
+                $d = ((double)$row[$column]) - $mean;
+                $carry += $d * $d;
+            };
+            if ($sample) {
+               --$n;
+            }
+            return sqrt($carry / $n);
+        };
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
-        {
-            $values = $this->values($columns[0]);
-            return math::standard_deviation($values, $sample);
-        }
+            return $_std($sample, $columns[0]);
+        
         else
         {
             $r = [];
-            foreach ($columns as $h) {
-                $values = $this->values($h);
-                $std = math::standard_deviation($values, $sample);
-                $r[$h] = $std;
-            }
+            foreach ($columns as $h) 
+                 $r[$h] = $_std($sample, $h);
+            
             return $this->clone([$r]);
         }
     }
@@ -1219,19 +1201,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
     {
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
-        {
-            return array_sum($this->values($columns[0]));
-        }
+            return $this->data->sum($columns[0]);
+        
         else
         {
             $r = [];
             foreach ($columns as $h) {
                 $values = $this->values($h);
                 if ($this->column_is_numeric($h)) {
-                    $r[$h] = array_sum($values);
+                    $r[$h] = $this->data->sum($h);
                 }
                 else
-                    $r[$h] = (count($values)) ? $values[0] : '';
+                    $r[$h] = $this->data[0][$h] ?? '';
             }
             return $this->clone([$r]);
         }
@@ -1284,17 +1265,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
         {
-            return math::avg($this->values($columns[0]));
+            return $this->data->avg($columns[0]);
         }
         else
         {
             $r = [];
             foreach ($columns as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::avg($values);
-                    $r[$h] = $std;
-                }
+                if ($this->column_is_numeric($h)) 
+                    $r[$h] = $this->data->avg($h);
             }
             return $this->clone([$r]);
         }
@@ -1315,17 +1293,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
         {
-            return max($this->values($columns[0]));
+            return $this->data->max($columns[0]);
         }
         else
         {
             $r = [];
             foreach ($columns as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = max($values);
-                    $r[$h] = $std;
-                }
+                if ($this->column_is_numeric($h)) 
+                    $r[$h] = $this->data->max($h);
             }
             return $this->clone([$r]);
         }
@@ -1346,17 +1321,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
         {
-            return min($this->values($columns[0]));
+            return $this->data->min($columns[0]);
         }
         else
         {
             $r = [];
             foreach ($columns as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = min($values);
-                    $r[$h] = $std;
-                }
+                if ($this->column_is_numeric($h)) 
+                    $r[$h] = $this->data->min($h);
             }
             return $this->clone([$r]);
         }
@@ -1534,17 +1506,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         $columns = $this->determineColumns($columns);
         if (count($columns) == 1)
         {
-            return math::variance($this->values($columns[0]));
+            return $this->data->variance($columns[0]);
         }
         else
         {
             $r = [];
             foreach ($columns as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::variance($values);
-                    $r[$h] = $std;
-                }
+                if ($this->column_is_numeric($h)) 
+                    $r[$h] = $this->data->variance($h);
             }
             return $this->clone([$r]);
         }
@@ -1562,19 +1531,40 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function quartile($quartile, $column = null)
     {
+        $_quartileCalc = function($quartile, $column) {
+            $this->data->sort(ASCENDING, $column);
+            $pos = ($this->count() - 1) * $quartile;
+
+            $base = floor($pos);
+            $rest = $pos - $base;
+            
+            if ( isset($this->data[$base+1][$column]) ) 
+            {
+                $next = $this->data[$base+1][$column];
+                $current = $this->data[$base][$column];
+                if (! is_numeric($next) || ! is_numeric($current))
+                    return 0;
+                return $current + $rest * ($next - $current);
+            } 
+            else 
+            {
+                if (! isset($array[$base][$column]))
+                    return 0;
+                $val = $array[$base][$column];
+                return is_numeric($val) ? $val : 0;
+            }
+        };
         if ($column)
         {
-            return math::quartile($this->values($column), $quartile);
+            return $_quartileCalc($quartile, $column);
         }
         else
         {
             $r = [];
             foreach ($this->headers as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $values = $this->values($h);
-                    $std = math::quartile($values, $quartile);
-                    $r[$h] = $std;
-                }
+                if ($this->column_is_numeric($h)) 
+                    $r[$h] = $_quartileCalc($quartile, $h);
+                
             }
             return $this->clone([$r]);
         }
