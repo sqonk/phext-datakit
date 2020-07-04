@@ -237,10 +237,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     {
         $count = $this->count();
         
-        if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a PackedArray must be capable of being converted to a string.');
-        
-        else if ($index < 0)
+        if ($index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
         
         if ($index < $count-1)
@@ -610,6 +607,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             foreach (sequence($start, $end) as $index)
             {
                 $value = $this->get($index);
+                if ($key !== null)
+                    $value = $value[$key];
                 if (($dir == ASCENDING and $value < $minMax) or ($dir == DESCENDING and $value > $minMax)) {
                     $selectedIndex = $index;
                     $minMax = $value;
@@ -639,53 +638,93 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     
 	/*
 		Compute a sum of the values within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function sum()
+    public function sum($key = null)
 	{
 		$sum = 0;
         foreach ($this as $value)
             if (is_numeric($value))
                 $sum += $value;
+            else if ($key !== null)
+                $sum += $value[$key];
         return $sum;
 	}
 	
 	/*
 		Compute the average of the values within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function avg()
+    public function avg($key = null)
     {
         $count = $this->count();
-        return ($count > 0) ? $this->sum() / $count : $count;
+        return ($count > 0) ? $this->sum($key) / $count : $count;
     }
 	
 	/*
 		Return the maximum value present within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function max()
+    public function max($key = null)
     {
         $max = -PHP_INT_MAX;
         foreach ($this as $value)
+        {
             if (is_numeric($value) and $value > $max)
                 $max = $value;
+            else if ($key !== null)
+            {
+                $val = $value[$key] ?? $max;
+                if ($val > $max)
+                    $max = $val;
+            }
+        }
+                
         return $max;
     }
     
 	/*
 		Return the minimum value present within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function min()
+    public function min($key = null)
     {
         $min = PHP_INT_MAX;
         foreach ($this as $value)
+        {
             if (is_numeric($value) and $value < $min)
                 $min = $value;
+            else if ($key !== null)
+            {
+                $val = $value[$key] ?? $min;
+                if ($val < $min)
+                    $min = $val;
+            }
+        }
+            
         return $min;
     }
     
 	/*
 		Compute the product of the values within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function product()
+    public function product($key = null)
 	{
 		$product = null;
         foreach ($this as $value)
@@ -697,6 +736,14 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
                 else
                     $product *= $value;
             }
+            else if ($key !== null)
+            {
+                $val = $value[$key] ?? null;
+                if ($product === null)
+                    $product = $val;
+                else
+                    $product *= $val;
+            }
         }
             
         return $product;
@@ -704,8 +751,12 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 
 	/*
 		Compute the variance of values within the array.
+    
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-	public function variance()
+	public function variance($key = null)
 	{
         $variance = 0.0;
         $average = $this->avg();
@@ -716,6 +767,12 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             // all numbers and means.
             if (is_numeric($i))
                 $variance += pow(($i - $average), 2);
+            else if ($key !== null)
+            {
+                $i = $value[$key] ?? null;
+                if ($i !== null)
+                    $product += pow(($i - $average), 2);
+            }
         }
 
         return $variance;
