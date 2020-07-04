@@ -29,7 +29,7 @@ use sqonk\phext\context\context;
 	A class for managing and manipulating a series of rows and columns. Arithmetic 
 	operations align on both row and column labels where applicable.	
 */
-final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
+final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 {
     protected $data;
     protected $headers = [];
@@ -37,6 +37,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     protected $indexHeader = '';
     protected $showHeaders = true;
     protected $showGenericIndexes = true;
+    protected $customIndexes;
+    
+    protected $_iteratorIndex = 0;
 	
 	// The same as "new DataFrame()".
 	static public function make(array $data, array $headers = null)
@@ -46,10 +49,25 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// -------- Class Interfaces
 	
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->data());
-	}
+    public function rewind() {
+        $this->_iteratorIndex = 0;
+    }
+
+    public function current() {
+        return $this->row($this->_iteratorIndex);
+    }
+
+    public function key() {
+        return $this->_iteratorIndex;
+    }
+
+    public function next() {
+        ++$this->_iteratorIndex;
+    }
+
+    public function valid() {
+        return $this->_iteratorIndex < $this->count();
+    }
 	
 	public function offsetSet($index, $row)
 	{
