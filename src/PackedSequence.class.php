@@ -540,7 +540,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	/*
 		Sort the array in either ASCENDING or DESCENDING direction.
 	*/
-    public function sort(int $dir = ASCENDING)
+    public function sort(bool $dir = ASCENDING)
     {
         $start = 0;
         $end = $this->count()-1;

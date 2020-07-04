@@ -593,8 +593,12 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     
 	/*
 		Sort the array in either ASCENDING or DESCENDING direction.
+        
+        If $key is provided then the operation will be performed on
+        the corresponding sub value of array element, assuming each
+        element is an array or an object that provides array access.
 	*/
-    public function sort(int $dir = ASCENDING)
+    public function sort(bool $dir = ASCENDING, ?string $key = null)
     {
         $start = 0;
         $end = $this->count()-1;
