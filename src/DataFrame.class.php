@@ -276,10 +276,10 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
     public function row($index)
     {
         if ($index == LAST_ROW) 
-			$row = arrays::last($this->data);
+			$row = $this->data->last();
 		
 		else if ($index == FIRST_ROW)
-			$row = arrays::first($this->data);
+			$row = $this->data->first();
 		
 		else
 			$row = $this->data[$index] ?? null;
@@ -658,6 +658,83 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         }
         return (count($r) == 1) ? $r[0] : $r;
     }
+    
+    
+    protected function columnize($array, array $headers)    
+    {
+        $spacers = [];
+    
+        // get the spacing for the index column.
+        if ($this->customIndexes)
+        {
+            if (is_array($array))
+                $keys = array_keys($array);
+            else if (is_object($array) and method_exists($array, 'keys'))
+                $keys = $array->keys();
+            
+            $longest = 5;
+            foreach ($keys as $k) 
+            {
+                 $len = strlen($k);
+                 if ($len > $longest)
+                     $longest = $len;  
+            }
+        }
+        else
+            $longest = strlen((string)($this->data->count()-1));
+        
+        $m = ["%-$longest".'s'];
+        $spacers['_index'] = $longest;
+    
+        // spacing for all the headers.
+    
+        foreach ($headers as $h) 
+        {
+            $longest = strlen($h);
+            foreach ($array as $row) {
+                $value = $row[$h] ?? '';
+                $len = strlen((string)$value);
+                if ($len > $longest)
+                    $longest = $len;
+            }
+            $m[] = "%$longest".'s'; 
+            $spacers[$h] = $longest;
+        }
+        $mask = implode("\t", $m);
+        
+        $lines = [];
+        if ($this->showHeaders)
+            $lines[] = vsprintf($mask, array_merge([' '], $headers));
+        else {
+            $placeholders = [];
+            foreach ($headers as $h)
+                $placeholders[] = ' ';
+            $lines[] = vsprintf($mask, array_merge([' '], $placeholders));
+        }
+    
+        if ($this->showHeaders)
+        {
+            // print underlines.
+            $out = [str_repeat('_', $spacers['_index'])];
+            foreach ($headers as $h)
+                $out[] = str_repeat('_', $spacers[$h]);
+            $lines[] = vsprintf($mask, $out);
+        }
+        
+        foreach ($array as $k => $v)
+        {
+            $out = [];
+            $out[] = $this->showGenericIndexes || ! is_int($k) ? $k : ' ';
+            foreach ($headers as $h) {
+                $out[] = $array[$k][$h] ?? '';
+            }
+            $lines[] = vsprintf($mask, $out);
+        }
+
+        $str = "\n".implode("\n", $lines);
+    
+        return $str;
+    }
 
 	/*
 		Produce a formatted string, suitable for outputing to
@@ -668,7 +745,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
     public function report(...$columns)
     {
         $columns = $this->determineColumns($columns); 
-        $data = [];
+        $spacers = [];
         
         // filters the transformers to the set applicable for this report.
         $trs = [];
@@ -690,7 +767,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
             $data[$index] = $row;
         }
         
-        return strings::columnize($data, $columns, $this->showHeaders, $this->showGenericIndexes);
+        return $this->columnize($data, $columns);
     }
     
 	/* 
@@ -1164,7 +1241,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         
             $mean = $this->sum($column) / $n;
             $carry = 0.0;
-            foreach ($this as $index => $row) { println($index, $row);
+            foreach ($this as $index => $row) {
                 $d = ((double)$row[$column]) - $mean;
                 $carry += $d * $d;
             };
@@ -1530,28 +1607,28 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 		produced.
 	*/
     public function quartile($quartile, $column = null)
-    {
-        $_quartileCalc = function($quartile, $column) {
+    { 
+        $total = $this->count();
+        
+        $_quartileCalc = function($quartile, $column) use ($total) {
             $this->data->sort(ASCENDING, $column);
-            $pos = ($this->count() - 1) * $quartile;
-
+            $pos = ($total - 1) * $quartile;
             $base = floor($pos);
             $rest = $pos - $base;
             
-            if ( isset($this->data[$base+1][$column]) ) 
+            $next = $this->data[$base+1][$column] ?? null;
+            $current = $this->data[$base][$column] ?? null;
+            if ($next !== null) 
             {
-                $next = $this->data[$base+1][$column];
-                $current = $this->data[$base][$column];
                 if (! is_numeric($next) || ! is_numeric($current))
                     return 0;
                 return $current + $rest * ($next - $current);
             } 
             else 
             {
-                if (! isset($array[$base][$column]))
+                if ($current === null)
                     return 0;
-                $val = $array[$base][$column];
-                return is_numeric($val) ? $val : 0;
+                return is_numeric($current) ? $current : 0;
             }
         };
         if ($column)
@@ -1562,9 +1639,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
         {
             $r = [];
             foreach ($this->headers as $h) {
-                if ($this->column_is_numeric($h)) 
+                if ($this->column_is_numeric($h)) {
                     $r[$h] = $_quartileCalc($quartile, $h);
-                
+                } 
             }
             return $this->clone([$r]);
         }
@@ -1679,14 +1756,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function summary()
     {
-        $count = $this->size()->data();
-        $std = $this->std()->data();
+        $count = $this->size()->data(); 
+        $std = $this->std()->data(); 
         $avg = $this->avg()->data();
-        $min = $this->min()->data();
-        $max = $this->max()->data();
-        $q25 = $this->quartile(0.25)->data();
-        $q50 = $this->quartile(0.5)->data();
-        $q75 = $this->quartile(0.75)->data();
+        $min = $this->min()->data(); 
+        $max = $this->max()->data(); 
+        $q25 = $this->quartile(0.25)->data(); 
+        $q50 = $this->quartile(0.5)->data(); 
+        $q75 = $this->quartile(0.75)->data(); 
         
         $sum = [
             'count' => $count[0],
@@ -1716,10 +1793,10 @@ final class DataFrame implements \ArrayAccess, \Countable, \Iterator
             }
         }
         
-        $str = strings::columnize($data, $sf->headers);
+        $str = $this->columnize($data, $sf->headers);
         
         $shape = $this->shape();
-        $str .= "\n".sprintf("[%s rows x %s columns]", $shape[0], $shape[1]);
+        $str .= "\n\n".sprintf("[%s rows x %s columns]", $shape[0], $shape[1]);
         
         return $str;
     }
