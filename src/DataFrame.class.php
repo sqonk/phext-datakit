@@ -43,6 +43,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	{
 		return new DataFrame($data, $headers);
 	}
+    
+    static public function empty_frames()
+    {
+        return defined('EMPTY_DATAFRAMES') && EMPTY_DATAFRAMES;
+    }
 	
 	// -------- Class Interfaces
 	
@@ -104,12 +109,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function __construct(?array $data = null, ?array $headers = null)
     {
         if ($data === null) {
-            if (! defined('EMPTY_DATAFRAMES'))
+            if (! self::empty_frames())
                 throw new \InvalidArgumentException('Data array can not be null. A valid array must be given.');
             else
                 $data = [];
         }
-        else if (! defined('EMPTY_DATAFRAMES') and count($data) == 0 and ($headers === null or count($headers) == 0))
+        else if (! self::empty_frames() and count($data) == 0 and ($headers === null or count($headers) == 0))
             throw new \LengthException('A DataFrame needs at least one row of data.');
         
         $this->data = $data;
@@ -438,7 +443,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             
         }
         
-        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
+        return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -468,7 +473,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($pass)
                 $filtered[$index] = $row;
         }
-        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
+        return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -490,7 +495,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             if ($callback($row, $index)) 
                 $filtered[$index] = $row;
         }
-        return (count($filtered) > 0 or defined('EMPTY_DATAFRAMES')) ? $this->clone($filtered) : null;
+        return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
 	/*
@@ -944,7 +949,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $data[] = $current;
         }
         
-        return (count($data) > 0 or defined('EMPTY_DATAFRAMES')) ? new DataFrame($data, ['start', 'end']) : null;
+        return (count($data) > 0 or self::empty_frames()) ? new DataFrame($data, ['start', 'end']) : null;
     }
     
 	/*
@@ -989,7 +994,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $last = $current;
             $lastRow = $row;
         }
-        return (count($result) > 0 or defined('EMPTY_DATAFRAMES')) ? new DataFrame($result, ['start', 'end', 'segments']) : null;
+        return (count($result) > 0 or self::empty_frames()) ? new DataFrame($result, ['start', 'end', 'segments']) : null;
     }
     
 	/*
