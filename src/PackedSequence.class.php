@@ -94,7 +94,10 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     
     public function __clone()
     {
-        $this->buffer = clone $this->buffer;
+        $prev = $this->buffer;
+        $prev->rewind();
+        $this->buffer = new \SplFileObject('php://memory', 'rw+');
+        $this->buffer->fwrite($prev->fread($this->size));
     }
     
     // ----- Class methods
