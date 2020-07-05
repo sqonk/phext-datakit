@@ -113,7 +113,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             throw new \LengthException('A DataFrame needs at least one row of data.');
         
         $this->data = $data;
-        $this->validate();  
         $this->headers = $headers;
         if (! $this->headers and count($data) > 1) {
             $indexes = array_keys($this->data);
@@ -139,16 +138,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $copy->showGenericIndexes = $this->showGenericIndexes;
         $copy->showHeaders = $this->showHeaders;
         return $copy;
-    }
-    
-	// Internal method.
-    protected function validate()
-    {
-        foreach ($this->data as $item)
-        {
-            if (! is_array($item))
-                throw new \UnexpectedValueException('Invalid array format. Each item of the provided data array must be a sub-array.');
-        }
     }
     
 	/* 
