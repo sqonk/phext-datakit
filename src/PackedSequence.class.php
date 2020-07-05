@@ -132,8 +132,10 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     }
     
     // Print all values to the output buffer.
-    public function print()
+    public function print(string $prependMessage = '')
     {
+        if ($prependMessage)
+            println($prependMessage);
         foreach ($this as $index => $value)
             println("[$index]", $value);
     }
