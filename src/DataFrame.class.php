@@ -1510,7 +1510,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
-		Compute the value for a given quartile for one or more columns.
+		Compute the value for a given quantile for one or more columns.
 	
 		If no column is specified then the the operation runs over
 		all columns.
@@ -1519,11 +1519,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		returned, otherwise a DataFrame of 1 value per column is
 		produced.
 	*/
-    public function quartile($quartile, $column = null)
+    public function quartile($q, $column = null)
+    {
+        return $this->quantile($q, $column);
+    }
+    
+    public function quantile($q, $column = null)
     {
         if ($column)
         {
-            return math::quartile($this->values($column), $quartile);
+            return math::quantile($this->values($column), $q);
         }
         else
         {
@@ -1531,7 +1536,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             foreach ($this->headers as $h) {
                 if ($this->column_is_numeric($h)) {
                     $values = $this->values($h);
-                    $std = math::quartile($values, $quartile);
+                    $std = math::quantile($values, $q);
                     $r[$h] = $std;
                 }
             }
@@ -1640,7 +1645,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 			- standard deviation for each column
 			- average for each column
 			- minimum value for eachc column 
-			- quartiles for 25%, 50% and 75%
+			- quantiles for 25%, 50% and 75%
 			- maximum value for eachc column 
 	
 		If any of the columns have a display transformer attached, then
@@ -1653,9 +1658,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $avg = $this->avg()->data();
         $min = $this->min()->data();
         $max = $this->max()->data();
-        $q25 = $this->quartile(0.25)->data();
-        $q50 = $this->quartile(0.5)->data();
-        $q75 = $this->quartile(0.75)->data();
+        $q25 = $this->quantile(0.25)->data();
+        $q50 = $this->quantile(0.5)->data();
+        $q75 = $this->quantile(0.75)->data();
         
         $sum = [
             'count' => $count[0],
@@ -2233,7 +2238,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
 	/*
 		Create a box plot chart, which is a singular data point of box-like
-		appearance that illustrates the place of the 25%, 50% and 75% quartiles
+		appearance that illustrates the place of the 25%, 50% and 75% quantiles
 		as well as the outer whiskers.
 	*/
     public function box(...$columns)
@@ -2243,9 +2248,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         
         foreach ($columns as $h)
         {
-            $q25 = $this->quartile(0.25, $h);
-            $q50 = $this->quartile(0.50, $h);
-            $q75 = $this->quartile(0.75, $h);
+            $q25 = $this->quantile(0.25, $h);
+            $q50 = $this->quantile(0.50, $h);
+            $q75 = $this->quantile(0.75, $h);
             $whisker = ($q75-$q25) * 1.5;
             $series = [$q25, $q75, $q25-$whisker, $q75+$whisker, $q50];
             

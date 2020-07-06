@@ -153,11 +153,11 @@ class math
         return $median;
     }
 
-	// Compute the quartile from the given percentile of the given array.
-    static public function quartile(array $array, $quartile) 
+	// Compute the quantile from the given percentile of the given array.
+    static public function quantile(array $array, $quantile) 
     {
         sort($array);
-        $pos = (count($array) - 1) * $quartile;
+        $pos = (count($array) - 1) * $quantile;
 
         $base = floor($pos);
         $rest = $pos - $base;
