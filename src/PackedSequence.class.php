@@ -152,20 +152,24 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         Add a value to the end of the array. If the value is an array or a 
         traversable object then each element of it will instead be added.
     */
-    public function add($value)
+    public function add(...$values)
     {
-        if (is_array($value) or (is_object($value) and $value instanceof \Traversable)) {
-            foreach ($value as $item)
-                $this->add($item);
-        }
-        else if (! var_is_stringable($value))
-            throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
+        foreach ($values as $value)
+        {
+            if (is_array($value) or (is_object($value) and $value instanceof \Traversable)) {
+                foreach ($value as $item)
+                    $this->add($item);
+            }
+            else if (! var_is_stringable($value))
+                throw new \InvalidArgumentException('All values added to a PackedSequence must be capable of being converted to a string.');
         
-        else {
-            $this->buffer->fseek($this->size);
-            $this->write($value);
-            $this->size += $this->itemSize;
+            else {
+                $this->buffer->fseek($this->size);
+                $this->write($value);
+                $this->size += $this->itemSize;
+            }
         }
+        
         
         return $this;
     }
