@@ -19,7 +19,7 @@ namespace sqonk\phext\datakit;
 */
 
 /*
-    A fast, memory-efficient, variable-length array of variable-sized elements.
+    A memory-efficient, variable-length array of variable-sized elements.
 
     A PackedArray is sequentially indexed and non-associative.
 
@@ -39,8 +39,8 @@ namespace sqonk\phext\datakit;
     This class should not be considered a blanket replacement for native arrays,
     instead the key is identify when it is a better fit for any particularl problem.
 
-    In general native arrays offer flexibility over memory consumption, where as
-    a packed array priotises memory usage for a little less flexibility. PackedArrays
+    In general native arrays offer flexibility and speed over memory consumption, where 
+    as a packed array priotises memory usage for a little less flexibility. PackedArrays
     are built to address situations where working with large data sets that challenge
     the available RAM on the running machine can not be practically solved by other
     means.
