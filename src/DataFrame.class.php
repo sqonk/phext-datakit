@@ -119,7 +119,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         
         $this->data = $data;
         $this->headers = $headers;
-        if (! $this->headers and count($data) > 1) {
+        if (! $this->headers and count($data) > 0) {
             $indexes = array_keys($this->data);
             $this->headers = array_keys($this->data[$indexes[0]]);
         }
