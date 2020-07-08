@@ -245,6 +245,31 @@ class Importer
         }
     }
     
+    static public function csv_dataframe(string $filepath, $colSettings = false, int $skipRows = 0)
+    {
+        if (is_array($colSettings)) {
+            $customHeaders = $colSettings;
+            $headersAreFirstRow = false;
+        }
+            
+        
+        else {
+            $customHeaders = null;
+            $headersAreFirstRow = (bool)$colSettings;
+        }
+        
+        $df = null;
+        foreach (self::yield_csv($filepath, $headersAreFirstRow, $customHeaders, $skipRows) as $row)
+        {
+            if ($df)
+                $df->add_row($row);
+            else
+                $df = new DataFrame([$row]);
+        }
+        
+        return $df;
+    }
+    
     /*
         Split a string of raw data down into rows and columns.
     
