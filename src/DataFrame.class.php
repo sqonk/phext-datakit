@@ -209,7 +209,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		Returns TRUE if and only if all values within the given column
 		contain a valid number.
 	*/
-    public function column_is_numeric(string $column)
+    public function column_is_numeric($column)
     {
         $count = 0;
         foreach ($this->data as &$row) {
