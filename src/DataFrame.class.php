@@ -1282,8 +1282,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             foreach ($columns as $h) {
                 if ($this->column_is_numeric($h)) {
                     $values = $this->values($h);
-                    $std = max($values);
-                    $r[$h] = $std;
+                    $r[$h] = max($values);
                 }
             }
             return $this->clone([$r]);
@@ -1308,13 +1307,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             return min($this->values($columns[0]));
         }
         else
-        {
+        { 
             $r = [];
             foreach ($columns as $h) {
                 if ($this->column_is_numeric($h)) {
                     $values = $this->values($h);
-                    $std = min($values);
-                    $r[$h] = $std;
+                    $r[$h] = min($values);
                 }
             }
             return $this->clone([$r]);
