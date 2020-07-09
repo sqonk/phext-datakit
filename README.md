@@ -129,6 +129,18 @@ foreach (import::yield_csv('docs/iris.data', false, $iris_columns) as $row)
     println($row['class'], $row['sepal-length']);
 ```
 
+Import a CSV from file directly into a DataFrame.
+
+```php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+$df = import::csv_dataframe('docs/iris.data', $iris_columns);
+```
+
+
+
 #### Importer - CSV - Data
 
 Import a CSV already loaded into memory and print out some of the columns.
@@ -2148,6 +2160,24 @@ static public function csv_file(?callable $callback, string $filePath, bool $hea
     This method will throw an exception if an error is encountered at any point in the process.
 */
 static public function yield_csv(string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
+
+/*
+	Import a CSV directly into a DataFrame object in the most memory efficient way.
+
+	In the cases were the CSV has no column headers then the supplied array will be in simple
+sequential order.
+
+	@param $filePath      Path or URL to the CSV file.
+	@param $colSettings   When TRUE, will take the first row as the headers. When an array
+                        is supplied then the array will be used as the column headers.
+                        Passing FALSE or any other value will result in sequential column
+                        headers.
+
+	@param $skipRows			Skip over a specified number of rows at the start. Defaults to 0.
+
+	This method will throw an exception if an error is encountered at any point in the process.
+*/
+static public function csv_dataframe(string $filepath, $colSettings = false, int $skipRows = 0)
 
 /*
     Split a string of raw data down into rows and columns.
