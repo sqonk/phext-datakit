@@ -4,8 +4,8 @@
     "type": "library",
     "require": {
 		"php": "^7.3",
-        "sqonk/phext-core": "^0.3.5",
-        "sqonk/phext-plotlib": "^0.3.0",
+        "sqonk/phext-core": "^0.3.7.3",
+        "sqonk/phext-plotlib": "^0.3.2",
         "php-defer/php-defer": "^5.0",
         "sqonk/phext-context": "^0.3.2"
     },
