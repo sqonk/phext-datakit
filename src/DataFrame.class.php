@@ -600,7 +600,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	// Internal functon.
     protected function determineColumns($columns)
     {
-        if (! $columns || (is_array($columns) && count($columns) == 0))
+        if ($columns === null || $columns === '' || (is_array($columns) && count($columns) == 0))
             $columns = $this->headers;
         else if (! is_array($columns))
             $columns = [$columns];
