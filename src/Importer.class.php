@@ -245,6 +245,22 @@ class Importer
         }
     }
     
+    /*
+        Import a CSV directly into a DataFrame object in the most memory efficient way.
+         
+        In the cases were the CSV has no column headers then the supplied array will be in simple
+        sequential order.
+    
+        @param $filePath        Path or URL to the CSV file.
+        @param $colSettings     When TRUE, will take the first row as the headers. When an array
+                                is supplied then the array will be used as the column headers.
+                                Passing FALSE or any other value will result in sequential column
+                                headers.
+
+		@param $skipRows		Skip over a specified number of rows at the start. Defaults to 0.
+        
+        This method will throw an exception if an error is encountered at any point in the process.
+    */
     static public function csv_dataframe(string $filepath, $colSettings = false, int $skipRows = 0)
     {
         if (is_array($colSettings)) {
