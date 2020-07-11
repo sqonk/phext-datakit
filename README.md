@@ -75,7 +75,7 @@ Datakit Features
 		* [Printing data to the console and to string](#dataframe---printing---report)
 		* [Summary](#dataframe---printing---summary)
 		* [Shape](#dataframe---printing---shape)
-		* [Quartiles](#dataframe---printing---quartiles)
+		* [Quantiles](#dataframe---printing---quantiles)
 		* [Presentation Transformers](#dataframe---printing---transformers)
 		* [Out of Bounds detection](#dataframe---printing---oob)
 		* [Data gap detection](#dataframe---printing---gaps)
@@ -90,7 +90,7 @@ Datakit Features
 		* [Flatten](#dataframe---transforms---flatten)
 	- [Plotting Data on Charts](#dataframe---charting)
 		* [Histogram](#dataframe---charting---hist)
-		* [Quartile Box Plot](#dataframe---charting---box)
+		* [Quantile Box Plot](#dataframe---charting---box)
 		* [General chart generation](#dataframe---charting---general)
 	- [Export to CSV](#dataframe---export)
 * [Defined Constants](#defined-constants)
@@ -1298,7 +1298,7 @@ including:
 - standard deviation for each column
 - average for each column
 - minimum value for eachc column 
-- quartiles for 25%, 50% and 75%
+- quantiles for 25%, 50% and 75%
 - maximum value for eachc column 
 
 ``` php
@@ -1340,7 +1340,7 @@ println("$rows rows", "$cols columns");
 // 10 rows 5 columns
 ```
 
-##### Dataframe - Printing - Quartiles
+##### Dataframe - Printing - Quantiles
 
 ``` php
 use sqonk\phext\datakit\Importer as import;
@@ -1349,8 +1349,8 @@ $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class
 
 $dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
 
-// 75% quartile.
-println($dataset->quartile(0.75));
+// 75% quantile.
+println($dataset->quantile(0.75));
 /*
      	sepal-length	sepal-width	petal-length	petal-width
 _____	____________	___________	____________	___________
@@ -1977,7 +1977,7 @@ $dataset->hist(['columns' => $columns])->render(400, 300);
 
 ##### Dataframe - Charting - Box
 
-Render a box plot of quartiles for each column.
+Render a box plot of quantiles for each column.
 
 ``` php
 use sqonk\phext\datakit\Importer as import;
@@ -3273,7 +3273,7 @@ public function cumproduct(...$columns);
 public function variance(...$columns);
 
 /*
-    Compute the value for a given quartile for one or more columns.
+    Compute the value for a given quantile for one or more columns.
 
     If no column is specified then the the operation runs over
     all columns.
@@ -3282,7 +3282,7 @@ public function variance(...$columns);
     returned, otherwise a DataFrame of 1 value per column is
     produced.
 */
-public function quartile($quartile, $column = null);
+public function quantile($quantile, $column = null);
 
 /*
     Round all values in the DataFrame up or down to the given
@@ -3311,7 +3311,7 @@ public function correlation(string $method, array $columns = null, bool $runByCo
         - standard deviation for each column
         - average for each column
         - minimum value for eachc column 
-        - quartiles for 25%, 50% and 75%
+        - quantiles for 25%, 50% and 75%
         - maximum value for eachc column 
 
     If any of the columns have a display transformer attached, then
@@ -3506,7 +3506,7 @@ public function stock(string $openP, string $closeP, string $lowP, string $highP
 
 /*
     Create a box plot chart, which is a singular data point of box-like
-    appearance that illustrates the place of the 25%, 50% and 75% quartiles
+    appearance that illustrates the place of the 25%, 50% and 75% quantiles
     as well as the outer whiskers.
 */
 public function box(...$columns);
