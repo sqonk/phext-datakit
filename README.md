@@ -896,7 +896,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 // First 5 rows
 println($dataset->head(5));
@@ -964,7 +964,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 
 // reset the indexes on a subset of the original frame.
@@ -1158,7 +1158,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 $dataset->print();
 /*
@@ -1203,7 +1203,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 
 // Get the first row.
@@ -1253,7 +1253,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 // Print the whole frame.
 $dataset->print();
@@ -1306,7 +1306,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 // Print the whole frame.
 println($dataset->summary());
@@ -1332,7 +1332,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 // Print the whole frame.
 [$rows, $cols] = $dataset->shape();
@@ -1347,7 +1347,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 // 75% quantile.
 println($dataset->quantile(0.75));
@@ -1410,7 +1410,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 $dataset->print('sepal-length');
 /*
@@ -1486,7 +1486,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(10);
 
 // Absolute values..
 println($dataset->abs(null, true));
@@ -1663,7 +1663,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 // Do any of the value match.
 println($dataset->any(4.6, 'sepal-length'));
@@ -1741,7 +1741,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->slice(45, 10);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->slice(45, 10);
 
 
 // Sort by 'class' column, then sepal-length in DESCENDING order.
@@ -1922,7 +1922,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns))->head(3);
+$dataset = import::csv_dataframe('docs/iris.data', $columns)->head(3);
 
 $dataset->print();
 /*
@@ -1970,7 +1970,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 $dataset->hist(['columns' => $columns])->render(400, 300);
 ```
@@ -1984,7 +1984,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 // Acquire the plot instance. 
 $plot = $dataset->box('sepal-length', 'sepal-width', 'petal-length', 'petal-width');
@@ -2041,7 +2041,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 // Acquire the plot instance. 
 $plot = $dataset->plot('line', ['title' => 'test', 'columns' => $columns, 'one' => true]);
@@ -2063,7 +2063,7 @@ use sqonk\phext\datakit\Importer as import;
 
 $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-$dataset = dataframe(import::csv_file(null, 'docs/iris.data', false, $columns));
+$dataset = import::csv_dataframe('docs/iris.data', $columns);
 
 $dataset->export('exported.csv', ['class', 'sepal-length', 'sepal-width']);
 ```
