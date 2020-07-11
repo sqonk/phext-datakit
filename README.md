@@ -56,7 +56,7 @@ Datakit Features
 		* [Sorting](#vector---filtering---sorting)
 		* [Filtering](#vector---filtering---filtering)
 	- [Transforms](#vector---transforms) 	
-		* [Chunking](#vector---transforms---chunking)
+		* [Chunking](#vector---transforms---chunk)
 		* [Implode](#vector---transforms---implode)
 		* [Group By](#vector---transforms---GroupBy)
 		* [Transpose](#vector---transforms---transpose)
