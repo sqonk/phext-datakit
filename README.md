@@ -32,6 +32,8 @@ Method Index
 * [Vector](#vector-methods)
 * [DataFrame](#dataframe-methods)
 * [GroupedDataFrame](#groupeddataframe-methods)
+* [PackedSequence](#packedsequence-methods)
+* [PackedArray](#packedarray-methods)
 
 Datakit Features
 ----------------
@@ -3564,6 +3566,514 @@ public function __construct(array $groups, string $groupedColumn);
 */
 public function combine(bool $keepIndexes = true);
 ```
+
+
+
+### PackedSequence Methods
+
+A memory-efficient, variable-length array of fixed size elements. It is particularly useful for large numerical arrays or indexes.
+
+ A PackedSequence has the following characteristics:
+
+* Is sequentially indexed and non-associative.
+
+* All elements within the array must be the same amount of bytes. NULL values are not accepted.
+
+* Auto-packing and unpacking is available for values going in and out of the array.
+
+
+
+Adheres to interfaces:
+
+* _Stringable_
+* _ArrayAccess_
+* _Countable_
+* _IteratorAggregate_
+
+
+
+```php
+/*
+  $itemSize should be either a string code accepted by PHP's built-in
+  pack() method, or an integer specifying the raw byte size if no
+  packing is required.
+
+  $startingValues is an optional array of starting numbers to add
+  to the array.
+*/
+public function __construct($itemSize, ?array $startingValues = null)
+
+// Return the total number of elements within the array.
+public function count()
+
+// Print all values to the output buffer.
+public function print(string $prependMessage = '')
+
+/* 
+  Add a value to the end of the array. If the value is an array or a 
+  traversable object then each element of it will instead be added.
+*/
+public function add(...$values)
+
+// Insert a new item into the array at a given index anywhere up to the end of the array.
+public function insert(int $index, $value)
+
+/* 
+  Overwrite an existing value with the one provided. If $index is greater than the current
+  count then the value is appended to the end.
+*/
+public function set(int $index, $value)
+
+// Return an item from the array at the given index.
+public function get(int $index)
+
+// Remove an item from the array  at the given index.
+public function delete(int $index)
+
+/* 
+  Pop an item off the end of the array. If $poppedValue is provided 
+  then it is filled with the value that was removed.
+*/
+public function pop(&$poppedValue = null)
+
+/* 
+  Shift an item off the start of the array. If $shiftedItem is provided 
+  then it is filled with the value that was removed.
+*/
+public function shift(&$shiftedItem = null)
+
+// Remove all elements from the array.
+public function clear()
+
+// Return a new vector containing all indexes.
+public function keys()
+
+// Returns TRUE if there are 0 elements in the array, FALSE otherwise.
+public function empty()
+
+// Return the first value in the array.
+public function first()
+
+// Return the last value in the array.
+public function last()
+
+/*
+  Returns TRUE if any of the values within the array are equal to the value
+  provided, FALSE otherwise.
+
+  A callback may be provided as the match to perform more complex testing.
+
+  Callback format: myFunc($value) -> bool
+
+  For basic (non-callback) matches, setting $strict to TRUE will enforce 
+  type-safe comparisons.
+*/
+public function any($match, bool $strict = false)
+
+/*
+  Returns TRUE if all of the values within the array are equal to the value
+  provided, FALSE otherwise.
+
+  A callback may be provided as the match to perform more complex testing.
+
+  Callback format: myFunc($value) -> bool
+
+  For basic (non-callback) matches, setting $strict to TRUE will enforce 
+  type-safe comparisons.
+*/
+public function all($match, bool $strict = false)
+
+/* 
+  Search the array for the given needle (subject). This function is an
+  alias of any().
+*/
+public function contains($needle)
+
+// Determines if the array ends with the needle.
+public function ends_with($needle)
+
+// Determines if the array starts with the needle.
+public function starts_with($needle)
+
+/*
+	Filter the contents of the array using the provided callback. 
+
+  Callback format: myFunc($value, $index) -> bool
+*/
+public function filter(callable $callback)
+
+/*
+Apply a callback function to the array.
+
+Callback format: myFunc($value, $index) -> mixed
+*/
+public function map(callable $callback)
+
+/*
+  Pad the array to the specified length with a value. If $count is positive then 
+  the array is padded on the right, if it's negative then on the left. 
+*/
+public function pad(int $count, $value)
+
+/* 
+  Return a copy of the array only containing the number
+  of rows from the start as specified by $count.
+*/
+public function head(int $count)
+
+/* 
+Return a copy of the array only containing the number
+of rows from the end as specified by $count.
+*/
+public function tail(int $count)
+
+/* 
+Return a copy of the array only containing the the rows
+starting from $start through to the given length.
+*/
+public function slice(int $start, ?int $length = null)
+
+/*
+  Return a copy of the array containing a random subset of the elements. The minimum and 
+  maximum values can be supplied to focus the random sample to a more constrained subset. 
+*/
+public function sample(int $minimum, ?int $maximum = null)
+
+/*
+  Provide a maximum or minimum (or both) constraint for the values in the array.
+
+  If a value exceeds that constraint then it will be set to the constraint.
+
+  If either the lower or upper constraint is not needed then passing in null will 
+  ignore it.
+*/
+public function clip($lower, $upper = null)
+
+/*
+	Swap the positions of 2 values within the array.
+*/
+public function swap(int $index1, int $index2)
+
+/*
+  Sort the array in either ASCENDING or DESCENDING direction.
+*/
+public function sort(bool $dir = ASCENDING)
+
+// Reserve the order of the elements.
+public function reverse()
+
+/*
+  Compute a sum of the values within the array.
+*/
+public function sum()
+
+/*
+  Compute the average of the values within the array.
+*/
+public function avg()
+
+/*
+  Return the maximum value present within the array.
+*/
+public function max()
+
+/*
+Return the minimum value present within the array.
+*/
+public function min()
+
+/*
+  Compute the product of the values within the array.
+*/
+public function product()
+
+
+/*
+  Compute the variance of values within the array.
+*/
+public function variance()
+
+/*
+  Round all values in the array up or down to the given decimal point precesion.
+*/
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP)
+
+```
+
+
+
+### PackedArray Methods
+
+A memory-efficient, variable-length array of variable-sized elements.
+
+A PackedArray has the following characteristics:
+
+* Is sequentially indexed and non-associative.
+
+* Elements within the array may vary in their byte length. NULL values are not accepted. Empty strings are internally stored as a 1-byte entry.
+
+* Auto-packing and unpacking is available for values going in and out of the array.
+
+
+
+Auto-Packing works as follows:
+
+* Integers are either encoded as 32bit/4 byte or 64bit/8-byte sequences, depending on the hardware being used.
+* Decimal numbers are always encoded as double precision 8-byte sequences.
+* Strings are input directly.
+* Objects and arrays are serialised.
+
+
+
+This class should not be considered a blanket replacement for native arrays, instead the key is to identify when it is a better fit for any particular problem.
+
+In general native arrays offer flexibility and speed over memory consumption, where as a packed array prioritises memory usage for less flexibility. PackedArrays are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
+
+It is worth noting that if you have access to the [Ds Extension](https://github.com/php-ds/ext-ds), the native classes provided by it may prove to be a higher performant solution.
+
+Adheres to interfaces:
+
+* _Stringable_
+* _ArrayAccess_
+* _Countable_
+* _IteratorAggregate_
+
+
+
+```php
+/*
+   Create a new PackedArray, optionally pre-filling it with a series of
+   items.
+*/
+public function __construct(array $startingArray = [])
+
+/* 
+  Print all values to the output buffer. Optionally pass in a 
+  title/starting message to print out first.
+*/
+public function print(string $prependMessage = '')
+
+// Return the number of elements within the array.
+public function count()
+
+/* 
+  Add a value to the end of the array. If the value is an array or a 
+  traversable object then it will be serialised prior to being stored.
+*/
+public function add(...$values)
+
+// Insert a new item into the array at a given index anywhere up to the end of the array.
+public function insert(int $index, $newVal)
+
+/* 
+  Overwrite an existing value with the one provided. If $index is greater than the current
+  count then the value is appended to the end.
+*/
+public function set(int $index, $value)
+
+// Return an item from the array at the given index.
+public function get(int $index)
+
+// Remove an item from the array  at the given index.
+public function delete(int $index)
+
+/* 
+    Pop an item off the end of the array. If $poppedValue is provided 
+    then it is filled with the value that was removed.
+*/
+public function pop(&$poppedValue = null)
+
+/* 
+    Shift an item off the start of the array. If $shiftedItem is provided 
+    then it is filled with the value that was removed.
+*/
+public function shift(&$shiftedItem = null)
+
+// Remove all elements from the array.
+public function clear()
+
+// Return a new vector containing all indexes.
+public function keys()
+
+// Returns TRUE if there are 0 elements in the array, FALSE otherwise.
+public function empty()
+
+// Return the first value in the array.
+public function first()
+
+// Return the last value in the array.
+public function last()
+
+/*
+	Returns TRUE if any of the values within the array are equal to the value
+	provided, FALSE otherwise.
+
+	A callback may be provided as the match to perform more complex testing.
+
+	Callback format: myFunc($value) -> bool
+
+	For basic (non-callback) matches, setting $strict to TRUE will enforce 
+	type-safe comparisons.
+*/
+public function any($match, bool $strict = false)
+
+/*
+	Returns TRUE if all of the values within the array are equal to the value
+	provided, FALSE otherwise.
+
+	A callback may be provided as the match to perform more complex testing.
+
+	Callback format: myFunc($value) -> bool
+
+	For basic (non-callback) matches, setting $strict to TRUE will enforce 
+	type-safe comparisons.
+*/
+public function all($match, bool $strict = false)
+
+/* 
+	Search the array for the given needle (subject). This function is an
+	alias of any().
+*/
+public function contains($needle)
+
+// Determines if the array ends with the needle.
+public function ends_with($needle)
+
+// Determines if the array starts with the needle.
+public function starts_with($needle)
+
+/*
+	Filter the contents of the array using the provided callback. 
+
+    Callback format: myFunc($value, $index) -> bool
+*/
+public function filter(callable $callback)
+
+/*
+	Apply a callback function to the array.
+
+	Callback format: myFunc($value, $index) -> mixed
+*/
+public function map(callable $callback)
+
+/*
+	Pad the array to the specified length with a value. If $count is positive then 
+	the array is padded on the right, if it's negative then on the left. 
+*/
+public function pad(int $count, $value)
+
+/* 
+	Return a copy of the array only containing the number
+	of rows from the start as specified by $count.
+*/
+public function head(int $count)
+
+/* 
+	Return a copy of the array only containing the number
+	of rows from the end as specified by $count.
+*/
+public function tail(int $count)
+
+/* 
+	Return a copy of the array only containing the the rows
+	starting from $start through to the given length.
+*/
+public function slice(int $start, ?int $length = null)
+
+/*
+	Return a copy of the array containing a random subset of the elements. The minimum and 
+	maximum values can be supplied to focus the random sample to a more constrained subset. 
+*/
+public function sample(int $minimum, ?int $maximum = null)
+
+/*
+	Provide a maximum or minimum (or both) constraint for the values in the array.
+
+	If a value exceeds that constraint then it will be set to the constraint.
+
+	If either the lower or upper constraint is not needed then passing in null will 
+	ignore it.
+*/
+public function clip($lower, $upper = null)
+
+/*
+  Swap the positions of 2 values within the array.
+*/
+public function swap(int $index1, int $index2)
+
+/*
+	Sort the array in either ASCENDING or DESCENDING direction.
+    
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function sort(bool $dir = ASCENDING, ?string $key = null)
+
+// Reserve the order of the elements.
+public function reverse()
+
+/*
+	Compute a sum of the values within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function sum($key = null)
+
+/*
+	Compute the average of the values within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function avg($key = null)
+
+/*
+	Return the maximum value present within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function max($key = null)
+
+/*
+	Return the minimum value present within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function min($key = null)
+
+/*
+	Compute the product of the values within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function product($key = null)
+
+/*
+	Compute the variance of values within the array.
+
+  If $key is provided then the operation will be performed on
+  the corresponding sub value of array element, assuming each
+  element is an array or an object that provides array access.
+*/
+public function variance($key = null)
+
+/*
+	Round all values in the array up or down to the given decimal point precesion.
+*/
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP)
+```
+
+
 
 ## Credits
 
