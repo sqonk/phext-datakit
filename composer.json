@@ -23,6 +23,8 @@
 			"src/math.php", 
 			"src/SMA.class.php", 
 			"src/EMA.class.php",
+            "src/PackedSequence.class.php",
+            "src/PackedArray.class.php",
 			"src/DOMScraper.class.php",
 			"src/DataFrame.class.php",
 			"src/GroupedDataFrame.class.php",
