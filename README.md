@@ -370,23 +370,23 @@ $ps = new PackedSequence('i', [1,2,3,4,5,6,7,8,9]);
 $ps->head(3)->print("\nhead");
 /*
 head
-[0] 30
-[1] 4
-[2] 5
+[0] 1
+[1] 2
+[2] 3
 */
 
 $ps->tail(3)->print("\ntail");
 /*
 tail
-[0] 6
-[1] 7
-[2] 8
+[0] 7
+[1] 8
+[2] 9
 */
 
 $ps->slice(2, 1)->print("\nslice");
 /*
 slice
-[0] 5
+[0] 3
 */
 ```
 
