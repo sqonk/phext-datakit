@@ -46,6 +46,12 @@ Datakit Features
 * [SMA](#sma) Simple Moving Average calculator
 * [EMA](#ema): Exponential Moving Average calculator
 * [DOMScraper](#domscaper): A light weight and unsophisticated web scraper
+* [PackedSequence and PackedArray](#packedsequence-and-packedarray)
+  * [Adding and Removing](#packed-structures---adding-and-removing)
+  * [Head, Tail and Slice](#packed-structures---head-tail-and-slice)
+  * [Calculations](#packed-structures---calculations)
+  * [Map and Filter](#packed-structures---map-and-filter)
+  * [Sorting and Clip](#packed-structures---sorting-and-clip)
 * [Vector](#vector): An object orientated wrapper for native PHP arrays, including functions for basic statistical calculations.
 	- [Array Modification](#vector---array-modification)
 	- [Data Manipulation](#vector---data-manipulation)
@@ -259,6 +265,239 @@ function($tr) {
 	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");
 });
 ```
+
+
+
+### PackedSequence and PackedArray
+
+Both PackedSequence and PackedArray are array structures designed for working in tight memory situations. A full description is available further down in the method reference.
+
+- Use a [PackSequence](#packedsequence-methods) for working a uniform set of elements of the same type and byte size (e.g. all Ints or all floats).
+- Use a [PackedArray](#packedarray-methods) when your dataset has elements that vary in size and/or type.
+
+Both classes have almost identical methods and the examples below can easily be translated between the the two.
+
+#### Packed Structures - Adding and Removing
+
+PackedSequence modification. Note that both PackedArray and PackedSequence adhere to the array
+
+interfaces and can be accessed and modified in the same fashion as a native array.
+
+```php
+use sqonk\phext\datakit\PackedSequence;
+
+$ps = new PackedSequence('i', [1,2,3,4,5,6,7,8,9]);
+$ps->print();
+/*
+[0] 1
+[1] 2
+[2] 3
+[3] 4
+[4] 5
+[5] 6
+[6] 7
+[7] 8
+[8] 9
+*/
+
+$ps->delete(1)->print("\ndelete");
+/*
+delete
+[0] 1
+[1] 3
+[2] 4
+[3] 5
+[4] 6
+[5] 7
+[6] 8
+[7] 9
+*/
+
+$ps->insert(4, 22)->insert(5, 33)->print("\ninsert");
+/*
+insert
+[0] 1
+[1] 3
+[2] 4
+[3] 5
+[4] 22
+[5] 33
+[6] 6
+[7] 7
+[8] 8
+[9] 9
+*/
+
+$ps->pop()->shift()->set(0, 30)->print("\npop shift set");
+/*
+pop shift set
+[0] 30
+[1] 4
+[2] 5
+[3] 22
+[4] 33
+[5] 6
+[6] 7
+[7] 8
+*/
+
+$ps->clear()->add(1,2,3)->print("\nreset");
+/*
+reset
+[0] 1
+[1] 2
+[2] 3
+*/
+```
+
+The same methods exist in PackedArray. The only difference is in the object creation, which can be done as follows:
+
+```php
+use sqonk\phext\datakit\PackedArray;
+
+$pa = new PackedArray([1,2,3,4,5,6,7,8,9]);
+```
+
+
+
+#### Packed Structures - Head, Tail and Slice
+
+```php
+use sqonk\phext\datakit\PackedSequence;
+
+$ps = new PackedSequence('i', [1,2,3,4,5,6,7,8,9]);
+
+$ps->head(3)->print("\nhead");
+/*
+head
+[0] 30
+[1] 4
+[2] 5
+*/
+
+$ps->tail(3)->print("\ntail");
+/*
+tail
+[0] 6
+[1] 7
+[2] 8
+*/
+
+$ps->slice(2, 1)->print("\nslice");
+/*
+slice
+[0] 5
+*/
+```
+
+
+
+#### Packed Structures - Calculations
+
+```php
+use sqonk\phext\datakit\PackedSequence;
+
+$ps = new PackedSequence('i', [1,2,3,4]);
+println('sum:', $ps->sum(), 'avg:', $ps->avg(), 'product:', $ps->product(), 'min:', $ps->min(), 'max:', $ps->max(), 'variance:', $ps->variance());
+/*
+sum: 10 avg: 2.5 product: 24 min: 1 max: 4 variance: 1.25
+*/
+```
+
+
+
+#### Packed Structures - Map and Filter
+
+```php
+use sqonk\phext\datakit\PackedSequence;
+
+$pa = new PackedSequence('i', [1,2,3,4]);
+
+// Add 5 to the value of all elements.
+$pa->map(fn($v) => $v+5)->print();
+/*
+[0] 6
+[1] 7
+[2] 8
+[3] 9
+*/
+
+// Reset and filter out even numbers.
+println("\nfilter");
+$pa->clear()->add(1,2,3,4)->filter(fn($v, $i) => $v % 2)->print();
+/*
+filter
+[0] 1
+[1] 3
+*/
+
+// Check for the occurance of a value.
+println('At least one lement is 3:', $pa->any(3));
+println('All elements are 3:', $pa->all(3));
+/*
+At least one lement is 3: 1
+All elements are 3: 
+*/
+
+// Check value of first element and last element
+println('starts with 3', $pa->starts_with(1), 'ends with 4:', $pa->ends_with(4));
+/*
+starts with 3 1 ends with 4: 1
+*/
+```
+
+
+
+#### Packed Structures - Sorting and Clip
+
+```php
+use sqonk\phext\datakit\PackedArray;
+
+$ps = new PackedArray(['john', 'sarah', 'derek', 'cameron']);
+$ps->print();
+/*
+[0] john
+[1] sarah
+[2] derek
+[3] cameron
+*/
+
+// Sort in ascending order.
+$ps->sort()->print("\nsorted");
+/*
+sorted
+[0] cameron
+[1] derek
+[2] john
+[3] sarah
+*/
+
+// Sort in descending order.
+$ps->sort(DESCENDING)->print("\nsorted reversed");
+/*
+sorted reversed
+[0] sarah
+[1] john
+[2] derek
+[3] cameron
+*/
+
+// Clip all values to be within a minimum and maximum value (inclusive).
+$ps->clip(4.5, 5.0)->print("\nclip");
+/*
+clip
+[0] 4.5
+[1] 4.5
+[2] 5
+[3] 4.5
+[4] 4.5
+[5] 4.9
+[6] 5
+[7] 5
+[8] 5
+*/
+```
+
 
 
 ### Vector
@@ -599,7 +838,7 @@ array (
 
 // Variance
 println($data->variance());
-// 48.9
+// 4.89
 
 // Frequency (amount of times each unique value occurs within the vector).
 println($data->frequency());
@@ -1560,9 +1799,9 @@ _____	____________	___________	____________	___________
 // Variance
 println($dataset->variance()->round(2));
 /*
-     	sepal-length	sepal-width	petal-length	petal-width
-_____	____________	___________	____________	___________
-0    	        0.76	       0.85	        0.11	       0.06
+     	sepal-length	sepal-width	petal-length	petal-width	class
+_____	____________	___________	____________	___________	_____
+0    	        0.08	       0.08	        0.01	       0.01	
 */
 
 
