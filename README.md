@@ -2200,6 +2200,8 @@ array (
 */
 ```
 
+
+
 #### Dataframe - Charting
 
 ##### Dataframe - Charting - Hist
@@ -2209,12 +2211,18 @@ Generate a histogram of one or more columns.
 ``` php
 use sqonk\phext\datakit\Importer as import;
 
-$columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+$columns = vector('sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class');
 
-$dataset = import::csv_dataframe('docs/iris.data', $columns);
+$dataset = import::csv_dataframe('../docs/iris.data', $columns->array());
 
-$dataset->hist(['columns' => $columns])->render(400, 300);
+$dataset->hist(['columns' => $columns->pop()->array()])->render(400, 300);
 ```
+
+|                                                              |                                                              |                                                              |                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![Hist Sepal Length](https://sqonk.com/opensource/phext/datakit/docs/images/hist_sepal-length.png) | ![Hist Sepal Width](https://sqonk.com/opensource/phext/datakit/docs/images/hist_sepal-width.png) | ![Hist Petal Length](https://sqonk.com/opensource/phext/datakit/docs/images/hist_petal-length.png) | ![Hist Petal Width](https://sqonk.com/opensource/phext/datakit/docs/images/hist_petal-width.png) |
+
+
 
 ##### Dataframe - Charting - Box
 
@@ -2237,12 +2245,45 @@ $plot = $dataset->box('sepal-length', 'sepal-width', 'petal-length', 'petal-widt
 // Output the chart with the given pixel dimensions. 
 $plot->render(400, 300);
 ```
+|                                                              |                                                              |                                                              |                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![Box Sepal Length](https://sqonk.com/opensource/phext/datakit/docs/images/box_sepal-length.png) | ![Box Sepal Width](https://sqonk.com/opensource/phext/datakit/docs/images/box_sepal-width.png) | ![Box Petal Length](https://sqonk.com/opensource/phext/datakit/docs/images/box_petal-length.png) | ![Box Petal Width](https://sqonk.com/opensource/phext/datakit/docs/images/box_petal-width.png) |
+
+
+
+
+
+
 
 ##### Dataframe - Charting - General
 
 Produce a plot object (from the plotlib module) auto-configured to create an image-based graph of one or more columns.
 
 Creating a plot from a DataFrame requires a plot type (string) and an array of configuration options.
+
+```php
+$columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+$dataset = import::csv_dataframe('../docs/iris.data', $columns);
+
+/* 
+	Acquire a plot instance which will render all 4 numerical columns
+	onto one chart.
+*/
+$plot = $dataset->plot('line', [
+    'columns' => ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'],
+    'one' => true
+]);
+
+// set the subfolder to output the rendered files to.
+// Defaults to 'plots' subfolder, which will be created on output.
+// $plot->output_path('path/to/subfolder');
+
+// Output the chart with the given pixel dimensions. 
+$plot->render();
+```
+
+![Simple Line Plot](https://sqonk.com/opensource/phext/datakit/docs/images/sepal-length_sepal-width_petal-length_petal-width.png)
 
 Configuration Options
 *******
