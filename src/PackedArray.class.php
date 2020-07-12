@@ -785,7 +785,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
             }
         }
 
-        return $variance;
+        return $variance / $this->count();
 	}
 	
 	/*

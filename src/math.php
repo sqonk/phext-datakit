@@ -89,7 +89,7 @@ class math
                 $variance += pow(($i - $average), 2);
         }
 
-        return $variance;
+        return $variance / count($arr);
     }
 
     // Produce the average of an array of numbers.

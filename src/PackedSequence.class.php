@@ -665,7 +665,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
                 $variance += pow(($i - $average), 2);
         }
 
-        return $variance;
+        return $variance / $this->count();
 	}
 	
 	/*
