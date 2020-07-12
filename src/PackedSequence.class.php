@@ -615,9 +615,9 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function max()
     {
-        $max = 0;
+        $max = null;
         foreach ($this as $value)
-            if ($value > $max)
+            if ($value > $max || $max === null)
                 $max = $value;
         return $max;
     }
@@ -627,9 +627,9 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function min()
     {
-        $min = 0;
+        $min = null;
         foreach ($this as $value)
-            if ($value < $min)
+            if ($value < $min || $min === null)
                 $min = $value;
         return $min;
     }

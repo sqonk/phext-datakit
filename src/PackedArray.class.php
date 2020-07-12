@@ -683,15 +683,15 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function max($key = null)
     {
-        $max = -PHP_INT_MAX;
+        $max = null;
         foreach ($this as $value)
         {
-            if (is_numeric($value) and $value > $max)
+            if (is_numeric($value) and ($value > $max || $max === null))
                 $max = $value;
             else if ($key !== null and is_numeric($value[$key]))
             {
                 $val = $value[$key] ?? $max;
-                if ($val > $max)
+                if ($val > $max || $max === null)
                     $max = $val;
             }
         }
@@ -708,15 +708,15 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function min($key = null)
     {
-        $min = PHP_INT_MAX;
+        $min = null;
         foreach ($this as $value)
         {
-            if (is_numeric($value) and $value < $min)
+            if (is_numeric($value) and ($value < $min || $min === null))
                 $min = $value;
             else if ($key !== null and is_numeric($value[$key]))
             {
                 $val = $value[$key] ?? $min;
-                if ($val < $min)
+                if ($val < $min || $min === null)
                     $min = $val;
             }
         }
