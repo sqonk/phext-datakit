@@ -49,8 +49,8 @@ Datakit Features
 * [Vector](#vector): An object orientated wrapper for native PHP arrays, including functions for basic statistical calculations.
 	- [Array Modification](#vector---array-modification)
 	- [Data Manipulation](#vector---data-manipulation)
-		* [Adding and setting elements](#vector---data---manipulation-adding)
-		* [Removing elements](#vector---data-manipulation---removing)
+		* [Adding and setting elements](#vector---data-manipulation---adding-and-setting-elements)
+		* [Removing elements](#vector---data-manipulation---removing-elements)
 		* [Fill, Prefill, Pad](#vector---data-manipulation---fill-prefill-pad)
 		* [Mapping](#vector---data-manipulation---mapping)
 	- [Calculations](#vector---Calculations)
@@ -351,9 +351,9 @@ array (
 */
 ```
 
-#### Vector - Data - Manipulation
+#### Vector - Data Manipulation
 
-##### Vector - Data - Manipulation - Adding and setting elements
+##### Vector - Data Manipulation - Adding and setting elements
 
 ``` php
 $data = vector('Apple', 'Orange', 'Banana', 'Rasberry', 'Kiwi', 'Melon', 'Manderin', 'Pear');
@@ -389,7 +389,7 @@ array (
 */
 ```
 
-##### Vector - Data - Manipulation - Removing elements
+##### Vector - Data Manipulation - Removing elements
 
 ``` php
 $data = vector('Apple', 'Orange', 'Banana', 'Rasberry', 'Kiwi', 'Melon', 'Manderin', 'Pear', '',  '');
@@ -431,7 +431,7 @@ array (
 */
 ```
 
-##### Vector - Data - Manipulation - Fill Prefill Pad
+##### Vector - Data Manipulation - Fill Prefill Pad
 
 ``` php
 $data = vector();
@@ -483,7 +483,7 @@ array (
 */
 ```
 
-##### Vector - Data - Manipulation - Mapping
+##### Vector - Data Manipulation - Mapping
 
 ``` php
 $data = vector(1, 2, 3, 4);
