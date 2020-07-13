@@ -272,7 +272,7 @@ function($tr) {
 
 Both PackedSequence and PackedArray are array structures designed for working in tight memory situations. A full description is available further down in the method reference.
 
-- Use a [PackSequence](#packedsequence-methods) for working a uniform set of elements of the same type and byte size (e.g. all Ints or all floats).
+- Use a [PackSequence](#packedsequence-methods) for working with a uniform set of elements of the same type and byte size (e.g. all Ints or all floats).
 - Use a [PackedArray](#packedarray-methods) when your dataset has elements that vary in size and/or type.
 
 Both classes have almost identical methods and the examples below can easily be translated between the the two.
