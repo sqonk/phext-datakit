@@ -22,7 +22,7 @@ namespace sqonk\phext\datakit;
 * permissions and limitations under the License.
 */
 
-use sqonk\phext\core\arrays;
+use sqonk\phext\core\{arrays,numbers};
 
 /*
 	A broad collection of general mathematical functions. This class acts as a support
@@ -135,6 +135,10 @@ class math
     static public function median(array $arr) 
     {
         $count = count($arr); // total numbers in array
+        if ($count < 1) {
+            trigger_error("The array has zero elements", E_USER_WARNING);
+            return false;
+        }
         $middleval = floor(($count-1) / 2); // find the middle value, or the lowest middle value
         if ($count % 2) 
         { 
@@ -156,6 +160,14 @@ class math
 	// Compute the quantile from the given percentile of the given array.
     static public function quantile(array $array, $quantile) 
     {
+		if (! is_numeric($quantile) or numbers::is_within(0, 1, $quantile))
+			throw new \InvalidArgumentException("The quantile must be a decimal value between 0 and 1. [$quantile] was provided.");
+        
+        if (count($array) < 1) {
+            trigger_error("The array has zero elements", E_USER_WARNING);
+            return false;
+        }
+        
         sort($array);
         $pos = (count($array) - 1) * $quantile;
 
@@ -182,8 +194,12 @@ class math
 	*/
     static public function correlation_pearson(array $x, array $y)
     {   
+        if (count($x) == 0 && count($y) == 0) {
+            return 1.0;
+        }
+        
 		if (count($x) !== count($y))
-			return -1;
+			return -1.0;
 		
 	    $x = array_values($x);
 	    $y = array_values($y); 
@@ -192,7 +208,7 @@ class math
 	    $ys = array_sum($y) / count($y);    
 	    $a = $bx = $by = 0;
 		
-		foreach (sequence($i, count($x)-1) as $i)
+		foreach (sequence(0, count($x)-1) as $i)
 		{
 	        $xr = $x[$i] - $xs;
 	        $yr = $y[$i] - $ys;     
@@ -293,6 +309,10 @@ class math
 	// Compute a correlation using the Spearman method with the two given arrays.
     static public function correlation_spearman(array $data1, array $data2)
     {
+        if (count($data1) == 0 && count($data2) == 0) {
+            return 1;
+        }
+        
         if (count($data1) != count($data2))
             return null; 
         
@@ -323,6 +343,11 @@ class math
 	// Compute the coefficient of an array of distances.
     static public function coefficient(array $distances)
     {
+        if (count($distances) < 1) {
+            trigger_error("The array has zero elements", E_USER_WARNING);
+            return false;
+        }
+        
         $size = count($distances);
         $sum  = 0;
         for ($i = 0; $i < $size; $i++) 
@@ -337,13 +362,13 @@ class math
     static public function distances(array $ranking1, array $ranking2)
     {
         $distances = [];
-        for ($key = 0; $key < count($ranking1); $key++) {
-            $distances[] = pow($ranking1[$key] - $ranking2[$key], 2);
+        foreach (arrays::zip($ranking1, $ranking2) as [$r1, $r2]) {
+            $distances[] = pow($r1 - $r2, 2);
         }
         return $distances;
     }
     
-    static public function ranking(array $data)
+    static protected function ranking(array $data)
     {
         $ranking    = array();
         $prevValue  = '';
@@ -353,29 +378,29 @@ class math
         
         foreach ($data as $key => $value)
         {
-              if ($value == '') 
-                  return null;
+            if ($value == '') 
+                return null;
 
-              if ($value != $prevValue)
-              {
+            if ($value != $prevValue)
+            {
                 if ($eqCount > 0)
                 {
-                  // Go back to set mean as ranking
-                  for ($j=0; $j<=$eqCount; $j++) 
-                      $ranking[$rankingPos - 2 - $j] = $eqSum / ($eqCount+1);
+                    // Go back to set mean as ranking
+                    foreach (sequence(0, $eqCount) as $j)
+                        $ranking[$rankingPos - 2 - $j] = $eqSum / ($eqCount+1);
                 }
                 $eqCount = 0;
-                $eqSum   = $rankingPos;
-              } 
-              else { 
-                  $eqCount++; 
-                  $eqSum += $rankingPos; 
-              }
+                $eqSum = $rankingPos;
+            } 
+            else { 
+                $eqCount++; 
+                $eqSum += $rankingPos; 
+            }
 
-              // Keeping $data after sorting order
-              $ranking[] = $rankingPos;
-              $prevValue = $value;
-              $rankingPos++;
+            // Keeping $data after sorting order
+            $ranking[] = $rankingPos;
+            $prevValue = $value;
+            $rankingPos++;
         }
         
         // Go back to set mean as ranking in case last value has repetitions
