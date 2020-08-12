@@ -40,7 +40,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     protected $packCode;
     
     protected $_iteratorIndex = 0;
-        
+            
     // -------- Class Interfaces
     
 	public function offsetSet($index, $value)
@@ -185,7 +185,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         else if ($index > $count-1 or $index < 0)
             throw new \InvalidArgumentException('Index out of bounds.');
         
-        if ($index < $count-1)
+        if ($index < $count)
         {
             // move everything after the insertion point along by the length of the new value.
             $this->size += $this->itemSize;
@@ -278,9 +278,10 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     */
     public function pop(&$poppedValue = null)
     {
+        if ($this->count() == 0)
+            throw new \Exception('Tried to pop a sequence that has no elements.');
         $idx = $this->count()-1;
-        if ($poppedValue)
-            $poppedValue = $this->get($idx);
+        $poppedValue = $this->get($idx);
         return $this->delete($idx);
     }
     
@@ -290,8 +291,9 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     */
     public function shift(&$shiftedItem = null)
     {
-        if ($shiftedItem)
-            $shiftedItem = $this->get(0);
+        if ($this->count() == 0)
+            throw new \Exception('Tried to shift a sequence that has no elements.');
+        $shiftedItem = $this->get(0);
         return $this->delete(0);
     }
     
@@ -471,6 +473,11 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function tail(int $count)
     {
+        if ($count == 0) {
+            $size = $this->packCode ?? $this->itemSize;
+            return new PackedSequence($size);
+        }
+            
         if ($count >= $this->count()) 
             return $this->slice(0);
             
@@ -487,7 +494,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         if ($start >= $total)
             throw new \InvalidArgumentException('Start of slice is greater than the length of the array.');
 		
-        if (! $length || ($length && $start + $length > $total-1)) 
+        if ($length === null || ($length && $start + $length > $total-1)) 
             $length = $total - $start;
         
         $size = $this->packCode ?? $this->itemSize;
