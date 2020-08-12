@@ -31,6 +31,8 @@ class SMA
 	*/
 	public function __construct(int $maxItems)
 	{
+        if ($maxItems < 1)
+            throw new \InvalidArgumentException("maxItems must be a number greater or equal to 1");
 		$this->values = vector()->constrain($maxItems);
 	}
 	
