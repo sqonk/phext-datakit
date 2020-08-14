@@ -2970,6 +2970,13 @@ public function sample(int $minimum, ?int $maximum = null);
 public function clip($lower, $upper, bool $inplace = false);
 
 /*
+    Reverse the current order of the values within the vector. If $inplace 
+		is TRUE then this method will modify the existing vector instead of 
+		returning a copy.
+*/
+public function reverse(bool $inplace = false)
+      
+/*
     Swap the keys and values within the vector. If $inplace is TRUE then
     this method will modify the existing vector instead of returning a
     copy.

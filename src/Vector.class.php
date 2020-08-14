@@ -881,6 +881,20 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 			});
         }
     }
+    
+    /*
+        Reverse the current order of the values within the vector. If $inplace 
+		is TRUE then this method will modify the existing vector instead of 
+		returning a copy.
+    */
+    public function reverse(bool $inplace = false)
+    {
+        if ($inplace) {
+            $this->_array = array_reverse($this->_array);
+            return $this;
+        }
+        return new Vector(array_reverse($this->_array));
+    }
 	
 	/*
 		Swap the keys and values within the vector. If $inplace is TRUE then
