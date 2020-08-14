@@ -661,6 +661,9 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function pop(int $amount = 1, bool $returnRemoved = false)
     {
+        if ($this->count() == 0)
+            throw new \Exception('Tried to pop a vector that has no elements.');
+        
 		$r = $returnRemoved ? $this->tail($amount) : $this;
 		
 		foreach (sequence(1, $amount) as $i)
@@ -677,6 +680,9 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function shift(int $amount = 1, bool $returnRemoved = false)
     {
+        if ($this->count() == 0)
+            throw new \Exception('Tried to shift a vector that has no elements.');
+        
 		$r = $returnRemoved ? $this->head($amount) : $this;
 		
 		foreach (sequence(1, $amount) as $i)
@@ -732,7 +738,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     
         Refer to the PHP documentation for all possible values on the $flags.
 	*/
-	public function sort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
+	public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR)
 	{
 		if ($this->isSequential) {
 			if ($dir == ASCENDING) 
@@ -754,7 +760,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     
         Refer to the PHP documentation for all possible values on the $flags.
 	*/
-	public function ksort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
+	public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR)
 	{
 		if ($dir == ASCENDING) 
 			ksort($this->_array, $flags);
@@ -818,7 +824,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
         if ($start >= $total)
             throw new \InvalidArgumentException("Start of slice is greater than the length of the array.");
 		
-        if ($length and $start + $length >= $total-1) 
+        if ($length and $start + $length > $total-1) 
             $length = null;
         
         return new Vector(array_slice($this->_array, $start, $length, ! $this->isSequential));
@@ -931,6 +937,8 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function max()
     {
+        if ($this->empty())
+            return null;
         return max($this->_array);
     }
     
@@ -939,6 +947,8 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function min()
     {
+        if ($this->empty())
+            return null;
         return min($this->_array);
     }
 	

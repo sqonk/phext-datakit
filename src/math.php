@@ -78,6 +78,8 @@ class math
 	// Compute the variance of an array of values.
     static public function variance(array $arr)
     {
+        if (count($arr) == 0)
+            return 0.0;
         $variance = 0.0;
         $average = self::avg($arr);
 

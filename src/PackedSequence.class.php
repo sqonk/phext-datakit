@@ -199,8 +199,6 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
             $this->buffer->fseek($index * $this->itemSize);
             $this->write($value); 
         }
-        else
-            $this->add($value);
 
         return $this;
     }
@@ -652,15 +650,21 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
                 $product = $value;
             else
                 $product *= $value;
+        
+        if ($product === null)
+            $product = 1;
             
         return $product;
 	}
 
 	/*
-		Compute the variance of values within the array.
+		Compute the variance of values within the array. If the array is empty
+        FALSE will be returned.
 	*/
 	public function variance()
 	{
+        if ($this->empty())
+            return 0.0;
         $variance = 0.0;
         $average = $this->avg();
 
