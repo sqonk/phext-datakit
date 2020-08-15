@@ -54,7 +54,8 @@ class Importer
     {
         $imported = ($callback) ? null : [];
         $lines = explode("\n", trim($data));
-        if (count($lines) == 0) {
+        $count = count($lines);
+        if ($count == 0 or ($count == 1 && $lines[0] === '')) {
             throw new \LengthException("Provided CSV data is empty.");
         }
         
@@ -325,7 +326,8 @@ class Importer
     static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, $customHeaders = null)
     {
         $lines = explode($lineDelimiter, trim($data));
-        if (count($lines) == 0) 
+        $count = count($lines);
+        if ($count == 0 or ($count == 1 && $lines[0] === '')) 
             throw new \LengthException("Provided data can not be broken apart using the provided line delimiter, or the data is empty.");
         
         if ($headersAreFirstRow || is_array($customHeaders))
