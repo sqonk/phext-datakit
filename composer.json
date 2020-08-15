@@ -31,5 +31,8 @@
 			"src/Vector.class.php",
 			"src/global_functions.php"
 		]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
     }
 }
