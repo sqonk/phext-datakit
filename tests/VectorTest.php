@@ -375,7 +375,7 @@ class VectorTest extends TestCase
     {
         $ps = vector([1]);
         $this->assertSame(false, $ps->empty());
-        $ps = new PackedSequence('i');
+        $ps = vector();
         $this->assertSame(true, $ps->empty());
     }
     
