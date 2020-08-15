@@ -139,47 +139,53 @@ class Importer
     static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
     {
         $data = ($callback) ? null : [];
-		$fh = @fopen($filePath, 'r');
-		if (! is_resource($fh))
-			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
-		
-		@flock($fh, LOCK_SH);
-		defer ($_, function() use ($fh) {
-			@flock($fh, LOCK_UN);
-			@fclose($fh);
-		});
-		
-		// Skip over a specified number of rows at the start. Defaults to 0.
-		if ($skipRows > 0) {
-			foreach (sequence(0, $skipRows) as $i)
-				fgets($fh); 
-		}
-		
-        if ($headersAreFirstRow || is_array($customHeaders))
-            $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
-		else
-			$headers = null;
         
-        while (($row = fgetcsv($fh)) !== false)
+        try
         {
-            if (count($row) == 0 or $row[0] === null)
-                continue; // ignore blank lines.
+    		$fh = @fopen($filePath, 'r');
+    		if (! is_resource($fh))
+    			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
+		
+    		@flock($fh, LOCK_SH);
             
-			if ($headers)
-			{
-	            $out = [];
-	            for ($i = 0; $i < count($row); $i++) {
-	                $h = ($i < count($headers)) ? $headers[$i] : $i;
-	                $out[$h] = $row[$i];
-	            }
-				$row = $out;
-			}
+    		// Skip over a specified number of rows at the start. Defaults to 0.
+    		if ($skipRows > 0) {
+    			foreach (sequence(0, $skipRows) as $i)
+    				fgets($fh); 
+    		}
+		
+            if ($headersAreFirstRow || is_array($customHeaders))
+                $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
+    		else
+    			$headers = null;
+        
+            while (($row = fgetcsv($fh)) !== false)
+            {
+                if (count($row) == 0 or $row[0] === null)
+                    continue; // ignore blank lines.
             
-            if ($callback)
-                $callback($row);
-            else
-                $data[] = $row;
-        }    
+    			if ($headers)
+    			{
+    	            $out = [];
+    	            for ($i = 0; $i < count($row); $i++) {
+    	                $h = ($i < count($headers)) ? $headers[$i] : $i;
+    	                $out[$h] = $row[$i];
+    	            }
+    				$row = $out;
+    			}
+            
+                if ($callback)
+                    $callback($row);
+                else
+                    $data[] = $row;
+            }    
+        }
+        finally {
+            if (isset($fh) && is_resource($fh)) {
+    			@flock($fh, LOCK_UN);
+    			@fclose($fh);
+            }
+        }
 
         return is_array($data) ? $data : true;
     }
@@ -205,43 +211,48 @@ class Importer
     */
     static public function yield_csv(string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
     {
-		$fh = @fopen($filePath, 'r');
-		if (! is_resource($fh))
-			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
-		
-		@flock($fh, LOCK_SH);
-		defer ($_, function() use ($fh) {
-			@flock($fh, LOCK_UN);
-			@fclose($fh);
-		});
-        
-        // Skip over a specified number of rows at the start. Defaults to 0.
-		if ($skipRows > 0) 
-			foreach (sequence(0, $skipRows) as $i)
-				fgets($fh); 
-		
-        if ($headersAreFirstRow || is_array($customHeaders))
-            $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
-        else
-            $headers = null;
-        
-        while (($row = fgetcsv($fh)) !== false)
+        try
         {
-            if (count($row) == 0 or $row[0] === null)
-                continue; // ignore blank lines.
+    		$fh = @fopen($filePath, 'r');
+        
+    		if (! is_resource($fh))
+    			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
+            @flock($fh, LOCK_SH);
             
-			if ($headers)
-			{
-	            $out = [];
-	            foreach (range(0, count($row)-1) as $i) {
-	                $h = ($i < count($headers)) ? $headers[$i] : $i;
-	                $out[$h] = $row[$i];
-	            }
-				$row = $out;
-				unset($out);
-			}
+            // Skip over a specified number of rows at the start. Defaults to 0.
+    		if ($skipRows > 0) 
+    			foreach (sequence(0, $skipRows) as $i)
+    				fgets($fh); 
+		
+            if ($headersAreFirstRow || is_array($customHeaders))
+                $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
+            else
+                $headers = null;
+        
+            while (($row = fgetcsv($fh)) !== false)
+            {
+                if (count($row) == 0 or $row[0] === null)
+                    continue; // ignore blank lines.
             
-            yield $row;
+    			if ($headers)
+    			{
+    	            $out = [];
+    	            foreach (range(0, count($row)-1) as $i) {
+    	                $h = ($i < count($headers)) ? $headers[$i] : $i;
+    	                $out[$h] = $row[$i];
+    	            }
+    				$row = $out;
+    				unset($out);
+    			}
+            
+                yield $row;
+            }
+        }
+        finally {
+            if (isset($fh) && is_resource($fh)) {
+    			@flock($fh, LOCK_UN);
+    			@fclose($fh);
+            }
         }
     }
     

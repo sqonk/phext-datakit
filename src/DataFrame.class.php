@@ -2351,35 +2351,37 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $columns = $this->determineColumns($columns);
 		
-		$fh = fopen($filePath, 'w+');
-		defer ($_, function() use ($fh) {
-			if ($fh)
-				fclose($fh);
-		});
-       	
-        if ($this->showHeaders) {
-            $headers = array_merge([''], $columns);
-            fputcsv($fh, $headers, $delimeter);
-        }
-
-        foreach ($this->data as $index => $row)
+        try
         {
-            $index = ($this->showGenericIndexes || ! is_int($index)) ? $index : '';
-            if ($index && $this->indexHeader && isset($this->transformers[$this->indexHeader])) {
-                $tr = $this->transformers[$this->indexHeader];
-                $index = $tr($index);
+            $fh = fopen($filePath, 'w+');
+            if ($this->showHeaders) {
+                $headers = array_merge([''], $columns);
+                fputcsv($fh, $headers, $delimeter);
             }
-            $out = [$index];
-            foreach ($columns as $h) {
-                $value = $row[$h] ?? '';
-                if ($value && isset($this->transformers[$h])) {
-                    $tr = $this->transformers[$h];
-                    $value = $tr($value);
+
+            foreach ($this->data as $index => $row)
+            {
+                $index = ($this->showGenericIndexes || ! is_int($index)) ? $index : '';
+                if ($index && $this->indexHeader && isset($this->transformers[$this->indexHeader])) {
+                    $tr = $this->transformers[$this->indexHeader];
+                    $index = $tr($index);
                 }
-                $out[] = $value;
-            }
+                $out = [$index];
+                foreach ($columns as $h) {
+                    $value = $row[$h] ?? '';
+                    if ($value && isset($this->transformers[$h])) {
+                        $tr = $this->transformers[$h];
+                        $value = $tr($value);
+                    }
+                    $out[] = $value;
+                }
                 
-            fputcsv($fh, $out, $delimeter);
+                fputcsv($fh, $out, $delimeter);
+            }
+        }
+        finally {
+			if (isset($fh) && is_resource($fh))
+				fclose($fh);
         }
     }
 }  
