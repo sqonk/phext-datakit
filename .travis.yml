@@ -1,0 +1,14 @@
+language: php
+php:
+    - 7.3
+    - 7.4
+    
+env:
+    matrix:
+        - COMPOSER_FLAGS="--prefer-lowest"
+        
+install:
+    - travis_retry composer update ${COMPOSER_FLAGS}
+    
+script:
+  - vendor/bin/phpunit --testdox tests
