@@ -150,7 +150,7 @@ class Importer
             
     		// Skip over a specified number of rows at the start. Defaults to 0.
     		if ($skipRows > 0) {
-    			foreach (sequence(0, $skipRows) as $i)
+    			foreach (sequence(0, $skipRows-1) as $i)
     				fgets($fh); 
     		}
 		
@@ -221,7 +221,7 @@ class Importer
             
             // Skip over a specified number of rows at the start. Defaults to 0.
     		if ($skipRows > 0) 
-    			foreach (sequence(0, $skipRows) as $i)
+    			foreach (sequence(0, $skipRows-1) as $i)
     				fgets($fh); 
 		
             if ($headersAreFirstRow || is_array($customHeaders))
