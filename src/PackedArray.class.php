@@ -319,9 +319,11 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     */
     public function pop(&$poppedValue = null)
     {
+        if ($this->count() == 0)
+            throw new \Exception('Tried to pop an array that has no elements.');
+        
         $idx = $this->count()-1;
-        if ($poppedValue)
-            $poppedValue = $this->get($idx);
+        $poppedValue = $this->get($idx);
         return $this->delete($idx);
     }
     
@@ -331,8 +333,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     */
     public function shift(&$shiftedItem = null)
     {
-        if ($shiftedItem)
-            $shiftedItem = $this->get(0);
+        if ($this->count() == 0)
+            throw new \Exception('Tried to shift an array that has no elements.');
+        
+        $shiftedItem = $this->get(0);
         return $this->delete(0);
     }
     
@@ -503,6 +507,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function head(int $count)
     {
+        if ($count == 0)
+            return new PackedArray;
+        
         if ($count >= $this->count()) 
             return $this->slice(0);
             
@@ -515,6 +522,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function tail(int $count)
     {
+        if ($count == 0)
+            return new PackedArray;
+        
         if ($count >= $this->count()) 
             return $this->slice(0);
             
@@ -527,6 +537,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
     public function slice(int $start, ?int $length = null)
     {
+        if ($length === 0)
+            return new PackedArray;
+        
         $total = $this->count();
         if ($start >= $total)
             throw new \InvalidArgumentException('Start of slice is greater than the length of the array.');
@@ -755,6 +768,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
                 }
             }
         }
+        if ($product === null)
+            $product = 1;
             
         return $product;
 	}
@@ -768,6 +783,8 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	*/
 	public function variance($key = null)
 	{
+        if ($this->empty())
+            return 0.0;
         $variance = 0.0;
         $average = $this->avg();
 
