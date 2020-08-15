@@ -45,6 +45,9 @@ class ImporterTest extends TestCase
         
         $loaded = Importer::csv_data(null, $dataNoHead, false, ['Name', 'Age', 'Height']);
         $this->assertSame($expected, $loaded);
+        
+        $this->expectException(LengthException::class);
+        Importer::csv_data(null, '', true);
     }
     
     public function testCsvFile()
@@ -66,6 +69,9 @@ class ImporterTest extends TestCase
         $headers = ['sepal-length','sepal-width','petal-length','petal-width','class'];
         $loaded = Importer::csv_file(null, __DIR__.'/iris-h.csv', false, $headers, 1);
         $this->assertSame($expected, $loaded);
+        
+        $this->expectException(Exception::class);
+        Importer::csv_file(null, __DIR__.'/nofilehere.csv', true);
     }
     
     public function testYieldCsv()
@@ -86,6 +92,9 @@ class ImporterTest extends TestCase
         foreach (Importer::yield_csv(__DIR__.'/iris-h.csv', false, $headers, 1) as $row)
             $loaded[] = $row;
         $this->assertSame($expected, $loaded);
+        
+        $this->expectException(Exception::class);
+        foreach (Importer::yield_csv(__DIR__.'/nofilehere.csv', false, $headers, 1) as $row);
     }
     
     public function testCsvDataframe()
@@ -102,6 +111,9 @@ class ImporterTest extends TestCase
         
         $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', $headers, 1);
         $this->assertSame($expected, $df->data());
+        
+        $this->expectException(Exception::class);
+        Importer::csv_dataframe(__DIR__.'/nofilehere.csv', true);
     }
     
     public function testDelimiteredData()
@@ -126,5 +138,8 @@ class ImporterTest extends TestCase
             $loaded[] = $row;
         }, $dataNoHead, ',', "\n", false, $headers);
         $this->assertSame($expected, $loaded);
+        
+        $this->expectException(LengthException::class);
+        Importer::delimitered_data(function($row) {}, '', ',');
     }
 }
