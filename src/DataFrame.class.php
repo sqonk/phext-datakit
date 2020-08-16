@@ -72,10 +72,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	public function offsetUnset($index)
 	{
 		$keys = array_keys($this->data());
-		if ($index == LAST_ROW) 
+		if ($index === LAST_ROW) 
 			$index = arrays::last($keys);
 		
-		else if ($index == FIRST_ROW)
+		else if ($index === FIRST_ROW)
 			$index = $keys[0];
 		
 		$this->drop_rows($index, null, true);
@@ -263,15 +263,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	// Return the row at $index.
     public function row($index)
     {
-        if ($index == LAST_ROW) 
-			$row = arrays::last($this->data);
+        if ($index === LAST_ROW)  {
+            $row = arrays::last($this->data);
+        }
 		
-		else if ($index == FIRST_ROW)
-			$row = arrays::first($this->data);
+		else if ($index === FIRST_ROW) {
+		    $row = arrays::first($this->data);
+		}
 		
-		else
-			$row = $this->data[$index] ?? null;
-		
+		else {
+		    $row = $this->data[$index] ?? null;
+		}
+			
 		return $row;
     }
     
