@@ -332,7 +332,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $total = count($this->data);
         if ($start >= $total)
             throw new \InvalidArgumentException("Start of slice is greater than the length of the array.");
-        if ($length and $start + $length >= $total-1) 
+        if ($length and $start + $length > $total-1) 
             $length = null;
 		
         $slice = array_slice($this->data, $start, $length, true);
