@@ -347,15 +347,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	*/
     public function sample(int $minimum, ?int $maximum = null)
     {
-        $count = count($this->data);
-        if ($maximum != null && $maximum < $count)
-            $count = $maximum;
+        $max = count($this->data);
+        if ($maximum !== null && $maximum < $max)
+            $max = $maximum;
         
-        $start = $count+1;
-        while ($count-$start < $minimum)
-            $start = rand(0, $count);
+        $start = $max+1;
+        while ($max-$start < $minimum)
+            $start = rand(0, $max);
         
-        $length = rand($minimum, $count-$start);
+        $length = rand($minimum, $max-$start);
         return $this->slice($start, $length);
     }
     
