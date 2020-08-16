@@ -58,7 +58,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	public function offsetSet($index, $row)
 	{
-		if ($index === null)
+		$keys = array_keys($this->data());
+		if ($index === LAST_ROW) 
+			$index = arrays::last($keys);
+		else if ($index === FIRST_ROW)
+			$index = $keys[0];
+		
+        if ($index === null)
 			$this->data[] = $row;
 		else
 			$this->data[$index] = $row;
