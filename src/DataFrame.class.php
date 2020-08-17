@@ -619,24 +619,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         
         return $columns;
     }
-	
-	/*
-		Return a two-dimensional native array containing the
-		values for the given columns of all rows in the dataframe.	
-	
-		If no columns are specified then all are used.
-	*/
-	public function matrix(...$columns)
-	{
-		$columns = $this->determineColumns($columns);   
-		$matrix = [];
-		
-		foreach ($this->data() as $row) 
-			foreach ($columns as $col)
-				$matrix[] = $row[$col];
-		
-		return $matrix;
-	}
     
 	/* 
 		Return all values for the given column. If $filterNAN is
@@ -1206,38 +1188,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
-		Compute a cumulative sum of one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
-    public function cumsum(...$columns)
-    {
-        $columns = $this->determineColumns($columns);
-        if (count($columns) == 1)
-        {
-            return math::cumulative_sum($this->values($columns[0]));
-        }
-        else
-        {
-            $r = $this->data();
-            foreach ($columns as $h) 
-			{
-                if ($this->column_is_numeric($h)) {
-                    $sum_values = math::cumulative_sum($this->values($h));
-					foreach ($sum_values as $i => $v)
-						$r[$i][$h] = $v;
-                }
-            }
-            return $this->clone($r);
-        }
-    }
-    
-	/*
 		Compute the average of one or more columns.
 	
 		If no column is specified then the the operation runs over
@@ -1329,6 +1279,38 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
+		Compute a cumulative sum of one or more columns.
+	
+		If no column is specified then the the operation runs over
+		all columns.
+	
+		If exactly one column is supplied then a single value is 
+		returned, otherwise a DataFrame of 1 value per column is
+		produced.
+	*/
+    public function cumsum(...$columns)
+    {
+        $columns = $this->determineColumns($columns);
+        if (count($columns) == 1)
+        {
+            return math::cumulative_sum($this->values($columns[0]));
+        }
+        else
+        {
+            $r = $this->data();
+            foreach ($columns as $h) 
+			{
+                if ($this->column_is_numeric($h)) {
+                    $sum_values = math::cumulative_sum($this->values($h));
+					foreach ($sum_values as $i => $v)
+						$r[$i][$h] = $v;
+                }
+            }
+            return $this->clone($r);
+        }
+    }
+    
+	/*
 		Compute the cumulative maximum value for one or more
 		columns.
 	
@@ -1385,6 +1367,37 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 if ($this->column_is_numeric($h)) {
                     $min_values = math::cumulative_min($this->values($h));
 					foreach ($min_values as $i => $v)
+						$r[$i][$h] = $v;
+                }
+            }
+            return $this->clone($r);
+        }
+    }
+    
+	/*
+		Compute the cumulative product for one or more columns.
+	
+		If no column is specified then the the operation runs over
+		all columns.
+	
+		If exactly one column is supplied then a single value is 
+		returned, otherwise a DataFrame of 1 value per column is
+		produced.
+	*/
+    public function cumproduct(...$columns)
+    {
+        $columns = $this->determineColumns($columns);
+        if (count($columns) == 1)
+        {
+            return math::cumulative_prod($this->values($columns[0]));
+        }
+        else
+        {
+            $r = $this->data();
+            foreach ($columns as $h) {
+                if ($this->column_is_numeric($h)) {
+                    $prod_values = math::cumulative_prod($this->values($h));
+					foreach ($prod_values as $i => $v)
 						$r[$i][$h] = $v;
                 }
             }
@@ -1451,37 +1464,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }
             }
             return $this->clone([$r]);
-        }
-    }
-    
-	/*
-		Compute the cumulative product for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
-    public function cumproduct(...$columns)
-    {
-        $columns = $this->determineColumns($columns);
-        if (count($columns) == 1)
-        {
-            return math::cumulative_prod($this->values($columns[0]));
-        }
-        else
-        {
-            $r = $this->data();
-            foreach ($columns as $h) {
-                if ($this->column_is_numeric($h)) {
-                    $prod_values = math::cumulative_prod($this->values($h));
-					foreach ($prod_values as $i => $v)
-						$r[$i][$h] = $v;
-                }
-            }
-            return $this->clone($r);
         }
     }
     
