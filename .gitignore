@@ -3,3 +3,5 @@ plots
 vendor
 Food_Inspections.csv
 iris.data
+tests/test3.php
+tests/test2.php
