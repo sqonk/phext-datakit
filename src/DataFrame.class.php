@@ -1575,43 +1575,29 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	/*
 		Run a correlation over one or more columns to find similarities in values.
 	
-		If $runByColumns is TRUE then the comparison runs horizontally through the
-		desired columns, others the comparison runs vertically.
-	
 		If no column is specified then the the operation runs over
 		all columns.
 	
-		The resulting DataFrame is a matrix of values representing closeness of the
-		ajoining values.
+		The resulting DataFrame is a matrix of values representing the closeness 
+		of the ajoining values.
 	*/
-    public function correlation(string $method, array $columns = null, bool $runByColumns = true)
+    public function correlation(string $method, array $columns = null)
     {
-        $columns = $this->determineColumns($columns);
-        $cnt = count($columns);
-        
+        $columns = $this->determineColumns($columns);        
         $matrix = [];
-        if ($runByColumns)
-        {
-            if ($cnt < 2) {
-                throw new \LengthException("The DataFrame needs to have at least two columns for the requested correlation to work.");
-            }
-            foreach ($columns as $h)
-                $matrix[] = $this->values($h);
+        
+        if (count($columns) < 2) {
+            throw new \LengthException("The DataFrame needs to have at least two columns for the requested correlation to work.");
         }
-        else
-        {
-            if (count($this->data) < 2) {
-                throw new \LengthException("The DataFrame needs to have at least two rows for the requested correlation to work.");
-            }
-            foreach ($this->data as $row) 
-            {
-                $mrow = [];
-                foreach ($columns as $h)
-                    $mrow[] = $row[$h];
-                $matrix[] = $mrow;
-            }
-        } 
-        return new DataFrame($this->correlation_matrix($matrix, $method));
+        foreach ($columns as $h)
+            $matrix[] = $this->values($h);
+        
+        $r = new DataFrame($this->correlation_matrix($matrix, $method));
+        foreach ($columns as $i => $name) {
+            $r->change_header((string)$i, $name, true);
+        }
+        $r->reindex_rows($columns, true);
+        return $r;
     }
     
     // Alias of correlation().
@@ -1644,7 +1630,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 if ($method == 'pearson')
                     $r = math::correlation_pearson($matrix[$outer], $matrix[$inner]);
                 else if ($method == 'spearman')
-                     $r = math::correlation_spearman($matrix[$outer], $matrix[$inner]);
+                    $r = math::correlation_spearman($matrix[$outer], $matrix[$inner]);
                 $result[$outer][$inner] = $r;
                 
                 if ($result[$outer][$inner] == NULL) 
