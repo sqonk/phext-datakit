@@ -375,6 +375,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     unset($row[$column]);
                 }
             }
+            $indexes = array_keys($this->data);
+            $this->headers = array_keys($this->data[$indexes[0]]);
+            if (isset($this->transformers[$column])) {
+                $this->transformers[$newName] = $this->transformers[$column];
+                unset($this->transformers[$column]);
+            }
             return $this;
         }
         else
