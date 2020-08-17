@@ -699,7 +699,9 @@ class DataFrameTest extends TestCase
         ->transform(fn($v) => strtotime($v), 'recorded');
             
         $gaps = $dataset->gaps(5 * 60, 'recorded')
-        	->apply_display_transformer(fn($v) => date('d/m/Y h:i a', $v), 'start', 'end');
+            ->apply_display_transformer(function($v) {
+                return date('d/m/Y h:i a', $v);
+            }, 'start', 'end');
         
         $this->assertEquals(2, count($gaps));
         
