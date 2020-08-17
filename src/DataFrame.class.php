@@ -647,14 +647,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         return (count($r) == 1) ? $r[0] : $r;
     }
-
-	/*
-		Produce a formatted string, suitable for outputing to
-		the commandline or browser, detailing all rows and
-		the desired columns. If no columns are specified then 
-		all columns are used.
-	*/
-    public function report(...$columns)
+    
+    /*
+        Return the data array with all values parsed by any registered 
+        transformers.
+        
+        If you wish to output a report to something else other than the
+        command line then this method will allow you to present the data
+        as desired.
+    */
+    public function report_data(...$columns)
     {
         $columns = $this->determineColumns($columns); 
         $data = [];
@@ -678,6 +680,19 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             
             $data[$index] = $row;
         }
+        
+        return [$data, $columns];
+    }
+
+	/*
+		Produce a formatted string, suitable for outputing to
+		the commandline or browser, detailing all rows and
+		the desired columns. If no columns are specified then 
+		all columns are used.
+	*/
+    public function report(...$columns)
+    {
+        [$data, $columns] = $this->report_data(...$columns);
         
         return strings::columnize($data, $columns, $this->showHeaders, $this->showGenericIndexes);
     }
