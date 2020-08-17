@@ -3287,6 +3287,16 @@ public function matrix(...$columns);
 public function values($columns = null, bool $filterNAN = true);
 
 /*
+    Return the data array with all values parsed by any registered 
+    transformers.
+
+    If you wish to output a report to something else other than the
+    command line then this method will allow you to present the data
+    as desired.
+*/
+public function report_data(...$columns)
+      
+/*
     Produce a formatted string, suitable for outputing to
     the commandline or browser, detailing all rows and
     the desired columns. If no columns are specified then 
