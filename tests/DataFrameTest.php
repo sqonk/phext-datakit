@@ -684,4 +684,48 @@ class DataFrameTest extends TestCase
         $this->assertEquals($exp, $df->frequency('Animal')->values('Frequency'));
     }
     
+    public function testGaps()
+    {
+        $dataset = dataframe([
+            ['recorded' => '2020-04-10 14:00', 'name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['recorded' => '2020-04-10 14:05', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['recorded' => '2020-04-10 14:10', 'name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['recorded' => '2020-04-10 14:20', 'name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-04-10 14:26', 'name' => 'Snail', 'Animal' => 'insect', 'Age' => 0.3, 'size' => 'small'],
+        	['recorded' => '2020-04-10 14:30', 'name' => 'Ant', 'Animal' => 'insect', 'Age' => 0.1, 'size' => 'small'],
+        	['recorded' => '2020-04-10 14:45', 'name' => 'Cow', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-04-10 14:50', 'name' => 'Sheep', 'Animal' => 'mammal', 'Age' => 1, 'size' => 'big']
+        ])
+        ->transform(fn($v) => strtotime($v), 'recorded');
+            
+        $gaps = $dataset->gaps(5 * 60, 'recorded')
+        	->apply_display_transformer(fn($v) => date('d/m/Y h:i a', $v), 'start', 'end');
+        
+        $this->assertEquals(2, count($gaps));
+        
+        $exp = [
+            ['start' => '10/04/2020 02:10 pm', 'end' => '10/04/2020 02:20 pm', 'segments' => 1],
+            ['start' => '10/04/2020 02:30 pm', 'end' => '10/04/2020 02:45 pm', 'segments' => 2]
+        ];
+        [$rdata] = $gaps->report_data();
+        $this->assertEquals($exp, $rdata);
+        
+        
+        // test no gaps.
+        $dataset = dataframe([
+            ['recorded' => '2020-04-10 14:00', 'name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['recorded' => '2020-04-10 14:05', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['recorded' => '2020-04-10 14:10', 'name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['recorded' => '2020-04-10 14:15', 'name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-04-10 14:20', 'name' => 'Snail', 'Animal' => 'insect', 'Age' => 0.3, 'size' => 'small'],
+        	['recorded' => '2020-04-10 14:25', 'name' => 'Ant', 'Animal' => 'insect', 'Age' => 0.1, 'size' => 'small'],
+        	['recorded' => '2020-04-10 14:30', 'name' => 'Cow', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-04-10 14:35', 'name' => 'Sheep', 'Animal' => 'mammal', 'Age' => 1, 'size' => 'big']
+        ])
+        ->transform(fn($v) => strtotime($v), 'recorded');
+            println($dataset);
+        
+        $gaps = $dataset->gaps(5 * 60, 'recorded');
+        $this->assertSame(null, $gaps);
+    }
 }
