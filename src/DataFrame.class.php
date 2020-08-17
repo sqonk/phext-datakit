@@ -1615,9 +1615,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     // Alias of correlation().
-    public function corr(string $method, array $columns = null, bool $runByColumns = true)
+    public function corr(string $method, array $columns = null)
     {
-        return $this->correlation($method, $columns, $runByColumns);
+        return $this->correlation($method, $columns);
     }
     
     // Column and row structure must inversed for this to work.
