@@ -273,7 +273,51 @@ class DataFrameTest extends TestCase
         $this->assertEquals($exp, $df->avg()->round(2)->data());
     }
     
-   public function testMax()
+    public function testAbs()
+    {
+         $data = [
+             ['sepal-length' => '5.1', 'sepal-width' => '-3.5', 'petal-length' => '1.4', 'petal-width' =>  '0.2', 'class' => 'Iris-setosa'],
+             ['sepal-length' => '-7.0', 'sepal-width' => '3.2', 'petal-length' => '4.7', 'petal-width' =>  '-1.4', 'class' => 'Iris-versicolor'],
+             ['sepal-length' => '6.3', 'sepal-width' => '3.3', 'petal-length' => '-6.0', 'petal-width' => '-2.5', 'class' => 'Iris-virginica']
+         ];
+         $df = dataframe($data);
+         
+         // return copy
+         foreach ($df->abs('sepal-length') as $i => $row)
+             $this->assertEquals(abs($data[$i]['sepal-length']), $row['sepal-length']);
+        
+         foreach ($df->abs() as $i => $row) {
+             foreach ($row as $key => $v)
+                 if (is_numeric($row[$key]))
+                     $this->assertEquals(abs($data[$i][$key]), $v);
+         }
+         
+         // in place
+         foreach ($df->abs('sepal-length', true) as $i => $row)
+             $this->assertEquals(abs($data[$i]['sepal-length']), $row['sepal-length']);
+        
+         foreach ($df->abs(null, true) as $i => $row) {
+             foreach ($row as $key => $v)
+                 if (is_numeric($row[$key]))
+                     $this->assertEquals(abs($data[$i][$key]), $v);
+         }
+    }
+    
+    public function testStd()
+    {
+        [$df] = $this->_loadFrame();
+        
+        $this->assertEquals(0.96, round($df->std(true, 'sepal-length'), 2));
+        $this->assertEquals(0.78, round($df->std(false, 'sepal-length'), 2));
+        
+        $exp = [0.96,0.15,2.37,1.15, 0.0];
+        $this->assertEquals($exp, array_values($df->std(true)->round(2)[0]));
+        
+        $exp = [0.78,0.12,1.94,0.94, 0.0];
+        $this->assertEquals($exp, array_values($df->std(false)->round(2)[0]));
+    }
+     
+    public function testMax()
     {
         [$df] = $this->_loadFrame();
         
@@ -608,5 +652,36 @@ class DataFrameTest extends TestCase
         $this->assertSame($expected, $transformed->data());
     }
     
+    public function testTransformer()
+    {
+        [$df] = $this->_loadFrame();
+        
+        $df->apply_display_transformer(function($v) {
+            return floor($v);
+        }, 'sepal-length', 'sepal-width');
+        
+        $exp = [
+            [5.0,3.0,1.4,0.2,'Iris-setosa'],
+            [7.0,3.0,4.7,1.4,'Iris-versicolor'],
+            [6.0,3.0,6.0,2.5,'Iris-virginica']
+        ];
+        [$transformed] = $df->report_data();
+        foreach ($transformed as $i => $row)
+            $this->assertEquals($exp[$i], array_values($row));
+    }
+    
+    public function testFrequency()
+    {
+        $df = dataframe([
+            ['name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big']
+        ]);
+        
+        $exp = [2, 2];
+        
+        $this->assertEquals($exp, $df->frequency('Animal')->values('Frequency'));
+    }
     
 }
