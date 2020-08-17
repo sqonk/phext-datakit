@@ -85,8 +85,10 @@ class MathLibTest extends TestCase
         $r = math::median([1,2,3,4,5,6,7]);
         $this->assertSame(4, $r);
         
-        $r = math::median([1,2,3,4,5,6,]);
+        $r = math::median([1,2,3,4,5,6]);
         $this->assertSame(3.5, $r);
+        
+        $this->assertSame(6.3, math::median([5.1,7.0,6.3]));
         
         $this->expectWarning();
         $this->expectWarningMessage('The array has zero elements');
