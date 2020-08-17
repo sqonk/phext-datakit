@@ -141,6 +141,7 @@ class math
             trigger_error("The array has zero elements", E_USER_WARNING);
             return false;
         }
+        sort($arr, SORT_NUMERIC);
         $middleval = floor(($count-1) / 2); // find the middle value, or the lowest middle value
         if ($count % 2) 
         { 
