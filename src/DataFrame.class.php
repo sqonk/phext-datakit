@@ -1593,6 +1593,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return new DataFrame($this->correlation_matrix($matrix, $method));
     }
     
+    // Alias of correlation().
+    public function corr(string $method, array $columns = null, bool $runByColumns = true)
+    {
+        return $this->correlation($method, $columns, $runByColumns);
+    }
+    
     // Column and row structure must inversed for this to work.
     protected function correlation_matrix(array $matrix, string $method)
     {
