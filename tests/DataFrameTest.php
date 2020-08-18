@@ -726,8 +726,9 @@ class DataFrameTest extends TestCase
         	['recorded' => '2020-04-10 14:30', 'name' => 'Cow', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
         	['recorded' => '2020-04-10 14:35', 'name' => 'Sheep', 'Animal' => 'mammal', 'Age' => 1, 'size' => 'big']
         ])
-        ->transform(fn($v) => strtotime($v), 'recorded');
-            println($dataset);
+        ->transform(function($v) {
+            return strtotime($v);
+        }, 'recorded');
         
         $gaps = $dataset->gaps(5 * 60, 'recorded');
         $this->assertSame(null, $gaps);
