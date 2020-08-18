@@ -696,7 +696,9 @@ class DataFrameTest extends TestCase
         	['recorded' => '2020-04-10 14:45', 'name' => 'Cow', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
         	['recorded' => '2020-04-10 14:50', 'name' => 'Sheep', 'Animal' => 'mammal', 'Age' => 1, 'size' => 'big']
         ])
-        ->transform(fn($v) => strtotime($v), 'recorded');
+            ->transform(function($v) {
+                return strtotime($v);
+            }, 'recorded');
             
         $gaps = $dataset->gaps(5 * 60, 'recorded')
             ->apply_display_transformer(function($v) {
