@@ -893,6 +893,22 @@ class DataFrameTest extends TestCase
         foreach ($oob as $i => $row) {
             $this->assertSame($exp[$i], $row);
         }
+    }
+    
+    public function testTransform()
+    {
+        $df = dataframe([
+            ['n' => 1],
+            ['n' => 2],
+            ['n' => 3]
+        ]);
         
+        $df = $df->transform(function($v) {
+            return $v * 10;
+        }, 'n');
+        
+        $exp = [10,20,30];
+        foreach ($df as $i => $row)
+            $this->assertSame($exp[$i], $row['n']);
     }
 }
