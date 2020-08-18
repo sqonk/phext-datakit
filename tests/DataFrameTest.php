@@ -977,4 +977,30 @@ class DataFrameTest extends TestCase
         $this->assertSame($changed, $re->headers());
         $this->assertSame($changed, $df->change_header('sepal-length', 'SLen', true)->headers());
     }
+    
+    public function testFlattened()
+    {
+        [$df] = $this->_loadFrame();
+        $df->reindex_rows_with_column('class', true);
+        
+        $exp = [
+            ['Iris-setosa',5.1,3.5],
+            ['Iris-versicolor',7.0,3.2],
+            ['Iris-virginica',6.3,3.3]
+        ];
+        $this->assertEquals($exp, $df->flattened(true, 'sepal-length', 'sepal-width'));
+        $exp = [
+            [5.1,3.5],
+            [7.0,3.2],
+            [6.3,3.3]
+        ];
+        $this->assertEquals($exp, $df->flattened(false, 'sepal-length', 'sepal-width'));
+        
+        $exp = [
+            ['Iris-setosa',5.1,3.5,1.4,0.2],
+            ['Iris-versicolor',7.0,3.2,4.7,1.4],
+            ['Iris-virginica',6.3,3.3,6.0,2.5]
+        ];
+        $this->assertEquals($exp, $df->flattened(true));
+    }
 }
