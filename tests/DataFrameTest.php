@@ -967,4 +967,14 @@ class DataFrameTest extends TestCase
         $newKeys = [1,2];
         $this->assertSame([1,2,'c'], $df->reindex_rows($newKeys)->indexes());
     }
+    
+    public function testChangeHeader()
+    {
+        [$df] = $this->_loadFrame();
+        $re = $df->change_header('sepal-length', 'SLen');
+        
+        $changed = ['sepal-width', 'petal-length', 'petal-width', 'class', 'SLen'];
+        $this->assertSame($changed, $re->headers());
+        $this->assertSame($changed, $df->change_header('sepal-length', 'SLen', true)->headers());
+    }
 }
