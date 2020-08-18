@@ -407,6 +407,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		$values = array_values($this->data);
 		if (count($labels) > count($values))
 			$labels = array_slice($labels, 0, count($values));
+        else if (count($labels) < count($values))
+            throw new \LengthException('The array of new indexes provided is less than the total rows in the dataframe.');
 		
 		$data = array_combine($labels, $values);
 		if ($inPlace) {
