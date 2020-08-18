@@ -938,4 +938,20 @@ class DataFrameTest extends TestCase
         $this->assertSame($exp, $dp->values('Age'));
         $this->assertSame(1, count($dp->headers()));    
     }
+    
+    public function testReindexRowsWithColumn()
+    {
+        [$df] = $this->_loadFrame();
+        
+        // copy
+        $re = $df->reindex_rows_with_column('class');
+        $exp = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'];
+        $this->assertSame($exp, $re->indexes());
+        $this->assertSame(['sepal-length', 'sepal-width', 'petal-length', 'petal-width'], $re->headers());
+        
+        // in place
+        $df->reindex_rows_with_column('class', true);
+        $this->assertSame($exp, $df->indexes());
+        $this->assertSame(['sepal-length', 'sepal-width', 'petal-length', 'petal-width'], $df->headers());
+    }
 }
