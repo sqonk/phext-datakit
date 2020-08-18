@@ -72,6 +72,18 @@ class DataFrameTest extends TestCase
         $this->assertSame($row, $df[LAST_ROW]);
     }
     
+    public function testAddColumn()
+    {
+        [$df] = $this->_loadFrame();
+        
+        $df->add_column('Test', function($row, $index) {
+            return 'test';
+        });
+        
+        foreach ($df as $row)
+            $this->assertSame('test', $row['Test']);
+    }
+    
     public function testSetRow()
     {
         [$df, $data] = $this->_loadFrame();
@@ -110,6 +122,21 @@ class DataFrameTest extends TestCase
         $multi = $df->drop_rows(1, 2, true);
         $this->assertSame(1, $multi->count());
         $this->assertSame($data[0], $multi[0]);
+    }
+    
+    public function testRemoveColumns()
+    {
+        [$df] = $this->_loadFrame();
+        
+        // copy
+        $copy = $df->drop_columns(['class']);
+        foreach ($copy as $row)
+            $this->assertSame(false, array_key_exists('Test', $row));
+        
+        // in place
+        $df->drop_columns(['class']);
+        foreach ($df as $row)
+            $this->assertSame(false, array_key_exists('Test', $row));
     }
     
     public function testHead()
@@ -732,5 +759,140 @@ class DataFrameTest extends TestCase
         
         $gaps = $dataset->gaps(5 * 60, 'recorded');
         $this->assertSame(null, $gaps);
+    }
+    
+    public function testDuplicates()
+    {
+        $dataset = dataframe([
+            ['recorded' => '2019-08-20', 'name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['recorded' => '2020-01-08', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['recorded' => '2019-06-27', 'name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['recorded' => '2018-05-01', 'name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-01-08', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+        ]);
+        $dups = $dataset->duplicated();
+        
+        $this->assertSame([[1,4]], $dups);
+    }
+    
+    public function testDropDuplicates()
+    {
+        $dataset = dataframe([
+            ['recorded' => '2019-08-20', 'name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['recorded' => '2020-01-08', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['recorded' => '2019-06-27', 'name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['recorded' => '2018-05-01', 'name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big'],
+        	['recorded' => '2020-01-08', 'name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+        ]);
+        $dropped = $dataset->drop_duplicates();
+        
+        $exp = [
+            ['2019-08-20','Falcon','bird',8,'big'],
+            ['2020-01-08','Pigeon','bird',4,'small'],
+            ['2019-06-27','Goat','mammal',12,'small'],
+            ['2018-05-01','Possum','mammal',2,'big']
+        ];
+        foreach ($dropped as $i => $row)
+            $this->assertSame($exp[$i], array_values($row));
+    }
+    
+    public function testOob()
+    {
+        $data = [
+            ['amps' => 0.3],
+            ['amps' => 0.5],
+            ['amps' => 2.1],
+            ['amps' => 1.1],
+            ['amps' => 1.3],
+            ['amps' => 1.15],
+            ['amps' => 0.95]
+        ];
+        $df = dataframe($data);
+
+        // column
+        $oob = $df->oob(0.8, 1.8, 'amps');
+        $exp = [
+            ['lower' => 0.3, 'upper' => null],
+            ['lower' => 0.5, 'upper' => null],
+            ['lower' => null, 'upper' => 2.1]
+        ];
+        foreach ($oob as $i => $row) {
+            $this->assertEquals($exp[$i]['lower'], $row['lower']);
+            $this->assertEquals($exp[$i]['upper'], $row['upper']);
+        }
+        
+        // all columns
+        $oob = $df->oob(0.8, 1.8);
+        $exp = [
+            ['index' => 0, 'lower' => 0.3, 'upper' => null],
+            ['index' => 1, 'lower' => 0.5, 'upper' => null],
+            ['index' => 2, 'lower' => null, 'upper' => 2.1]
+        ];
+        foreach ($oob as $i => $row) {
+            $this->assertEquals($exp[$i]['index'], $row['index']);
+            $this->assertEquals($exp[$i]['lower'], $row['lower']);
+            $this->assertEquals($exp[$i]['upper'], $row['upper']);
+        }
+    }
+    
+    public function testOobRegions()
+    {
+        $data = [
+            ['amps' => 0.3],
+            ['amps' => 0.5],
+            ['amps' => 0.9],
+            ['amps' => 1.23],
+            ['amps' => 1.25],
+            ['amps' => 1.55],
+            ['amps' => 1.67],
+            ['amps' => 1.77],
+            ['amps' => 1.62],
+            ['amps' => 1.45],
+            ['amps' => 1.69],
+            ['amps' => 1.58],
+            ['amps' => 1.82],
+            ['amps' => 1.87],
+            ['amps' => 2.1],
+            ['amps' => 2.2],
+            ['amps' => 2.8],
+            ['amps' => 1.9],
+            ['amps' => 1.63],
+            ['amps' => 1.1],
+            ['amps' => 1.3],
+            ['amps' => 1.15],
+        ];
+        $df = dataframe($data);
+
+        $upper = $df->oob_region(1.8, OOB_UPPER, 'amps');
+        $lower = $df->oob_region(0.8, OOB_LOWER, 'amps');
+        
+        $this->assertSame(1, $upper->count());
+        $this->assertSame(1, $lower->count());
+        
+        $this->assertSame(12, $upper[0]['start']);
+        $this->assertSame(17, $upper[0]['end']);
+        $this->assertSame(0, $lower[0]['start']);
+        $this->assertSame(1, $lower[0]['end']);
+        
+        $data = [
+              ['amps' => 0.3],
+              ['amps' => 0.1],  
+              ['amps' => 0.0], 
+              ['amps' => 0.0], 
+              ['amps' => -0.2],
+              ['amps' => 0.0],  
+        ];
+        
+        $oob = dataframe($data)->oob_region(0.0, OOB_ALL, 'amps');
+        $exp = [
+            ['start' => 0, 'end' => 1],
+            ['start' => 4, 'end' => 4]
+        ];
+        $this->assertSame(count($exp), count($oob));
+        
+        foreach ($oob as $i => $row) {
+            $this->assertSame($exp[$i], $row);
+        }
+        
     }
 }
