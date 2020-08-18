@@ -869,6 +869,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             
             if ($column !== null) 
             {
+                $cols = ['column', 'lower', 'upper'];
                 if (isset($row[$column]))
                 {
                     $value = $row[$column];
@@ -885,6 +886,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             }
             else 
             {
+                $cols = ['index', 'column', 'lower', 'upper'];
                 $r = [];
                 foreach ($row as $key => $value) 
                 {
@@ -895,6 +897,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                             'lower' => $value,
                             'upper' => null
                         ]; 
+                        $data[] = $r;
                     }
                     else if ($upper !== null && is_numeric($value) && $value > $upper) {
                         $r = [
@@ -903,12 +906,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                             'upper' => $value,
                             'lower' => null,
                         ];
+                        $data[] = $r;
                     }
-                    $data[] = $r;
                 }
             }
         }
-        return new DataFrame($data, ['index', 'column', 'lower', 'upper']);
+        return new DataFrame($data, $cols);
     }
     
 	/*
