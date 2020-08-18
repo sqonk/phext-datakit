@@ -954,4 +954,17 @@ class DataFrameTest extends TestCase
         $this->assertSame($exp, $df->indexes());
         $this->assertSame(['sepal-length', 'sepal-width', 'petal-length', 'petal-width'], $df->headers());
     }
+    
+    public function testReindexRows()
+    {
+        [$df] = $this->_loadFrame();
+        
+        $newKeys = ['a', 'b', 'c'];
+        $this->assertSame($newKeys, $df->reindex_rows($newKeys)->indexes());
+        $this->assertSame($newKeys, $df->reindex_rows($newKeys, true)->indexes());
+        
+        $this->expectException(LengthException::class);
+        $newKeys = [1,2];
+        $this->assertSame([1,2,'c'], $df->reindex_rows($newKeys)->indexes());
+    }
 }
