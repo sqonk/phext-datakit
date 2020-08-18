@@ -911,4 +911,31 @@ class DataFrameTest extends TestCase
         foreach ($df as $i => $row)
             $this->assertSame($exp[$i], $row['n']);
     }
+    
+    public function testPivotDepivot()
+    {
+        $dataset = dataframe([
+            ['name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
+            ['name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
+            ['name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
+            ['name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big']
+        ]);
+        $p = $dataset->pivot('Animal', 'Age');
+        $exp = [
+            'Animal' => ['_index' => 0, '_value' => 'bird'],
+            0 => ['_index' => 1, '_value' => 'bird'],
+            1 => ['_index' => 2, '_value' => 'mammal'],
+            2 => ['_index' => 3, '_value' => 'mammal'],
+            'Age' => ['_index' => 0, '_value' => 8],
+            3 => ['_index' => 1, '_value' => 4],
+            4 => ['_index' => 2, '_value' => 12],
+            5 => ['_index' => 3, '_value' => 2]
+        ];
+        $this->assertSame($exp, $p->data());
+        
+        $dp = $p->depivot('Age');
+        $exp = [8,4,12,2];
+        $this->assertSame($exp, $dp->values('Age'));
+        $this->assertSame(1, count($dp->headers()));    
+    }
 }
