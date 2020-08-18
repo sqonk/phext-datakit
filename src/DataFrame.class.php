@@ -393,7 +393,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     unset($row[$column]);
                 }
             }
-            return $this->clone($data);
+            $copy = $this->clone($data);
+            $indexes = array_keys($data);
+            $headers = array_keys($data[$indexes[0]]);
+            $copy->headers = $headers;
+            if (isset($copy->transformers[$column])) 
+            {
+                $copy->transformers[$newName] = $copy->transformers[$column];
+                unset($copy->transformers[$column]);
+            }
+            return $copy;
         }
     }
     
