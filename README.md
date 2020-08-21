@@ -2,7 +2,7 @@
 
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.3-8892BF.svg)](https://php.net/)
 [![License](https://sqonk.com/opensource/license.svg)](license.txt)
-![Build Status](https://travis-ci.org/sqonk/phext-datakit.svg?branch=master)
+[![Build Status](https://travis-ci.org/sqonk/phext-datakit.svg?branch=master)](https://travis-ci.org/sqonk/phext-datakit)
 
 Datakit is a library that assists with data analysis and research. 
 
@@ -2230,16 +2230,16 @@ Configuration Options
 The `hist` method takes an associative array of configuration options as follows:
 
 - columns: array of column names to use (1 or more)
-        
+  
 - bins: number of bins to use for the histogram. Defaults to 10.
-        
+  
 - cumulative: create a stacked histogram showing the accumulative scale 
         along with the main. Defaults to FALSE
-        
+    
 - title: displayed title of the histogram
-        
+  
 - low: low range bins filter. Defaults to NULL.
-        
+  
 - high: high range bins filter. Defaults to NULL.
         
         
