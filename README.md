@@ -2223,7 +2223,26 @@ $dataset->hist(['columns' => $columns->pop()->array()])->render(400, 300);
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![Hist Sepal Length](https://sqonk.com/opensource/phext/datakit/docs/images/hist_sepal-length.png) | ![Hist Sepal Width](https://sqonk.com/opensource/phext/datakit/docs/images/hist_sepal-width.png) | ![Hist Petal Length](https://sqonk.com/opensource/phext/datakit/docs/images/hist_petal-length.png) | ![Hist Petal Width](https://sqonk.com/opensource/phext/datakit/docs/images/hist_petal-width.png) |
 
+Configuration Options
 
+*******
+
+The `hist` method takes an associative array of configuration options as follows:
+
+- columns: array of column names to use (1 or more)
+        
+- bins: number of bins to use for the histogram. Defaults to 10.
+        
+- cumulative: create a stacked histogram showing the accumulative scale 
+        along with the main. Defaults to FALSE
+        
+- title: displayed title of the histogram
+        
+- low: low range bins filter. Defaults to NULL.
+        
+- high: high range bins filter. Defaults to NULL.
+        
+        
 
 ##### Dataframe - Charting - Box
 
@@ -2284,9 +2303,8 @@ $plot = $dataset->plot('line', [
 $plot->render();
 ```
 
-![Simple Line Plot](https://sqonk.com/opensource/phext/datakit/docs/images/sepal-length_sepal-width_petal-length_petal-width.png)
+![Simple Line Plot](https://sqonk.com/opensource/phext/datakit/docs/images/sepal-length_sepal-width_petal-length_petal-width.png)Configuration Options
 
-Configuration Options
 *******
 
 $options represent the chart configuation.
@@ -3812,8 +3830,17 @@ public function stock(string $openP, string $closeP, string $lowP, string $highP
 public function box(...$columns);
 
 /*
-    Create a bar chart styled in the fashion of a histogram.
-*/
+Create a bar chart styled in the fashion of a histogram.
+
+$options is an array containing the following:
+  - columns: array of column names to use (1 or more)
+  - bins: number of bins to use for the histogram. Defaults to 10.
+  - cumulative: create a stacked histogram showing the accumulative scale 
+      along with the main. Defaults to FALSE
+  - title: displayed title of the histogram
+  - low: low range bins filter. Defaults to NULL.
+  - high: high range bins filter. Defaults to NULL.
+	*/
 public function hist(array $options = []);
 
 /*
