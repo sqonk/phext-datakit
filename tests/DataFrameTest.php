@@ -1022,7 +1022,7 @@ class DataFrameTest extends TestCase
         return $pixels;    
     }
     
-    protected function gdAvailable()
+    /*protected function gdAvailable()
     {
         $exists = function_exists('imagecreatefromstring') && function_exists('imagecreatefrompng');
         if (! $exists) {
@@ -1040,7 +1040,9 @@ class DataFrameTest extends TestCase
 
         $dataset = import::csv_dataframe('docs/iris.data', $columns);
         array_pop($columns);
-        $plot = $dataset->box(...$columns);
+        $params = $columns;
+        $params[] = ['font' => [FF_FONT1, FS_NORMAL, 8]];
+        $plot = $dataset->box(...$params);
         $images = $plot->render(400, 300, false);
         
         foreach ($images as $i => $img)
@@ -1178,6 +1180,5 @@ class DataFrameTest extends TestCase
                 $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for plot'}'");
             }
         }
-        
-    }
+    }*/
 }
