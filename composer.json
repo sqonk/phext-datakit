@@ -5,7 +5,7 @@
     "require": {
 		"php": "^7.3",
         "sqonk/phext-core": "^0.3.9",
-        "sqonk/phext-plotlib": "^0.3.2"
+        "sqonk/phext-plotlib": "^0.4"
     },
 	"keywords": ["data analysis","matrix","matrices","dataframe","vector","pandas"],
     "license": "MIT",
