@@ -2278,6 +2278,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
 	/*
 		Create a bar chart styled in the fashion of a histogram.
+    
+        $options is an array containing the following:
+            - columns: array of column names to use (1 or more)
+            - bins: number of bins to use for the histogram. Defaults to 10.
+            - cumulative: create a stacked histogram showing the accumulative scale 
+                along with the main. Defaults to FALSE
+            - title: displayed title of the histogram
+            - low: low range bins filter. Defaults to NULL.
+            - high: high range bins filter. Defaults to NULL.
 	*/
     public function hist(array $options = [])
     {
@@ -2286,6 +2295,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $dlow = arrays::safe_value($options, 'low', null);
         $dhigh = arrays::safe_value($options, 'high', null);
         $is_cumulative = arrays::safe_value($options, 'cumulative', false);
+        $title = arrays::safe_value($options, 'title', 'hist');
         
         $b_array = null;
         if (is_array($bins)) {
@@ -2293,7 +2303,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $bins = count($b_array)-1;
         }
         
-        $plot = new BulkPlot('hist');
+        $plot = new BulkPlot($title);
         
         foreach ($columns as $h)
         {
