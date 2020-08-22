@@ -1675,15 +1675,8 @@ $dataset->oob(4.5, 5.0, 'sepal-length')->print();
      	      column	lower	upper
 _____	____________	_____	_____
 0    	sepal-length	     	  5.1
-1    	sepal-length	     	     
-2    	sepal-length	     	     
-3    	sepal-length	     	     
-4    	sepal-length	     	     
 5    	sepal-length	     	  5.4
-6    	sepal-length	     	     
-7    	sepal-length	     	     
 8    	sepal-length	  4.4	     
-9    	sepal-length	     
 */
 ```
 
