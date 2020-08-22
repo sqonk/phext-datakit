@@ -788,6 +788,15 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		
 		return $this;
 	}
+    
+    /*
+        Randomise the elements within the vector.
+    */
+    public function shuffle()
+    {
+        shuffle($this->_array);
+        return $this;
+    }
 	
 	/* 
 		Return a copy of the vector only containing the number

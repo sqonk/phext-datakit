@@ -2944,6 +2944,11 @@ public function ksort(int $dir = ASCENDING, int $flags = SORT_REGULAR)
 */
 public function keyed_sort($key);
 
+/*
+	Randomise the elements within the vector.
+*/
+public function shuffle();
+
 /* 
     Return a copy of the vector only containing the number
     of rows from the start as specified by $count.
