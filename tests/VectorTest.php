@@ -237,6 +237,13 @@ class VectorTest extends TestCase
         $this->assertSame($expected, $ps->keyed_sort('name')->array());
     }
     
+    public function testShuffle()
+    {
+        $input = [1,2,3,4,5,6,7,8,9,10,11,12];
+        $ps = vector($input);
+        $this->assertNotSame($input, $ps->shuffle()->array());
+    }
+    
     public function testReverse()
     {
         $input = [1,2,3,4];
