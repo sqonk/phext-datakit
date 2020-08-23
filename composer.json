@@ -7,7 +7,7 @@
         "sqonk/phext-core": "^0.3.9",
         "sqonk/phext-plotlib": "^0.4"
     },
-	"keywords": ["data analysis","matrix","matrices","dataframe","vector","pandas", "csv-import", "packed-array", "packed-sequence", ""],
+	"keywords": ["data analysis","matrix","matrices","dataframe","vector", "csv-import", "packed-array", "packed-sequence", ""],
     "license": "MIT",
     "authors": [
         {
