@@ -244,6 +244,20 @@ class VectorTest extends TestCase
         $this->assertNotSame($input, $ps->shuffle()->array());
     }
     
+    public function testRotateBack()
+    {
+        $input = [1,2,3,4,5,6];
+        $exp = [6,1,2,3,4,5];
+        $this->assertSame($exp, vector($input)->rotate_back()->array());
+    }
+    
+    public function testRotateForward()
+    {
+        $input = [1,2,3,4,5,6];
+        $exp = [2,3,4,5,6,1];
+        $this->assertSame($exp, vector($input)->rotate_forward()->array());
+    }
+    
     public function testReverse()
     {
         $input = [1,2,3,4];

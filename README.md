@@ -2949,6 +2949,28 @@ public function keyed_sort($key);
 */
 public function shuffle();
 
+/*
+  Treat the vector as a rotary collection and move each item back one place
+  in order. The item at the end will be moved to the front.
+
+  This method is designed for sequential arrays, indexes are not preserved.
+*/
+public function rotate_back()
+
+// Alias of rotate_back()
+public function rotate_right()
+  
+/*
+  Treat the vector as a rotary collection and move each item forward one place
+  in order. The item at the front will be moved to the end.
+
+  This method is designed for sequential arrays, indexes are not preserved.
+*/
+public function rotate_forward()
+  
+// Alias of rotate_forward()
+public function rotate_left()
+      
 /* 
     Return a copy of the vector only containing the number
     of rows from the start as specified by $count.

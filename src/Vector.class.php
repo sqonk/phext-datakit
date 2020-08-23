@@ -797,6 +797,44 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
         shuffle($this->_array);
         return $this;
     }
+    
+    /*
+        Treat the vector as a rotary collection and move each item back one place
+        in order. The item at the end will be moved to the front.
+    
+        This method is designed for sequential arrays, indexes are not preserved.
+    */
+    public function rotate_back()
+    {
+        $item = array_pop($this->_array);
+        $this->prepend($item);
+        return $this;
+    }
+    
+    // Alias of rotate_back()
+    public function rotate_right()
+    {
+        return $this->rotate_back();
+    }
+    
+    /*
+        Treat the vector as a rotary collection and move each item forward one place
+        in order. The item at the front will be moved to the end.
+    
+        This method is designed for sequential arrays, indexes are not preserved.
+    */
+    public function rotate_forward()
+    {
+        $item = array_shift($this->_array);
+        $this->add($item);
+        return $this;
+    }
+    
+    // Alias of rotate_forward()
+    public function rotate_left()
+    {
+        return $this->rotate_forward();
+    }
 	
 	/* 
 		Return a copy of the vector only containing the number
