@@ -4,7 +4,7 @@
 [![License](https://sqonk.com/opensource/license.svg)](license.txt)
 [![Build Status](https://travis-ci.org/sqonk/phext-datakit.svg?branch=master)](https://travis-ci.org/sqonk/phext-datakit)
 
-Datakit is a library that assists with data analysis and research. 
+Datakit is a library that assists with data analysis and research. It includes classes for working with tables of data and deriving statistical information, importing those tables from file formats such as CSV, a class wrapper with statistical methods for PHP arrays, as well as memory efficient packed arrays.
 
 It also contains a small set of stand-alone functions and defined constants that import across the global namespace.
 

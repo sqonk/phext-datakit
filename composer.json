@@ -1,13 +1,13 @@
 {
     "name": "sqonk/phext-datakit",
-    "description": "Datakit is a library that assists with data analysis and research.",
+    "description": "Datakit is a library that assists with data analysis and research. It includes classes for working with tables of data and deriving statistical information, importing those tables from file formats such as CSV, a class wrapper with statistical methods for PHP arrays, as well as memory efficient packed arrays.",
     "type": "library",
     "require": {
 		"php": "^7.3",
         "sqonk/phext-core": "^0.3.9",
         "sqonk/phext-plotlib": "^0.4"
     },
-	"keywords": ["data analysis","matrix","matrices","dataframe","vector","pandas"],
+	"keywords": ["data analysis","matrix","matrices","dataframe","vector","pandas", "csv-import", "packed-array", "packed-sequence", ""],
     "license": "MIT",
     "authors": [
         {
