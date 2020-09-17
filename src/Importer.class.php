@@ -61,14 +61,16 @@ class Importer
         
         if ($headersAreFirstRow || is_array($customHeaders))
         {
+            $headers = null;
             if ($headersAreFirstRow) {
                 $headers = str_getcsv($lines[0]);
                 $start = 1;
             }
             else {
-                $headers = $customHeaders;
                 $start = 0;
             }
+            if (is_array($customHeaders))
+                $headers = $customHeaders;
         
             for ($i = $start; $i < count($lines); $i++)
             {
@@ -155,10 +157,11 @@ class Importer
     				fgets($fh); 
     		}
 		
-            if ($headersAreFirstRow || is_array($customHeaders))
-                $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
-    		else
-    			$headers = null;
+            $headers = null;
+            if ($headersAreFirstRow)
+                $headers = fgetcsv($fh);
+            if (is_array($customHeaders))
+                $headers = $customHeaders; // custom header override.
         
             while (($row = fgetcsv($fh)) !== false)
             {
@@ -225,10 +228,11 @@ class Importer
     			foreach (sequence(0, $skipRows-1) as $i)
     				fgets($fh); 
 		
-            if ($headersAreFirstRow || is_array($customHeaders))
-                $headers = $headersAreFirstRow ? fgetcsv($fh) : $customHeaders;
-            else
-                $headers = null;
+            $headers = null;
+            if ($headersAreFirstRow)
+                $headers = fgetcsv($fh);
+            if (is_array($customHeaders))
+                $headers = $customHeaders; // custom header override.
         
             while (($row = fgetcsv($fh)) !== false)
             {
