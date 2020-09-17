@@ -213,7 +213,7 @@ class Importer
         
         This method will throw an exception if an error is encountered at any point in the process.
     */
-    static public function yield_csv(string $filePath, bool $headersAreFirstRow = false , ?array $customHeaders = null, int $skipRows = 0)
+    static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
     {
         try
         {
@@ -268,7 +268,7 @@ class Importer
         sequential order.
     
         @param $filePath        Path or URL to the CSV file.
-        @param $colSettings     When TRUE, will take the first row as the headers. When an array
+        @param $columns         When TRUE, will take the first row as the headers. When an array
                                 is supplied then the array will be used as the column headers.
                                 Passing FALSE or any other value will result in sequential column
                                 headers.
@@ -277,21 +277,21 @@ class Importer
         
         This method will throw an exception if an error is encountered at any point in the process.
     */
-    static public function csv_dataframe(string $filepath, $colSettings = false, int $skipRows = 0)
+    static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0)
     {
-        if (is_array($colSettings)) {
-            $customHeaders = $colSettings;
+        if (is_array($columns)) {
+            $customHeaders = $columns;
             $headersAreFirstRow = false;
         }
             
         
         else {
             $customHeaders = null;
-            $headersAreFirstRow = (bool)$colSettings;
+            $headersAreFirstRow = (bool)$columns;
         }
         
         $df = null;
-        foreach (self::yield_csv($filepath, $headersAreFirstRow, $customHeaders, $skipRows) as $row)
+        foreach (self::yield_csv($filePath, $headersAreFirstRow, $customHeaders, $skipRows) as $row)
         {
             if ($df)
                 $df->add_row($row);
