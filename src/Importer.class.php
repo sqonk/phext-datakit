@@ -91,7 +91,7 @@ class Importer
         }
         else
         {
-            for ($i = 1; $i < count($lines); $i++) 
+            for ($i = 0; $i < count($lines); $i++) 
             {
                 $row = str_getcsv($lines[$i]);
                 
