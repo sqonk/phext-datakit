@@ -607,13 +607,13 @@ $data[] = 'Another Organge';
 $data->prepend('Grape');
 
 // Replace an existing item or set an item with a custom index.
-$data->set('Custom Key', 'Green Grape');
+$data->set(0, 'Green Grape');
 
 // Print out what we have.
 println($data);
 /*
 array (
-  0 => 'Grape',
+  0 => 'Green Grape',
   1 => 'Apple',
   2 => 'Orange',
   3 => 'Banana',
@@ -624,7 +624,6 @@ array (
   8 => 'Pear',
   9 => 'Apple',
   10 => 'Another Organge',
-  'Custom Key' => 'Green Grape',
 )
 */
 ```
