@@ -2400,7 +2400,7 @@ A selection of routines for importing data from various static sources such as f
 
     @returns                        TRUE upon successful completion or the imported data array when no callback is being used. 
 */
-static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow, $customHeaders = null);
+static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow = false, ?array $customHeaders = null)
 
 /*
     Import a CSV from a local file on disk or a URL.
@@ -2431,7 +2431,7 @@ static public function csv_data(?callable $callback, string $data, bool $headers
 
     This method will throw an exception if an error is encountered at any point in the process.
 */
-static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow, $customHeaders = null, int $skipRows = 0);
+static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
 
 /*
     Import a CSV from a local file on disk or a URL and yield one row at a time
@@ -2452,7 +2452,7 @@ static public function csv_file(?callable $callback, string $filePath, bool $hea
 
     This method will throw an exception if an error is encountered at any point in the process.
 */
-static public function yield_csv(string $filePath, bool $headersAreFirstRow, ?array $customHeaders = null, int $skipRows = 0)
+static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
 
 /*
 	Import a CSV directly into a DataFrame object in the most memory efficient way.
@@ -2470,7 +2470,7 @@ sequential order.
 
 	This method will throw an exception if an error is encountered at any point in the process.
 */
-static public function csv_dataframe(string $filepath, $colSettings = false, int $skipRows = 0)
+static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0)
 
 /*
     Split a string of raw data down into rows and columns.
@@ -2497,7 +2497,7 @@ static public function csv_dataframe(string $filepath, $colSettings = false, int
     This method will throw an exception if an error is encountered at any point in the process or the provided data
     can not be broken down into lines using the provided line ending character.
 */
-static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, $customHeaders = null);
+static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, $customHeaders = null)
 ```
 
 ### SMA Methods
