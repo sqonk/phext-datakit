@@ -190,6 +190,31 @@ class math
         }
     } 
     
+    /*
+        Normalise a series of numbers to a range between 0 and 1.
+    */
+    static public function normalise(array $array)
+    {
+        $length = count($array); 
+        if ($length < 1) {
+            throw new \LengthException("The packed sequence has zero elements");
+        }
+        
+        $f = array_filter($array, function($v) {
+            return $v < 0 and is_float($v);
+        });
+        $negfloats = count($f) > 0;
+        
+        $min = $negfloats ? self::min($array) : min($array);
+        $max = $negfloats ? self::max($array) : max($array);
+                
+        $out = [];
+        foreach ($array as $i => $value)          
+            $out[] = ($value - $min) / $max;
+        
+        return $out;
+    }
+    
 	/*
 		Compute a correlation using the Pearson method with the two given arrays.
 		

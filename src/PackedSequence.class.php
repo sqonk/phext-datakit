@@ -639,6 +639,32 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         return $min;
     }
     
+    /*
+        Normalise the array to a range between 0 and 1.
+    */
+    public function normalise()
+    {
+        $length = $this->count(); 
+        if ($length < 1) {
+            throw new \LengthException("The packed sequence has zero elements");
+        }
+        
+        $min = $this->min();
+        $max = $this->max();
+        
+        $out = new PackedSequence('d');
+        foreach ($this as $value)          
+            $out[] = ($value - $min) / $max;
+        
+        return $out;
+    }
+    
+    // Alias of self::normalise().
+    public function normalize()
+    {
+        return self::normalise();
+    }
+    
 	/*
 		Compute the product of the values within the array.
 	*/

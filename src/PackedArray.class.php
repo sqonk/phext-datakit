@@ -656,6 +656,38 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         return $this;
     }
     
+    /*
+        Normalise the array to a range between 0 and 1.
+    
+        Returns a PackedSequence.
+    
+        This method expects the contents of the packed array to be
+        numerical. You will need to filter any invalid values prior
+        to running the normalisation.
+    */
+    public function normalise()
+    {
+        $length = $this->count(); 
+        if ($length < 1) {
+            throw new \LengthException("The packed sequence has zero elements");
+        }
+        
+        $min = $this->min();
+        $max = $this->max();
+        
+        $out = new PackedSequence('d');
+        foreach ($this as $value)          
+            $out[] = ($value - $min) / $max;
+        
+        return $out;
+    }
+    
+    // Alias of self::normalise().
+    public function normalize()
+    {
+        return self::normalise();
+    }
+    
 	/*
 		Compute a sum of the values within the array.
     

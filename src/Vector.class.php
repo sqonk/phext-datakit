@@ -1070,6 +1070,25 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	{
 		return array_reduce($this->_array, $callback, $initial);
 	}
+    
+    
+    /*
+        Normalise the vector to a range between 0 and 1.
+    
+        This method expects the contents of the vector to be
+        numerical. You will need to filter any invalid values prior
+        to running the normalisation.
+    */
+    public function normalise()
+    {
+        return new Vector(math::normalise($this->_array));
+    }
+    
+    // Alias of self::normalise().
+    public function normalize()
+    {
+        return self::normalise();
+    }
 	
 	/*
 		Round all values in the vector up or down to the given decimal point precesion.

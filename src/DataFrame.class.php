@@ -1534,6 +1534,60 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
+		Normalise one or more columns to a range between 0 and 1.
+	
+		If no column is specified then the the operation runs over
+		all columns.
+	
+		If exactly one column is supplied then a single array is 
+		returned, otherwise a DataFrame with the given columns is
+		produced.
+	*/
+    public function normalise(...$columns)
+    {
+        if (count($columns) == 0)
+            throw new \LengthException("At least one column name must be supplied.");
+         
+        $columns = $this->determineColumns($columns);
+        if (count($columns) == 1)
+        {
+            return math::normalise($this->values($columns[0]));
+        }
+        else
+        {
+            $r = [];
+            foreach ($columns as $h) {
+                if ($this->column_is_numeric($h)) {
+                    $r[$h] = math::normalise($this->values($h));
+                }
+            }
+            
+            $i = 0;
+            $new = [];
+            foreach ($this->data as $index => $row) {
+                $newrow = [];
+                foreach ($columns as $h)
+                    $newrow[$h] = $r[$h][$i];
+                $i++;
+                $new[$index] = $newrow;
+            }
+            
+            return new DataFrame($new);
+        }
+    }
+    
+    // Alias of self::normalise().
+    public function normalize(...$columns)
+    {
+        return self::normalize(...$columns);
+    }
+    
+    public function quartile($q, $column = null)
+    {
+        return $this->quantile($q, $column);
+    }
+    
+	/*
 		Compute the value for a given quantile for one or more columns.
 	
 		If no column is specified then the the operation runs over
@@ -1543,11 +1597,6 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		returned, otherwise a DataFrame of 1 value per column is
 		produced.
 	*/
-    public function quartile($q, $column = null)
-    {
-        return $this->quantile($q, $column);
-    }
-    
     public function quantile($q, $column = null)
     {
         if ($column)
