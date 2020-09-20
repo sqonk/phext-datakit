@@ -78,7 +78,7 @@ Datakit Features
 		* [Removing columns rows](#dataframe---data-manipulation---removing-rows-and-columns)
 		* [Transforming data](#dataframe---data-manipulation---transforming)
 		* [Duplicate detection and removal](#dataframe---data-manipulation---duplicates)
-		* [Clipping and pruning](#dataframe-data-manipulation---clipping)
+		* [Clipping and pruning](#dataframe---data-manipulation---clipping)
 	- [Iteration](#dataframe---iteration)
 	- [Summaries and readouts](#datafame---printing)
 		* [Printing data to the console and to string](#dataframe---printing---report)
