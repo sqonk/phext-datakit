@@ -439,4 +439,27 @@ class PackedArrayTest extends TestCase
         foreach ($ps as $i => $v)
             $this->assertSame($v, $expected[$i]);
     }
+    
+    public function testNormalise()
+    {
+        $data = new PackedArray;
+        $data = $data->add(0, 5, 10, 15, 20)->normalise();
+        $exp = [0, 0.25, 0.5, 0.75, 1];
+        foreach ($data as $i => $value)
+            $this->assertEquals($value, $exp[$i]);
+        
+        $data = new PackedArray;
+        $data = $data->add(5, 10, 15, 20, 25)->normalise();
+        $exp = [0, 0.2, 0.4, 0.6, 0.8];
+        foreach ($data as $i => $value)
+            $this->assertEquals($value, $exp[$i]);
+                
+        $this->expectException(LengthException::class);
+        $data = new PackedArray;
+        $data->normalise();
+        
+        $this->expectWarning();
+        $data = new PackeArray;
+        $data->add(0, 5, 10, 'aaa', 15, 20)->normalise();
+    }
 }

@@ -1005,6 +1005,41 @@ class DataFrameTest extends TestCase
         $this->assertEquals($exp, $df->flattened(true));
     }
     
+    public function testNormalise()
+    {
+        $df = dataframe([
+            ['t1' => 0, 't2' => 5],
+            ['t1' => 5, 't2' => 10],
+            ['t1' => 10, 't2' => 15],
+            ['t1' => 15, 't2' => 20],
+            ['t1' => 20, 't2' => 25] 
+        ]);
+        $this->assertEquals([0, 0.25, 0.5, 0.75, 1], $df->normalise('t1'));
+        
+        $exp = dataframe([
+            ['t1' => 0, 't2' => 0],
+            ['t1' => 0.25, 't2' => 0.2],
+            ['t1' => 0.5, 't2' => 0.4],
+            ['t1' => 0.75, 't2' => 0.6],
+            ['t1' => 1, 't2' => 0.8] 
+        ]);
+        
+        $this->assertEquals($exp->data(), $df->normalise('t1', 't2')->data());
+        
+        $this->expectException(LengthException::class);
+        $df->normalise();
+        
+        $df = dataframe([
+            ['t1' => 0, 't2' => 5],
+            ['t1' => 'aaa', 't2' => 10],
+            ['t1' => 10, 't2' => 15],
+            ['t1' => 15, 't2' => 20],
+            ['t1' => 20, 't2' => 25] 
+        ]);
+        $this->expectWarning();
+        $df->normalise('t1');
+    }
+    
     protected function pixels($img)
     {
         $width = imagesx($img);

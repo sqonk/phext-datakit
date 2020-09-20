@@ -735,4 +735,19 @@ class VectorTest extends TestCase
         
         $this->assertSame('Doug=29,Jane=20,Rob=32,Janet=32', $ps->implode_only(',', ['name', 'age'], '='));
     }
+    
+    public function testNormalise()
+    {
+        $data = vector(0, 5, 10, 15, 20);
+        $this->assertEquals([0, 0.25, 0.5, 0.75, 1], $data->normalise()->array());
+        
+        $data = vector(5, 10, 15, 20, 25);
+        $this->assertEquals([0, 0.2, 0.4, 0.6, 0.8], $data->normalise()->array());
+        
+        $this->expectException(LengthException::class);
+        vector()->normalise();
+        
+        $this->expectWarning();
+        vector(0, 5, 10, 'aaa', 15, 20)->normalise();
+    }
 }
