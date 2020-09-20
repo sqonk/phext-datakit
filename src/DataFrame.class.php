@@ -1566,8 +1566,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $new = [];
             foreach ($this->data as $index => $row) {
                 $newrow = [];
-                foreach ($columns as $h)
-                    $newrow[$h] = $r[$h][$i];
+                foreach ($columns as $h) {
+                    $newrow[$h] = arrays::get($r[$h], $i);
+                }
+                    
                 $i++;
                 $new[$index] = $newrow;
             }
