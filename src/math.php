@@ -197,7 +197,7 @@ class math
     {
         $length = count($array); 
         if ($length < 1) {
-            throw new \LengthException("The packed sequence has zero elements");
+            throw new \LengthException("The array has zero elements");
         }
         
         $f = array_filter($array, function($v) {
