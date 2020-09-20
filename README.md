@@ -3090,6 +3090,18 @@ public function variance();
 public function reduce(callable $callback, $initial = null);
 
 /*
+    Normalise the vector to a range between 0 and 1.
+
+    This method expects the contents of the vector to be
+    numerical. You will need to filter any invalid values prior
+    to running the normalisation.
+*/
+public function normalise()
+
+// Alias of self::normalise().
+public function normalize()
+
+/*
     Round all values in the vector up or down to the given decimal point precesion.
 */
 public function round(int $precision, int $mode = PHP_ROUND_HALF_UP);
@@ -3610,6 +3622,21 @@ public function cumproduct(...$columns);
 public function variance(...$columns);
 
 /*
+    Normalise one or more columns to a range between 0 and 1.
+
+    If no column is specified then the the operation runs over
+    all columns.
+
+    If exactly one column is supplied then a single array is 
+    returned, otherwise a DataFrame with the given columns is
+    produced.
+*/
+public function normalise(...$columns)
+      
+// Alias of self::normalise().
+public function normalize(...$columns)
+  
+/*
     Compute the value for a given quantile for one or more columns.
 
     If no column is specified then the the operation runs over
@@ -4122,10 +4149,18 @@ public function avg()
 public function max()
 
 /*
-Return the minimum value present within the array.
+  Return the minimum value present within the array.
 */
 public function min()
 
+/*
+  Normalise the array to a range between 0 and 1.
+*/
+public function normalise()
+  
+// Alias of self::normalise().
+public function normalize()
+  
 /*
   Compute the product of the values within the array.
 */
@@ -4357,6 +4392,14 @@ public function sort(bool $dir = ASCENDING, ?string $key = null)
 // Reserve the order of the elements.
 public function reverse()
 
+/*
+  Normalise the array to a range between 0 and 1.
+*/
+public function normalise()
+  
+// Alias of self::normalise().
+public function normalize()
+  
 /*
 	Compute a sum of the values within the array.
 
