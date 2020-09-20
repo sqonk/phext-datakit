@@ -451,7 +451,13 @@ class PackedSequenceTest extends TestCase
         
         $data = new PackedSequence('i');
         $data = $data->add(5, 10, 15, 20, 25)->normalise();
-        $exp = [0, 0.2, 0.4, 0.6, 0.8];
+        $exp = [0, 0.25, 0.5, 0.75, 1];
+        foreach ($data as $i => $value)
+            $this->assertEquals($value, $exp[$i]);
+        
+        $data = new PackedSequence('d');
+        $data = $data->add(11.69, 22.78, 3.65)->normalise()->round(2);
+        $exp = [0.42, 1.0, 0.0];
         foreach ($data as $i => $value)
             $this->assertEquals($value, $exp[$i]);
                 

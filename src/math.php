@@ -210,7 +210,7 @@ class math
                 
         $out = [];
         foreach ($array as $i => $value)          
-            $out[] = ($value - $min) / $max;
+            $out[] = ($value - $min) / ($max - $min);
         
         return $out;
     }

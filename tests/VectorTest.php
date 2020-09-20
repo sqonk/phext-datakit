@@ -742,7 +742,9 @@ class VectorTest extends TestCase
         $this->assertEquals([0, 0.25, 0.5, 0.75, 1], $data->normalise()->array());
         
         $data = vector(5, 10, 15, 20, 25);
-        $this->assertEquals([0, 0.2, 0.4, 0.6, 0.8], $data->normalise()->array());
+        $this->assertEquals([0, 0.25, 0.5, 0.75, 1], $data->normalise()->array());
+        
+        $this->assertEquals([0.42, 1.0, 0.0], vector(11.69, 22.78, 3.65)->normalise()->round(2)->array());
         
         $this->expectException(LengthException::class);
         vector()->normalise();

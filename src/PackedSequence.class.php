@@ -654,7 +654,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         
         $out = new PackedSequence('d');
         foreach ($this as $value)          
-            $out[] = ($value - $min) / $max;
+            $out[] = ($value - $min) / ($max - $min);
         
         return $out;
     }

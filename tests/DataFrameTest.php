@@ -1018,10 +1018,10 @@ class DataFrameTest extends TestCase
         
         $exp = dataframe([
             ['t1' => 0, 't2' => 0],
-            ['t1' => 0.25, 't2' => 0.2],
-            ['t1' => 0.5, 't2' => 0.4],
-            ['t1' => 0.75, 't2' => 0.6],
-            ['t1' => 1, 't2' => 0.8] 
+            ['t1' => 0.25, 't2' => 0.25],
+            ['t1' => 0.5, 't2' => 0.5],
+            ['t1' => 0.75, 't2' => 0.75],
+            ['t1' => 1, 't2' => 1] 
         ]);
         
         $this->assertEquals($exp->data(), $df->normalise('t1', 't2')->data());
