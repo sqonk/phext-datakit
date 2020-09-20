@@ -60,6 +60,7 @@ Datakit Features
 		* [Removing elements](#vector---data-manipulation---removing-elements)
 		* [Fill, Prefill, Pad](#vector---data-manipulation---fill-prefill-pad)
 		* [Mapping](#vector---data-manipulation---mapping)
+		* [Normalise](#vector---data-manipulation---normalise)
 	- [Calculations](#vector---Calculations)
 	- [Filtering and Sorting](#vector---filtering-and-sorting)
 		* [Sorting](#vector---filtering---sorting)
@@ -79,6 +80,7 @@ Datakit Features
 		* [Transforming data](#dataframe---data-manipulation---transforming)
 		* [Duplicate detection and removal](#dataframe---data-manipulation---duplicates)
 		* [Clipping and pruning](#dataframe---data-manipulation---clipping)
+		* [Normalise](#dataframe---Data-Manipulation---Normalise)
 	- [Iteration](#dataframe---iteration)
 	- [Summaries and readouts](#datafame---printing)
 		* [Printing data to the console and to string](#dataframe---printing---report)
@@ -737,6 +739,24 @@ array (
 )
 */
 ```
+
+##### Vector - Data Manipulation - Normalise
+
+```php
+$data = vector(0, 5, 10, 15, 20);
+println($data->normalise());
+/*
+array (
+  0 => 0,
+  1 => 0.25,
+  2 => 0.5,
+  3 => 0.75,
+  4 => 1,
+)
+*/
+```
+
+
 
 #### Vector - Calculations
 
@@ -1436,6 +1456,32 @@ _____	____________	___________	____________	___________	___________
 9    	         4.8	        3.1	         1.5	        0.1	Iris-setosa
 */
 ```
+
+##### Dataframe - Data Manipulation - Normalise
+
+Transform all of the values in one or more columns to a value between 0 and 1.
+
+```php
+$df = dataframe([
+    ['t1' => 0, 't2' => 5],
+    ['t1' => 5, 't2' => 10],
+    ['t1' => 10, 't2' => 15],
+    ['t1' => 15, 't2' => 20],
+    ['t1' => 20, 't2' => 25]
+]);
+println($df->normalise('t1', 't2'));
+/*
+     	  t1	 t2
+_____	____	___
+0    	   0	  0
+1    	0.25	0.2
+2    	 0.5	0.4
+3    	0.75	0.6
+4    	   1	0.8
+*/
+```
+
+
 
 #### Dataframe - Iteration
 
