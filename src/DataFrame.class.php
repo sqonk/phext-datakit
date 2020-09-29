@@ -2104,17 +2104,21 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		Add a new row to the DataFrame. $row is an associative
 		array where the keys should correspond to one or more
 		of the column headers in the DataFrame.
+    
+        $index is an optional keyed index to store the row 
+        against. If left empty then the next sequential
+        number shall be used.
 	
 		** Do not use new or unknown keys not already present
 		in the DataFrame.
 	*/
-    public function add_row(array $row = [], $key = '')
+    public function add_row(array $row = [], $index = '')
     {
         if (count($this->data) == 0 and ! $this->headers) 
             $this->headers = array_keys($row);
         
-        if ($key !== '')
-            $this->data[$key] = $row;
+        if ($index !== '')
+            $this->data[$index] = $row;
         else
             $this->data[] = $row;
         
