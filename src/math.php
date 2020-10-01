@@ -24,35 +24,35 @@ namespace sqonk\phext\datakit;
 
 use sqonk\phext\core\{arrays,numbers};
 
-/*
-	A broad collection of general mathematical functions. This class acts as a support
-	class of statistical calculations for the DataFrame and Vector classes.
-
-	Many of these methods are ported from open source code, freely available
-	on the internet. Credits and links 
-
-	Many of the method names are descriptive enough to imply
-	what they produce as a result.
-*/
+/**
+ * A broad collection of general mathematical functions. This class acts as a support
+ * class of statistical calculations for the DataFrame and Vector classes.
+ * 
+ * Many of these methods are ported from open source code, freely available
+ * on the internet. Credits and links
+ * 
+ * Many of the method names are descriptive enough to imply
+ * what they produce as a result.
+ */
 class math
 {
-    /*
-	  Compute the standard deviation of the values in an array.
-	
-	  This method was originally provided by user levim@php.dot.net, in the comments 
-	  for the correspdonging method of the stats PHP extension.
-	  see: https://www.php.net/manual/en/function.stats-standard-deviation.php#114473	
-	
-	  Original comment: 
-      This user-land implementation follows the implementation quite strictly;
-      it does not attempt to improve the code or algorithm in any way. It will
-      raise a warning if you have fewer than 2 values in your array, just like
-      the extension does (although as an E_USER_WARNING, not E_WARNING).
-      
-      @param array $a 
-      @param bool $sample [optional] Defaults to false
-      @return float|bool The standard deviation or false on error.
-    */
+    /**
+     * Compute the standard deviation of the values in an array.
+     * 
+     * This method was originally provided by user levim@php.dot.net, in the comments
+     * for the correspdonging method of the stats PHP extension.
+     * see: https://www.php.net/manual/en/function.stats-standard-deviation.php#114473
+     * 
+     * Original comment:
+     * This user-land implementation follows the implementation quite strictly;
+     * it does not attempt to improve the code or algorithm in any way. It will
+     * raise a warning if you have fewer than 2 values in your array, just like
+     * the extension does (although as an E_USER_WARNING, not E_WARNING).
+     * 
+     * @param array $a
+     * @param bool $sample [optional] Defaults to false
+     * @return float|bool The standard deviation or false on error.
+     */
     static public function standard_deviation(array $a, $sample = false) {
         $n = count($a);
         if ($n === 0) {
@@ -75,7 +75,9 @@ class math
         return sqrt($carry / $n);
     }
     
-	// Compute the variance of an array of values.
+	/**
+	 * Compute the variance of an array of values.
+	 */
     static public function variance(array $arr)
     {
         if (count($arr) == 0)
@@ -94,19 +96,21 @@ class math
         return $variance / count($arr);
     }
 
-    // Produce the average of an array of numbers.
+    /**
+     * Produce the average of an array of numbers.
+     */
     static public function avg(array $array)
     {
 		$count = count($array);
         return $count ? array_sum($array) / $count : 0;
     }
     
-    /* 
-        Find the minimum floating point number present in an array. This method
-        works correctly when comparing negative floating point units.
-    
-        Returns the lowest value in the array or null if the array is empty.
-    */
+    /**
+     * Find the minimum floating point number present in an array. This method
+     * works correctly when comparing negative floating point units.
+     * 
+     * Returns the lowest value in the array or null if the array is empty.
+     */
     static public function min(array $array)
     {
         $current = null;
@@ -117,12 +121,12 @@ class math
         return $current;
     }
     
-    /* 
-        Find the maximum floating point number present in an array. This method
-        works correctly when comparing negative floating point units.
-    
-        Returns the highest value in the array or null if the array is empty.
-    */
+    /**
+     * Find the maximum floating point number present in an array. This method
+     * works correctly when comparing negative floating point units.
+     * 
+     * Returns the highest value in the array or null if the array is empty.
+     */
     static public function max(array $array)
     {
         $current = null;
@@ -133,7 +137,9 @@ class math
         return $current;
     }
 	
-	// Return the middle number within an array.
+	/**
+	 * Return the middle number within an array.
+	 */
     static public function median(array $arr) 
     {
         $count = count($arr); // total numbers in array
@@ -160,7 +166,9 @@ class math
         return $median;
     }
 
-	// Compute the quantile from the given percentile of the given array.
+	/**
+	 * Compute the quantile from the given percentile of the given array.
+	 */
     static public function quantile(array $array, $quantile) 
     {
 		if (! is_numeric($quantile) or numbers::is_within(0, 1, $quantile))
@@ -190,9 +198,9 @@ class math
         }
     } 
     
-    /*
-        Normalise a series of numbers to a range between 0 and 1.
-    */
+    /**
+     * Normalise a series of numbers to a range between 0 and 1.
+     */
     static public function normalise(array $array)
     {
         $length = count($array); 
@@ -215,11 +223,11 @@ class math
         return $out;
     }
     
-	/*
-		Compute a correlation using the Pearson method with the two given arrays.
-		
-		This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
-	*/
+    /**
+     * Compute a correlation using the Pearson method with the two given arrays.
+     * 
+     * This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
+     */
     static public function correlation_pearson(array $x, array $y)
     {   
         if (count($x) == 0 && count($y) == 0) {
@@ -250,7 +258,9 @@ class math
 	    return $a / $b;
     }
 
-	// Accumulative minimum of the values within an array.
+	/**
+	 * Accumulative minimum of the values within an array.
+	 */
     static public function cumulative_min(array $array)
     {
         $out = [];
@@ -260,7 +270,9 @@ class math
         return $out;
     }
 
-	// Accumulative maximum of the values within an array.
+	/**
+	 * Accumulative maximum of the values within an array.
+	 */
     static public function cumulative_max(array $array)
     {
         $out = [];
@@ -270,7 +282,9 @@ class math
         return $out;
     }
     
-	// Accumulative sum of the values within an array.
+	/**
+	 * Accumulative sum of the values within an array.
+	 */
     static public function cumulative_sum(array $array)
     {
         $out = [];
@@ -297,7 +311,9 @@ class math
         return $out;
     }
     
-	// Accumulative product of the values within an array.
+	/**
+	 * Accumulative product of the values within an array.
+	 */
     static public function cumulative_prod(array $array)
     {
         $out = [];
@@ -325,16 +341,18 @@ class math
         return $out;
     }
 	
-	/*
-		--------------
+    /**
+     * --------------
+     * 
+     * These methods are part of the spearman correlation and were originally
+     * written by Alejandro Mitrou.
+     * 
+     * see: https://github.com/amitrou/Spearman-Correlation
+     */
 	
-		These methods are part of the spearman correlation and were originally 
-		written by Alejandro Mitrou.
-	
-		see: https://github.com/amitrou/Spearman-Correlation
-	*/
-	
-	// Compute a correlation using the Spearman method with the two given arrays.
+	/**
+	 * Compute a correlation using the Spearman method with the two given arrays.
+	 */
     static public function correlation_spearman(array $data1, array $data2)
     {
         if (count($data1) == 0 && count($data2) == 0) {
@@ -368,7 +386,9 @@ class math
         return math::coefficient($distances);
     }
     
-	// Compute the coefficient of an array of distances.
+	/**
+	 * Compute the coefficient of an array of distances.
+	 */
     static public function coefficient(array $distances)
     {
         if (count($distances) < 1) {
@@ -383,10 +403,10 @@ class math
         return 1 - ( 6 * $sum / (pow($size, 3) - $size) );
     }
     
-	/* 
-		Return an array of distances computed from the values of the two
-		given arrays.
-	*/
+    /**
+     * Return an array of distances computed from the values of the two
+     * given arrays.
+     */
     static public function distances(array $ranking1, array $ranking2)
     {
         $distances = [];

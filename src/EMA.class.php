@@ -18,10 +18,10 @@ namespace sqonk\phext\datakit;
 * permissions and limitations under the License.
 */
 
-/*
-    A simple class for management of a Exponential Moving Average. It works by alternating between
-	adding new values to the array and calculating the current average.
-*/
+/**
+ * A simple class for management of a Exponential Moving Average. It works by alternating between
+ * adding new values to the array and calculating the current average.
+ */
 class EMA
 {
 	protected $limit;
@@ -29,9 +29,9 @@ class EMA
 	protected $previous = 0;
 	protected $latest = 0;
 	
-	/*
-	    Construct a new EMA with the specified maximum number of values.
-	*/
+    /**
+     * Construct a new EMA with the specified maximum number of values.
+     */
 	public function __construct(int $maxItems)
 	{
         if ($maxItems < 1)
@@ -40,9 +40,9 @@ class EMA
 		$this->limit = $maxItems;
 	}
 	
-	/* 
-		Add a new value to the EMA. The value must be numerical in nature.
-	*/
+    /**
+     * Add a new value to the EMA. The value must be numerical in nature.
+     */
 	public function add($value)
 	{
 		if (! is_numeric($value))
@@ -70,10 +70,10 @@ class EMA
 		}
 	}
 	
-	/*
-		Return the calculated result of the EMA as it currently stands. You can optionally pass in a value to 
-		$precision to control the amount of decimal places that the result is rounded to.
-	*/
+    /**
+     * Return the calculated result of the EMA as it currently stands. You can optionally pass in a value to
+     * $precision to control the amount of decimal places that the result is rounded to.
+     */
 	public function result(?int $precision = null)
 	{
 		return ($precision !== null) ? round($this->latest, $precision) : $this->latest;

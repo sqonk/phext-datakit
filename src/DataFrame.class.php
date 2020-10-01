@@ -25,10 +25,18 @@ use sqonk\phext\plotlib\BulkPlot;
 use sqonk\phext\core\{arrays,strings};
 
     
-/*
-	A class for managing and manipulating a series of rows and columns. Arithmetic 
-	operations align on both row and column labels where applicable.	
-*/
+/**
+ * The DataFrame is a class inspired by, and loosely based off of, a class by the 
+ * same name from the Pandas library in Python. It specialises in working with 2 
+ * dimensional arrays (rows and columns) that may originate from data sources such 
+ * as CSV files or data fetched from a relational database.
+ * 
+ * Various basic statistical and mathematical functions are provided as well numerous 
+ * methods for transforming and manipulating the underlying data and presentation 
+ * thereof.
+ * 
+ * Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
+ */
 class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     protected $data;
@@ -38,7 +46,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     protected $showHeaders = true;
     protected $showGenericIndexes = true;
 	
-	// The same as "new DataFrame()".
+	/** 
+     *   Static equivilent of `new DataFrame()`.
+     */
 	static public function make(array $data, array $headers = null)
 	{
 		return new DataFrame($data, $headers);
@@ -92,11 +102,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $this->row($index);
 	}
 	
-	/* 
-		Converting the DataFrame to a string produces the report.
-	
-		See: report()
-	*/
+    /**
+     * Converting the DataFrame to a string produces the report.
+     * 
+     * See: report()
+     */
     public function __toString()
     {
         return $this->report();
@@ -104,14 +114,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// ------- Main class methods
     
-    /*
-        Construct a new dataframe with the provided data. You may optionally
-        provided the set of column headers in the second parameter. If you 
-        choose to do this then they should match the keys in the array.
-
-        NOTE: The provided array must have at least one element/row and
-        must also be 2-dimensional in structure.
-    */
+    /**
+     * Construct a new dataframe with the provided data. You may optionally provided the 
+     * set of column headers in the second parameter. If you choose to do this then they 
+     * should match the keys in the array.
+     * 
+     * NOTE: The provided array must have at least one element/row and must also be 
+     * 2-dimensional in structure.
+     */
     public function __construct(?array $data = null, ?array $headers = null)
     {
         if ($data === null) {
@@ -131,16 +141,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
 	
-	// Produce an exact replica of the dataframe.
+    /**
+     * Produce an exact replica of the dataframe.
+     */
 	public function copy()
 	{
 		return $this->clone($this->data());
 	}
     
-	/*
-		Produce a copy of the dataframe consisting of only the supplied data. All other
-		information such as transfomers and header settings remain the same.
-	*/
+    /**
+     * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
+     */
     public function clone($data)
     {
         $copy = new DataFrame($data, $this->headers);
@@ -151,10 +162,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $copy;
     }
     
-	/* 
-		Whether or not the DataFrame should display the column
-		headers when it is printed. The default is TRUE.
-	*/
+    /**
+     * Whether or not the DataFrame should display the column headers when it is printed. The default is TRUE.
+     */
     public function display_headers($display = null)
     {   
         if ($display === null)
@@ -163,14 +173,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/* 
-		Whether or not the DataFrame should display the row
-		indexes that sequentially numerical when it is printed. 
-	
-		The default is TRUE.
-	
-		This is automatically disabled for pivoted DataFrames.
-	*/
+    /**
+     * Whether or not the DataFrame should display the row indexes that sequentially numerical when it is printed.
+     * 
+     * The default is TRUE.
+     * 
+     * This is automatically disabled for pivoted DataFrames.
+     */
     public function display_generic_indexes($display = null)
     {
         if ($display === null)
@@ -179,14 +188,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/* 
-		Set or get the column header currently or to be used
-		as the row indexes.
-	
-		** You should not need to set this. 
-	
-		See reindex_rows_with_column() instead.
-	*/
+    /**
+     * Set or get the column header currently or to be used as the row indexes.
+     * 
+     * ** You should not need to set this.
+     * 
+     * See reindex_rows_with_column() instead.
+     */
     public function index($indexHeader = null)
     {
         if ($indexHeader === null)
@@ -195,14 +203,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Used to set or get the full list of display transformers.
-	
-		** Used internally. You should not need to call this
-		function under normal circumstances. 
-	
-		See apply_display_transformer() instead.
-	*/
+    /**
+     * Used to set or get the full list of display transformers.
+     * 
+     * Used internally. You should not need to call this unction under normal circumstances.
+     * 
+     * See apply_display_transformer() instead.
+     */
     public function transformers($transformers = null)
     {
         if ($transformers === null)
@@ -211,10 +218,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/* 
-		Returns TRUE if and only if all values within the given column
-		contain a valid number.
-	*/
+    /**
+     * Returns TRUE if and only if all values within the given column ontain a valid number.
+     */
     public function column_is_numeric($column)
     {
         $count = 0;
@@ -227,25 +233,23 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return false;
     }
     
-	/* 
-		Return the associative array containing all the data within
-		the DataFrame.
-	*/
+    /**
+     * Return the associative array containing all the data within the DataFrame.
+     */
     public function data()
     {
         return $this->data;
     }
     
-	/*
-		Flatten the DataFrame into a native array.
-	
-		$includeIndex: 	If TRUE then use the DataFrame indexes as the 
-						keys in the array.
-		$columns		One or more columns that should be used in the
-						resulting array, all columns if null is supplied.
-        
-        The columns can be supplied as a set of variable arguments or an
-        array as the second argument.
+	/**
+	 *	Flatten the DataFrame into a native array.
+	 *
+	 *	@param $includeIndex: 	If TRUE then use the DataFrame indexes as the 
+	 *					        keys in the array.
+	 *	@param $columns		    One or more columns that should be used in the
+     *					        resulting array, all columns if null is supplied.
+     *   
+     *  The columns can be supplied as a set of variable arguments or an array as the second argument.
 	*/
     public function flattened(bool $includeIndex = true, ...$columns)
     {
@@ -266,7 +270,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $out;
     }
     
-	// Return the row at $index.
+    /**
+     * Return the row at $index.
+     */
     public function row($index)
     {
         if ($index === LAST_ROW)  {
@@ -284,22 +290,26 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $row;
     }
     
-	// Return an array of all the current row indexes.
+    /**
+     * Return an array of all the current row indexes.
+     */
     public function indexes()
     {
         return array_keys($this->data);
     }
     
-	// All column headers currently in the DataFrame.
+    /**
+     * All column headers currently in the DataFrame.
+     */
     public function headers()
     {
         return $this->headers;
     }
     
-	/* 
-		Return a copy of the DataFrame only containing the number
-		of rows from the start as specified by $count.
-	*/
+    /**
+     * Return a copy of the DataFrame only containing the number
+     * of rows from the start as specified by $count.
+     */
     public function head(int $count)
     {
         if ($count >= count($this->data))
@@ -309,10 +319,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->clone($slice);
     }
     
-	/* 
-		Return a copy of the DataFrame only containing the number
-		of rows from the end as specified by $count.
-	*/
+    /**
+     * Return a copy of the DataFrame only containing the number
+     * of rows from the end as specified by $count.
+     */
     public function tail(int $count)
     {
         $total = count($this->data);
@@ -323,10 +333,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->clone($slice);
     }
     
-	/* 
-		Return a copy of the DataFrame only containing the the rows
-		starting from $start through to the given length.
-	*/
+    /**
+     * Return a copy of the DataFrame only containing the the rows
+     * starting from $start through to the given length.
+     */
     public function slice(int $start, ?int $length = null)
     {
         $total = count($this->data);
@@ -339,12 +349,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->clone($slice);
     }
     
-	/*
-		Return a copy of the DataFrame containing a random
-		subset of the rows. The minimum and maximum values
-		can be supplied to focus the random sample to a 
-		more constrained subset.
-	*/
+    /**
+     * Return a copy of the DataFrame containing a random
+     * subset of the rows. The minimum and maximum values
+     * can be supplied to focus the random sample to a
+     * more constrained subset.
+     */
     public function sample(int $minimum, ?int $maximum = null)
     {
         $max = count($this->data);
@@ -359,11 +369,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->slice($start, $length);
     }
     
-	/*
-		Change the name of a column within the DataFrame. If $inPlace
-		is TRUE then this operation modifies the receiver otherwise
-		a copy is returned.
-	*/
+    /**
+     * Change the name of a column within the DataFrame. If $inPlace
+     * is TRUE then this operation modifies the receiver otherwise
+     * a copy is returned.
+     */
     public function change_header(string $column, string $newName, bool $inPlace = false)
     {
         if ($inPlace)
@@ -406,11 +416,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Reindex the DataFrame using the provided labels. If $inPlace
-		is TRUE then this operation modifies the receiver otherwise
-		a copy is returned.
-	*/
+    /**
+     * Reindex the DataFrame using the provided labels. If $inPlace
+     * is TRUE then this operation modifies the receiver otherwise
+     * a copy is returned.
+     */
     public function reindex_rows(array $labels, bool $inPlace = false)
     { 
 		$values = array_values($this->data);
@@ -428,11 +438,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $this->clone($data);
     }
     
-	/*
-		Push one of the columns out to become the row index. If $inPlace
-		is TRUE then this operation modifies the receiver otherwise
-		a copy is returned.
-	*/
+    /**
+     * Push one of the columns out to become the row index. If $inPlace
+     * is TRUE then this operation modifies the receiver otherwise
+     * a copy is returned.
+     */
     public function reindex_rows_with_column(string $column, bool $inPlace = false)
     {
         $df = $this->reindex_rows($this->values($column), $inPlace);
@@ -440,16 +450,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $df->drop_columns($column, true);
     }
     
-	/*
-		Filter the DataFrame using the provided callback and one or 
-		more columns. If no columns are specified then the operation
-		applies to all.
-	
-		Callback format: myFunc($value, $column, $rowIndex) -> bool
-	
-		For a row to make it into the filtered set then only ONE
-		of the columns need to equate to true from the callback.
-	*/
+    /**
+     * Filter the DataFrame using the provided callback and one or
+     * more columns. If no columns are specified then the operation
+     * applies to all.
+     * 
+     * Callback format: myFunc($value, $column, $rowIndex) -> bool
+     * 
+     * For a row to make it into the filtered set then only ONE
+     * of the columns need to equate to true from the callback.
+     */
     public function filter(callable $callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -472,16 +482,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
-	/*
-		Filter the DataFrame using the provided callback and one or 
-		more columns. If no columns are specified then the operation
-		applies to all.
-	
-		Callback format: myFunc($value, $column, $rowIndex) -> bool
-	
-		For a row to make it into the filtered set then ALL
-		of the columns need to equate to true from the callback.
-	*/
+    /**
+     * Filter the DataFrame using the provided callback and one or
+     * more columns. If no columns are specified then the operation
+     * applies to all.
+     * 
+     * Callback format: myFunc($value, $column, $rowIndex) -> bool
+     * 
+     * For a row to make it into the filtered set then ALL
+     * of the columns need to equate to true from the callback.
+     */
     public function unanfilter(callable $callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -502,18 +512,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
-	/*
-		Filter the DataFrame using the provided callback and one or 
-		more columns. If no columns are specified then the operation
-		applies to all.
-	
-		Callback format: myFunc($row, $rowIndex) -> bool
-	
-		This function differs from filter() and unanfilter() in that
-		it passes the whole row to the callback. This is useful
-		if your condition of inclusion requires cross comparing
-		data across columns within the row.
-	*/
+    /**
+     * Filter the DataFrame using the provided callback and one or
+     * more columns. If no columns are specified then the operation
+     * applies to all.
+     * 
+     * Callback format: myFunc($row, $rowIndex) -> bool
+     * 
+     * This function differs from filter() and unanfilter() in that
+     * it passes the whole row to the callback. This is useful
+     * if your condition of inclusion requires cross comparing
+     * data across columns within the row.
+     */
     public function ufilter(callable $callback)
     {
         $filtered = [];
@@ -524,13 +534,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
     }
     
-	/*
-		Sort the DataFrame via one or more columns.
-		
-		If the last parameter passed in is either TRUE or FALSE
-		then it will determine the direction in which the dataframe
-		is ordered. The default is ascending (TRUE).
-	*/
+    /**
+     * Sort the DataFrame via one or more columns.
+     * 
+     * If the last parameter passed in is either TRUE or FALSE
+     * then it will determine the direction in which the dataframe
+     * is ordered. The default is ascending (TRUE).
+     */
     public function sort(...$columns)
     {
 		$asc = true;
@@ -556,11 +566,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Sort the DataFrame using a callback and one or more columns.
-	
-		Callback format: myFunc($value1, $value2, $column) -> bool
-	*/
+    /**
+     * Sort the DataFrame using a callback and one or more columns.
+     * 
+     * Callback format: myFunc($value1, $value2, $column) -> bool
+     */
     public function usort(callable $callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -580,7 +590,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	// Return an array containing both the number of rows and columns.
+    /**
+     * Return an array containing both the number of rows and columns.
+     */
     public function shape()
     {
         $cols = 0;
@@ -593,13 +605,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
 
     
-	/* 
-		If a column is specified then return the number of rows
-		containing a value for it.
-	
-		If no column is given then return a new DataFrame containing
-		the counts for all columns.
-	*/
+    /**
+     * If a column is specified then return the number of rows
+     * containing a value for it.
+     * 
+     * If no column is given then return a new DataFrame containing
+     * the counts for all columns.
+     */
     public function size($column = null)
     {
         if ($column)
@@ -617,13 +629,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	// Return the number of rows.
+    /**
+     * Return the number of rows.
+     */
     public function count()
     {
         return count($this->data);
     }
     
-	// Internal functon.
+    /**
+     * Internal functon.
+     */
     protected function determineColumns($columns)
     {
         if ($columns === null || $columns === '' || (is_array($columns) && count($columns) == 0))
@@ -637,10 +653,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $columns;
     }
     
-	/* 
-		Return all values for the given column. If $filterNAN is
-		TRUE then omit values that are NULL.
-	*/
+    /**
+     * Return all values for the given column. If $filterNAN is
+     * TRUE then omit values that are NULL.
+     */
     public function values($columns = null, bool $filterNAN = true)
     {
         $columns = $this->determineColumns($columns);        
@@ -659,14 +675,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($r) == 1) ? $r[0] : $r;
     }
     
-    /*
-        Return the data array with all values parsed by any registered 
-        transformers.
-        
-        If you wish to output a report to something else other than the
-        command line then this method will allow you to present the data
-        as desired.
-    */
+    /**
+     * Return the data array with all values parsed by any registered
+     * transformers.
+     * 
+     * If you wish to output a report to something else other than the
+     * command line then this method will allow you to present the data
+     * as desired.
+     */
     public function report_data(...$columns)
     {
         $columns = $this->determineColumns($columns); 
@@ -695,12 +711,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return [$data, $columns];
     }
 
-	/*
-		Produce a formatted string, suitable for outputing to
-		the commandline or browser, detailing all rows and
-		the desired columns. If no columns are specified then 
-		all columns are used.
-	*/
+    /**
+     * Produce a formatted string, suitable for outputing to
+     * the commandline or browser, detailing all rows and
+     * the desired columns. If no columns are specified then
+     * all columns are used.
+     */
     public function report(...$columns)
     {
         [$data, $columns] = $this->report_data(...$columns);
@@ -708,30 +724,30 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return strings::columnize($data, $columns, $this->showHeaders, $this->showGenericIndexes);
     }
     
-	/* 
-		Print to stdout the report for this DataFrame.
-	
-		See: report()
-	*/
+    /**
+     * Print to stdout the report for this DataFrame.
+     * 
+     * See: report()
+     */
     public function print(...$columns)
     {
         println($this->report(...$columns));
     }
     
-	/*
-		Provide a maximum or minimum (or both) constraint for the values on column.
-	
-		If a row's value for the column exceeds that constraint then it will be set
-		to the constraint.
-	
-		If either the lower or upper constraint is not needed then passing in
-		null will ignore it.
-	
-		If no column is specified then the constraints apply to all columns.
-	
-		If $inPlace is TRUE then this operation modifies the receiver otherwise
-		a copy is returned.
-	*/
+    /**
+     * Provide a maximum or minimum (or both) constraint for the values on column.
+     * 
+     * If a row's value for the column exceeds that constraint then it will be set
+     * to the constraint.
+     * 
+     * If either the lower or upper constraint is not needed then passing in
+     * null will ignore it.
+     * 
+     * If no column is specified then the constraints apply to all columns.
+     * 
+     * If $inPlace is TRUE then this operation modifies the receiver otherwise
+     * a copy is returned.
+     */
     public function clip($lower, $upper, string $column = null, bool $inplace = false)
     {
         if ($inplace)
@@ -790,18 +806,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Remove any rows where the value of the provided column exeeds the provided
-		lower or upper boundary, for a given column.
-	
-		If either the lower or upper constraint is not needed then passing in
-		null will ignore it.
-	
-		If no column is specified then the filter applies to all columns.
-	
-		If $inPlace is TRUE then this operation modifies the receiver otherwise
-		a copy is returned.
-	*/
+    /**
+     * Remove any rows where the value of the provided column exeeds the provided
+     * lower or upper boundary, for a given column.
+     * 
+     * If either the lower or upper constraint is not needed then passing in
+     * null will ignore it.
+     * 
+     * If no column is specified then the filter applies to all columns.
+     * 
+     * If $inPlace is TRUE then this operation modifies the receiver otherwise
+     * a copy is returned.
+     */
     public function prune($lower, $upper, $column = null, $inplace = false)
     {
         if ($inplace)
@@ -859,15 +875,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Return a new DataFrame containing the rows where the values of the
-		given column exceed a lower and/or upper boundary.
-	
-		If either the lower or upper constraint is not needed then passing in
-		null will ignore it.
-	
-		If no column is specified then the filter applies to all columns.
-	*/
+    /**
+     * Return a new DataFrame containing the rows where the values of the
+     * given column exceed a lower and/or upper boundary.
+     * 
+     * If either the lower or upper constraint is not needed then passing in
+     * null will ignore it.
+     * 
+     * If no column is specified then the filter applies to all columns.
+     */
     public function oob($lower, $upper, $column = null)
     {
         $data = [];
@@ -925,18 +941,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return new DataFrame($data, $cols);
     }
     
-	/*
-		Return a new 2-column DataFrame containing both the start and endpoints
-		where valus for a specific column exceed a given threshold.
-	
-		$direction can be OOB_LOWER, OOB_UPPER or OOB_ALL to dertermining if
-		the threshhold is calculated as a minimum boundary, maximum boundary or
-		either.
-	
-		Where oob() simply returns all the rows that exceed the threshold, this
-		method will return a DataFrame of regions, where the start and end
-		values refer to the row indexes of the current DataFrame.
-	*/
+    /**
+     * Return a new 2-column DataFrame containing both the start and endpoints
+     * where valus for a specific column exceed a given threshold.
+     * 
+     * $direction can be OOB_LOWER, OOB_UPPER or OOB_ALL to dertermining if
+     * the threshhold is calculated as a minimum boundary, maximum boundary or
+     * either.
+     * 
+     * Where oob() simply returns all the rows that exceed the threshold, this
+     * method will return a DataFrame of regions, where the start and end
+     * values refer to the row indexes of the current DataFrame.
+     */
     public function oob_region($theshhold, $direction, string $column)
     {
         $data = [];
@@ -978,24 +994,24 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($data) > 0 or self::empty_frames()) ? new DataFrame($data, ['start', 'end']) : null;
     }
     
-	/*
-		Return a new 3-column DataFrame containing areas in the current where
-		running values in a column exceed the given amount.
-	
-		For example, if you have a column of timestamps and those timestamps
-		typically increase by N minutes per row, then this method can be used to 
-		find possible missing rows where the jump time is greater than the expected
-		amount.
-	
-		For every row where the given amount is exceeded, a row in the resulting
-		DataFrame will exist where 'start' and 'end' list the values where the
-		gap was found. A third column 'segments' details how many multiples of
-		the amount exist between the values.
-	
-		Providing a column name to $resultColumn allows you to perform the
-		comparison in one column while filling the resulting DataFrame with
-		referenced values from another column.
-	*/
+    /**
+     * Return a new 3-column DataFrame containing areas in the current where
+     * running values in a column exceed the given amount.
+     * 
+     * For example, if you have a column of timestamps and those timestamps
+     * typically increase by N minutes per row, then this method can be used to
+     * find possible missing rows where the jump time is greater than the expected
+     * amount.
+     * 
+     * For every row where the given amount is exceeded, a row in the resulting
+     * DataFrame will exist where 'start' and 'end' list the values where the
+     * gap was found. A third column 'segments' details how many multiples of
+     * the amount exist between the values.
+     * 
+     * Providing a column name to $resultColumn allows you to perform the
+     * comparison in one column while filling the resulting DataFrame with
+     * referenced values from another column.
+     */
     public function gaps($amount, string $usingColumn, string $resultColumn = '')
     {
         $result = [];
@@ -1023,10 +1039,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return (count($result) > 0 or self::empty_frames()) ? new DataFrame($result, ['start', 'end', 'segments']) : null;
     }
     
-	/*
-		Produces a new DataFrame containing counts for the number of times each value
-		occurs in the given column.
-	*/
+    /**
+     * Produces a new DataFrame containing counts for the number of times each value
+     * occurs in the given column.
+     */
 	public function frequency(string $column)
 	{
         $out = [];
@@ -1035,13 +1051,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new DataFrame($out);
 	}
     
-	/*
-		Returns TRUE if ANY of the rows for a given column match
-		the given value.
-	
-		If no column is specified then the the check runs over
-		all columns.
-	*/
+    /**
+     * Returns TRUE if ANY of the rows for a given column match
+     * the given value.
+     * 
+     * If no column is specified then the the check runs over
+     * all columns.
+     */
     public function any($value, string $column = null)
     {
         foreach ($this->data as $row)
@@ -1065,13 +1081,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return false;
     }
     
-	/*
-		Returns TRUE if ALL of the rows for a given column match
-		the given value.
-	
-		If no column is specified then the the check runs over
-		all columns.
-	*/
+    /**
+     * Returns TRUE if ALL of the rows for a given column match
+     * the given value.
+     * 
+     * If no column is specified then the the check runs over
+     * all columns.
+     */
     public function all($value, $column = null)
     {
         foreach ($this->data as $row)
@@ -1095,16 +1111,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return true;
     }
     
-	/*
-		Convert all values in a given column to their absolute
-		value.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If $inPlace is TRUE then this operation modifies the current
-		DataFrame, otherwise a copy is returned.
-	*/
+    /**
+     * Convert all values in a given column to their absolute
+     * value.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If $inPlace is TRUE then this operation modifies the current
+     * DataFrame, otherwise a copy is returned.
+     */
     public function abs($column = null, $inplace = false)
     {
         if ($inplace)
@@ -1157,19 +1173,19 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute a standard deviation of one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	
-		$sample is passed through to the standard deviation calculation
-		to determine how the result is producted.
-	*/
+    /**
+     * Compute a standard deviation of one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     * 
+     * $sample is passed through to the standard deviation calculation
+     * to determine how the result is producted.
+     */
     public function std(bool $sample = false, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1190,16 +1206,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute a sum of one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute a sum of one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function sum(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1222,16 +1238,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the average of one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the average of one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function avg(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1253,16 +1269,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Return the maximum value present for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Return the maximum value present for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function max(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1283,16 +1299,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Return the minimum value present for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Return the minimum value present for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function min(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1313,16 +1329,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute a cumulative sum of one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute a cumulative sum of one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function cumsum(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1345,17 +1361,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the cumulative maximum value for one or more
-		columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the cumulative maximum value for one or more
+     * columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function cummax(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1377,17 +1393,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the cumulative minimum value for one or more
-		columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the cumulative minimum value for one or more
+     * columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function cummin(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1409,16 +1425,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the cumulative product for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the cumulative product for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function cumproduct(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1440,16 +1456,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Find the median value for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Find the median value for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function median(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1471,16 +1487,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the product for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the product for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function product(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1502,16 +1518,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Compute the variance for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the variance for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function variance(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1533,16 +1549,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Normalise one or more columns to a range between 0 and 1.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single array is 
-		returned, otherwise a DataFrame with the given columns is
-		produced.
-	*/
+    /**
+     * Normalise one or more columns to a range between 0 and 1.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single array is
+     * returned, otherwise a DataFrame with the given columns is
+     * produced.
+     */
     public function normalise(...$columns)
     {
         if (count($columns) == 0)
@@ -1578,27 +1594,32 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-    // Alias of self::normalise().
+    /**
+     * Alias of self::normalise().
+     */
     public function normalize(...$columns)
     {
         return self::normalize(...$columns);
     }
     
+    /**
+     * Alias of self::quantile().
+     */
     public function quartile($q, $column = null)
     {
         return $this->quantile($q, $column);
     }
     
-	/*
-		Compute the value for a given quantile for one or more columns.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		If exactly one column is supplied then a single value is 
-		returned, otherwise a DataFrame of 1 value per column is
-		produced.
-	*/
+    /**
+     * Compute the value for a given quantile for one or more columns.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * If exactly one column is supplied then a single value is
+     * returned, otherwise a DataFrame of 1 value per column is
+     * produced.
+     */
     public function quantile($q, $column = null)
     {
         if ($column)
@@ -1619,10 +1640,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Round all values in the DataFrame up or down to the given
-		decimal point precesion.
-	*/
+    /**
+     * Round all values in the DataFrame up or down to the given
+     * decimal point precesion.
+     */
     public function round($precision, int $mode = PHP_ROUND_HALF_UP)
     {
         foreach ($this->data as &$row)
@@ -1637,15 +1658,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Run a correlation over one or more columns to find similarities in values.
-	
-		If no column is specified then the the operation runs over
-		all columns.
-	
-		The resulting DataFrame is a matrix of values representing the closeness 
-		of the ajoining values.
-	*/
+    /**
+     * Run a correlation over one or more columns to find similarities in values.
+     * 
+     * If no column is specified then the the operation runs over
+     * all columns.
+     * 
+     * The resulting DataFrame is a matrix of values representing the closeness
+     * of the ajoining values.
+     */
     public function correlation(string $method, array $columns = null)
     {
         $columns = $this->determineColumns($columns);        
@@ -1665,13 +1686,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $r;
     }
     
-    // Alias of correlation().
+    /**
+     * Alias of correlation().
+     */
     public function corr(string $method, array $columns = null)
     {
         return $this->correlation($method, $columns);
     }
     
-    // Column and row structure must inversed for this to work.
+    /**
+     * Column and row structure must inversed for this to work.
+     */
     protected function correlation_matrix(array $matrix, string $method)
     {
         $accepted_methods = ['pearson', 'spearman'];
@@ -1706,18 +1731,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
 	/*
-		Produce a formatted string containing a summary of the DataFrame,
-		including:
-			- row count
-			- standard deviation for each column
-			- average for each column
-			- minimum value for eachc column 
-			- quantiles for 25%, 50% and 75%
-			- maximum value for eachc column 
-	
-		If any of the columns have a display transformer attached, then
-		they will be formatted accordingly prior to output.
-	*/
+     * Produce a formatted string containing a summary of the DataFrame,
+     * including:
+     *  - row count
+     *  - standard deviation for each column
+     *  - average for each column
+     *  - minimum value for eachc column
+     *  - quantiles for 25%, 50% and 75%
+     *  - maximum value for eachc column
+     * 
+     * If any of the columns have a display transformer attached, then
+     * they will be formatted accordingly prior to output.
+     */
     public function summary()
     {
         $count = $this->size()->data();
@@ -1765,13 +1790,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $str;
     }
     
-	/*
-		Produce a set of seperate DataFrames whereby all rows
-		of the current DataFrame are split by the given column.
-	
-		The result is a GroupedDataFrame, containing all resulting
-		DataFrames within.
-	*/
+    /**
+     * Produce a set of seperate DataFrames whereby all rows
+     * of the current DataFrame are split by the given column.
+     * 
+     * The result is a GroupedDataFrame, containing all resulting
+     * DataFrames within.
+     */
     public function groupby(string $column)
     {
         $groups = [];
@@ -1807,12 +1832,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return new GroupedDataFrame($dfs, $column);
     }
     
-	/*
-		Remove the specified columns from the DataFrame.
-	
-		If $inPlace is TRUE then this operation modifies the 
-		current DataFrame, otherwise a copy is returned.
-	*/
+    /**
+     * Remove the specified columns from the DataFrame.
+     * 
+     * If $inPlace is TRUE then this operation modifies the
+     * current DataFrame, otherwise a copy is returned.
+     */
     public function drop_columns($columns, $inplace = false)
     {
         $columns = $this->determineColumns($columns);
@@ -1864,14 +1889,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/*
-		Remove the rows starting at $start and ending at $end from
-		the DataFrame, where $start and $end represent the relevant
-		row indexes.
-	
-		If $inPlace is TRUE then this operation modifies the 
-		current DataFrame, otherwise a copy is returned.
-	*/
+    /**
+     * Remove the rows starting at $start and ending at $end from
+     * the DataFrame, where $start and $end represent the relevant
+     * row indexes.
+     * 
+     * If $inPlace is TRUE then this operation modifies the
+     * current DataFrame, otherwise a copy is returned.
+     */
     public function drop_rows($start, $end = null, $inplace = false)
     {
         if (is_numeric($start) and is_numeric($end)) {
@@ -1900,14 +1925,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
     
-	/* 
-		Find all duplicate values for a given set of columns, or
-		every column if none are supplied.
-	
-		This method only compares corresponding values between rows
-		of each column. That is, it the comparison is performed
-		vertically, not horizontally.
-	*/
+    /**
+     * Find all duplicate values for a given set of columns, or
+     * every column if none are supplied.
+     * 
+     * This method only compares corresponding values between rows
+     * of each column. That is, it the comparison is performed
+     * vertically, not horizontally.
+     */
     public function duplicated(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -1943,15 +1968,15 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return array_values($matches);
     }
     
-	/* 
-		Drop all duplicates values within the given columns, or
-		every column if none are supplied.
-	
-		If $inplace is TRUE then this operation is performed on 
-		receiver, otherwise a modified copy is returned.
-	
-		See duplicated() for more information.
-	*/
+	/*
+     * Drop all duplicates values within the given columns, or
+     * every column if none are supplied.
+     * 
+     * If $inplace is TRUE then this operation is performed on
+     * receiver, otherwise a modified copy is returned.
+     * 
+     * See duplicated() for more information.
+     */
     public function drop_duplicates($inplace = false, ...$columns)
     {
         $duplicates = $this->duplicated(...$columns);
@@ -1980,16 +2005,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Generate a copy of the DataFrame with the columns
-		and row indexes rotated to become the other.
-	
-		This has the effect of grouping common values under
-		a singular index.
-	
-		If a set of columns are provided then all other 
-		columns are stripped out of the result.
-	*/
+    /**
+     * Generate a copy of the DataFrame with the columns
+     * and row indexes rotated to become the other.
+     * 
+     * This has the effect of grouping common values under
+     * a singular index.
+     * 
+     * If a set of columns are provided then all other
+     * columns are stripped out of the result.
+     */
     public function pivot(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -2017,17 +2042,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $df;
     }
 	
-    /*
-		The reverse operation of pivot(). Rotate the row
-		indexes and columns back in the other direction.
-	
-		Note that $columns in this method actually refer
-		to the current grouped indexes that you wish to
-		revert back into actual columns. 
-	
-		If no columns are supplied then all indexes are 
-		used.
-	*/
+    /**
+     * The reverse operation of pivot(). Rotate the row indexes and columns back in the other direction.
+     * 
+     * Note that $columns in this method actually refer  to the current grouped indexes that you wish to
+     * revert back into actual columns.
+     * 
+     * If no columns are supplied then all indexes are used.
+     */
     public function depivot(...$columns)
     {
         if (! arrays::contains($this->headers, '_index') or ! arrays::contains($this->headers, '_value'))
@@ -2063,29 +2085,29 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return new DataFrame($rows);
     }
     
-	/*
-		Perform a complex transformation on the DataFrame where
-		by the column specified by $groupColumn becomes the index
-		and all other columns are merged via the merge map.
-	
-		The $mergeMap is an associative array where by each column
-		name specified as a key becomes a column in the resulting 
-		DataFrame and each column name specified as a value in the 
-		array becomes the corresponding value of that column.
-	*/
+    /**
+     * Perform a complex transformation on the DataFrame where
+     * by the column specified by $groupColumn becomes the index
+     * and all other columns are merged via the merge map.
+     * 
+     * The $mergeMap is an associative array where by each column
+     * name specified as a key becomes a column in the resulting
+     * DataFrame and each column name specified as a value in the
+     * array becomes the corresponding value of that column.
+     */
     public function transpose(string $groupColumn, array $mergeMap)
     {
         $this->sort($groupColumn);
         return new DataFrame(arrays::transpose($this->data, $groupColumn, $mergeMap));
     }
     
-	/*
-		Transform the value of one or more columns using the provided
-		callback. If no columns are specified then the operation
-		applies to all.
-	
-		Callback format: myFunc($value, $columnName, $rowIndex)
-	*/
+    /**
+     * Transform the value of one or more columns using the provided
+     * callback. If no columns are specified then the operation
+     * applies to all.
+     * 
+     * Callback format: myFunc($value, $columnName, $rowIndex)
+     */
     public function transform($callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -2100,18 +2122,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Add a new row to the DataFrame. $row is an associative
-		array where the keys should correspond to one or more
-		of the column headers in the DataFrame.
-    
-        $index is an optional keyed index to store the row 
-        against. If left empty then the next sequential
-        number shall be used.
-	
-		** Do not use new or unknown keys not already present
-		in the DataFrame.
-	*/
+    /**
+     * Add a new row to the DataFrame. $row is an associative
+     * array where the keys should correspond to one or more
+     * of the column headers in the DataFrame.
+     * 
+     * $index is an optional keyed index to store the row
+     * against. If left empty then the next sequential
+     * number shall be used.
+     * 
+     * ** Do not use new or unknown keys not already present
+     * in the DataFrame.
+     */
     public function add_row(array $row = [], $index = '')
     {
         if (count($this->data) == 0 and ! $this->headers) 
@@ -2125,14 +2147,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Add a new column to the DataFrame using the provided
-		callback to supply the data. The callback will be called
-		for every row currently in the DataFrame.
-	
-		Callback format: myFunc($row, $rowIndex)
-			- $row: associative array containing the value for each column.
-	*/
+    /**
+     * Add a new column to the DataFrame using the provided
+     * callback to supply the data. The callback will be called
+     * for every row currently in the DataFrame.
+     * 
+     * Callback format: myFunc($row, $rowIndex)
+     * - $row: associative array containing the value for each column.
+     */
     public function add_column(string $column, callable $callback)
     {
         foreach ($this->data as $index => &$row)
@@ -2143,21 +2165,21 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Apply a transformation callback for one or more columns when
-		outputing the DataFrame. If no columns are specified then the 
-		operation applies to all. 
-	
-		You might use this to format timestamps into dates or to unify
-		the display of currency.
-	
-		The callback should return the formatted value as it should be
-		displayed.
-	
-		This method does not modify the original value within the Dataframe.
-	
-		Callback format: myFunc($value)
-	*/
+    /**
+     * Apply a transformation callback for one or more columns when
+     * outputing the DataFrame. If no columns are specified then the
+     * operation applies to all.
+     * 
+     * You might use this to format timestamps into dates or to unify
+     * the display of currency.
+     * 
+     * The callback should return the formatted value as it should be
+     * displayed.
+     * 
+     * This method does not modify the original value within the Dataframe.
+     * 
+     * Callback format: myFunc($value)
+     */
     public function apply_display_transformer($callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -2167,45 +2189,45 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
-	/*
-		Produce a plot object (from the plotlib module) auto-configured
-		to create an image-based graph of one or more columns.
-	
-		$options represent the chart configuation.
-			- title: 		Filename of the chart. Defaults to the chart type 
-					 		and series being plotted.
-			- columns: 		Array of the column names to produce charts for.
-			- xcolumn: 		A column name to use as the x-axis.
-			- one: 			If TRUE then all columns will be rendered onto one chart. 
-				   			When FALSE multiple charts are generated.
-			- min:			The minimum Y-value to render.
-			- max:			The maximum Y-value to render.
-			- lines:		Array of infinite lines to be drawn onto the chart. Each 
-							item in the array is an associative array containing the 
-							the following options:
-							- direction: Either VERTICAL or HORIZONTAL.
-							- value: the numerical position on the respective axis that
-								 the line will be rendered.
-							- color: a colour name (e.g. red, blue etc) for the line 
-								 colour. Default is red.
-							- width: the stroke width of the line, default is 1.
-			- labelangle:	Angular rotation of the x-axis labels, default is 0.	
-			- bars:			A liniar array of values to represent an auxiliary/background
-							bar chart dataset. This will plot on it's own Y axis.
-			- barColor:		The colour of the bars dataset, default is 'lightgray'.
-			- barWidth:		The width of each bar in the bars dataset, default is 7.
-							
-		$type represents the type of chart (e.g line, box, bar etc). Possible values:
-				- line: 		line chart.
-				- linefill: 	line chart with filled area.
-				- bar:			bar chart.
-				- barstacked:	bar chart with each series stacked atop for each
-								data point.
-				- scatter:		scatter chart.
-				- box:			Similar to a stock plot but with a fifth median value.
-	
-		See: plotlib for possibly more information.
-	*/
+    /**
+     * Produce a plot object (from the plotlib module) auto-configured
+     * to create an image-based graph of one or more columns.
+     * 
+     * $options represent the chart configuation.
+     *  - title: 		Filename of the chart. Defaults to the chart type
+     *                  and series being plotted.
+     *  - columns: 		Array of the column names to produce charts for.
+     *  - xcolumn: 		A column name to use as the x-axis.
+     *  - one: 			If TRUE then all columns will be rendered onto one chart.
+     *                  When FALSE multiple charts are generated.
+     *  - min:			The minimum Y-value to render.
+     *  - max:			The maximum Y-value to render.
+     *  - lines:		Array of infinite lines to be drawn onto the chart. Each
+     *                  item in the array is an associative array containing the
+     *                  the following options:
+     *  - direction:    Either VERTICAL or HORIZONTAL.
+     *  - value:        the numerical position on the respective axis that
+     *                  the line will be rendered.
+     *  - color:        a colour name (e.g. red, blue etc) for the line
+     *                  colour. Default is red.
+     *  - width:        the stroke width of the line, default is 1.
+     *  - labelangle:	Angular rotation of the x-axis labels, default is 0.
+     *  - bars:			A liniar array of values to represent an auxiliary/background
+     *                  bar chart dataset. This will plot on it's own Y axis.
+     *  - barColor:		The colour of the bars dataset, default is 'lightgray'.
+     *  - barWidth:		The width of each bar in the bars dataset, default is 7.
+     * 
+     * $type represents the type of chart (e.g line, box, bar etc). Possible values:
+     *  - line: 		line chart.
+     *  - linefill: 	line chart with filled area.
+     *  - bar:			bar chart.
+     *  - barstacked:	bar chart with each series stacked atop for each
+     *                  data point.
+     *  - scatter:		scatter chart.
+     *  - box:			Similar to a stock plot but with a fifth median value.
+     * 
+     * See: plotlib for possibly more information.
+     */
     public function plot(string $type, array $options = [])
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
@@ -2260,17 +2282,17 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $plot;
     }
 	
-	/*
-		Produce a candle-stick chart, typically used for tracking stock prices.
-	
-		You must specify exactly 4 columns.
-	
-		$options can include a 'volume' key, specifying an associative array with
-		the subkeys 'key', 'color' and 'width' for representing volume as a
-		background bar chart.
-	
-		All other standard option keys can be passed in.
-	*/
+    /**
+     * Produce a candle-stick chart, typically used for tracking stock prices.
+     * 
+     * You must specify exactly 4 columns.
+     * 
+     * $options can include a 'volume' key, specifying an associative array with
+     * the subkeys 'key', 'color' and 'width' for representing volume as a
+     * background bar chart.
+     * 
+     * All other standard option keys can be passed in.
+     */
 	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = [])
 	{
 		$series = [ $this->matrix($openP, $closeP, $lowP, $highP) ];
@@ -2307,11 +2329,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $plot;
 	}
     
-	/*
-		Create a box plot chart, which is a singular data point of box-like
-		appearance that illustrates the place of the 25%, 50% and 75% quantiles
-		as well as the outer whiskers.
-	*/
+    /**
+     * Create a box plot chart, which is a singular data point of box-like
+     * appearance that illustrates the place of the 25%, 50% and 75% quantiles
+     * as well as the outer whiskers.
+     */
     public function box(...$columns)
     {
         $columns = $this->determineColumns($columns);
@@ -2331,18 +2353,18 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $plot;
     }
     
-	/*
-		Create a bar chart styled in the fashion of a histogram.
-    
-        $options is an array containing the following:
-            - columns: array of column names to use (1 or more)
-            - bins: number of bins to use for the histogram. Defaults to 10.
-            - cumulative: create a stacked histogram showing the accumulative scale 
-                along with the main. Defaults to FALSE
-            - title: displayed title of the histogram
-            - low: low range bins filter. Defaults to NULL.
-            - high: high range bins filter. Defaults to NULL.
-	*/
+    /**
+     * Create a bar chart styled in the fashion of a histogram.
+     * 
+     * @param $options is an array containing the following:
+     *  - columns:      array of column names to use (1 or more)
+     *  - bins:         number of bins to use for the histogram. Defaults to 10.
+     *  - cumulative:   create a stacked histogram showing the accumulative scale
+     *                  along with the main. Defaults to FALSE
+     *  - title:        displayed title of the histogram
+     *  - low:          low range bins filter. Defaults to NULL.
+     *  - high:         high range bins filter. Defaults to NULL.
+     */
     public function hist(array $options = [])
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
@@ -2423,13 +2445,13 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $plot;
     }
     
-	/*
-		Export the Dataframe to a delimetered text file (CSV).
-	
-		$filePath: The destination file.
-		$columns: The columns to export, or all if null is supplied.
-		$delimeter: The character that seperates each column.
-	*/
+    /**
+     * Export the Dataframe to a delimetered text file (CSV).
+     * 
+     * @param $filePath:    The destination file.
+     * @param $columns:     The columns to export, or all if null is supplied.
+     * @param $delimeter:   The character that seperates each column.
+     */
     public function export(string $filePath, array $columns = null, string $delimeter = ',')
     {
         $columns = $this->determineColumns($columns);

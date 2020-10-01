@@ -19,14 +19,14 @@ namespace sqonk\phext\datakit;
 * permissions and limitations under the License.
 */
 
-/*
-	The GroupedDataFrame is a special class that manages a group of 
-	normal DataFrame objects. Normal actions on the DataFrame can be
-	called and actioned against all objects within the set.
-
-	This class is used internally by DataFrame and you should not
-	need to instanciate it yourself under most conditions.
-*/
+/**
+ * The GroupedDataFrame is a special class that manages a group of
+ * normal DataFrame objects. Normal actions on the DataFrame can be
+ * called and actioned against all objects within the set.
+ * 
+ * This class is used internally by DataFrame and you should not
+ * need to instanciate it yourself under most conditions.
+ */
 
 use sqonk\phext\core\arrays;
 
@@ -81,12 +81,12 @@ class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 	
 	// -------- Main class methods
     
-    /*
-        Construct a new GroupedDataFrame containing multiple DataFrame objects.
-    
-        The $groupedColumn maintains a record of the singular DataFrame column
-        that was used to split the original frame.
-    */
+    /**
+     * Construct a new GroupedDataFrame containing multiple DataFrame objects.
+     * 
+     * @param $groups           Array of standard DataFrame objects.
+     * @param $groupedColumn    The singular DataFrame column that was used to split the original frame into the group.
+     */
     public function __construct(array $groups, string $groupedColumn)
     {
         $this->sets = $groups;
@@ -138,18 +138,18 @@ class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 	
 	
     
-	/* 
-		Combine all frames within the group back into a singular DataFrame.
-		
-		If $keepIndexes is set to true then all existing indexes are kept and
-		merged. Keep in mind that you may suffer data overwrite if one or more
-		of the frames in the set have matching indexes.
-	
-		If $keepIndexes is set to false then the new DataFrame reindexes all rows
-		with a standard numerical sequence starting from 0.
-	
-		Returns the new combined DataFrame.
-	*/
+    /**
+     * Combine all frames within the group back into a singular DataFrame.
+     * 
+     * If $keepIndexes is set to true then all existing indexes are kept and
+     * merged. Keep in mind that you may suffer data overwrite if one or more
+     * of the frames in the set have matching indexes.
+     * 
+     * @param $keepIndexes  When set to false then the new DataFrame reindexes all rows
+     *                      with a standard numerical sequence starting from 0.
+     * 
+     * @return the new combined DataFrame.
+     */
     public function combine(bool $keepIndexes = true)
     {
         $combined = [];
@@ -165,7 +165,13 @@ class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
         return $df;
     }
     
-	// Functional map to the standard export within DataFrame.
+	/**
+	 * Functional map to the standard export within DataFrame.
+	 * 
+	 * @param $dir          Path to the directory/folder to export the CSV to.
+	 * @param $columns      Which columns to export.
+	 * @param $delimeter    CSV delimiter.
+	 */
     public function export($dir = '.', array $columns = null, string $delimeter = ',')   
     {
         if (php_sapi_name() == 'cli' && $dir !== null && ! file_exists($dir))
