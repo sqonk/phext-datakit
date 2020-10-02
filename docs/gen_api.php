@@ -93,11 +93,13 @@ function generateForClass($cl)
                 if (is_array($def))
                     $def = '['.implode(', ', $def).']';
                 else if (is_string($def))
-                    $def = "'$def'";
+                    $def = sprintf("'%s'", str_replace(["\r", "\n"], ["\\r", "\\n"], $def));
                 else if ($p->isDefaultValueConstant())
                     $def = $p->getDefaultValueConstantName();
                 else if (is_null($def))
                     $def = 'null';
+                else if (is_bool($def))
+                    $def = $def ? 'true' : 'false';
                 
                 $str .= " = $def";
             }
