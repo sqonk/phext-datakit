@@ -353,7 +353,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * 
      * A callback may be provided as the match to perform more complex testing.
      * 
-     * Callback format: myFunc($value) -> bool
+     * Callback format: `myFunc($value) -> bool`
      * 
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
@@ -385,7 +385,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * 
      * A callback may be provided as the match to perform more complex testing.
      * 
-     * Callback format: myFunc($value) -> bool
+     * Callback format: `myFunc($value) -> bool`
      * 
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
@@ -429,7 +429,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Filter the contents of the array using the provided callback.
      * 
-     * Callback format: myFunc($value, $index) -> bool
+     * Callback format: `myFunc($value, $index) -> bool`
      */
 	public function filter(callable $callback)
 	{
@@ -444,7 +444,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Apply a callback function to the array.
      * 
-     * Callback format: myFunc($value, $index) -> mixed
+     * Callback format: `myFunc($value, $index) -> mixed`
      */
     public function map(callable $callback)
     {
@@ -576,7 +576,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     }
     
     /**
-     * Sort the array in either ASCENDING or DESCENDING direction.
+     * Sort the array in either `ASCENDING` or `DESCENDING` direction.
      */
     public function sort(bool $dir = ASCENDING)
     {

@@ -810,7 +810,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * lower or upper boundary, for a given column.
      * 
      * If either the lower or upper constraint is not needed then passing in
-     * null will ignore it.
+     * NULL will ignore it.
      * 
      * If no column is specified then the filter applies to all columns.
      * 
@@ -879,7 +879,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * given column exceed a lower and/or upper boundary.
      * 
      * If either the lower or upper constraint is not needed then passing in
-     * null will ignore it.
+     * NULL will ignore it.
      * 
      * If no column is specified then the filter applies to all columns.
      */
@@ -942,7 +942,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Return a new 2-column DataFrame containing both the start and end points
-     * where valus for a specific column exceed a given threshold.
+     * where values for a specific column exceed a given threshold.
      * 
      * $direction can be `OOB_LOWER`, `OOB_UPPER` or `OOB_ALL` to dertermining if
      * the threshhold is calculated as a minimum boundary, maximum boundary or
@@ -999,7 +999,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * For example, if you have a column of timestamps and those timestamps
      * typically increase by N minutes per row, then this method can be used to
-     * find possible missing rows where the jump time is greater than the expected
+     * find possible missing rows where the jump in time is greater than the expected
      * amount.
      * 
      * For every row where the given amount is exceeded, a row in the resulting
@@ -1660,11 +1660,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Run a correlation over one or more columns to find similarities in values.
      * 
-     * If no column is specified then the the operation runs over
-     * all columns.
-     * 
      * The resulting DataFrame is a matrix of values representing the closeness
      * of the ajoining values.
+     * 
+     * -- parameters:
+     * @param $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+     * @param $columns Columns to use for the correlation. If no column is specified then the the operation runs over all columns.
      */
     public function correlation(string $method, array $columns = null)
     {

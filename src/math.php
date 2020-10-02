@@ -29,10 +29,7 @@ use sqonk\phext\core\{arrays,numbers};
  * class of statistical calculations for the DataFrame and Vector classes.
  * 
  * Many of these methods are ported from open source code, freely available
- * on the internet. Credits and links
- * 
- * Many of the method names are descriptive enough to imply
- * what they produce as a result.
+ * on the internet. Credits and links are listed where applicable.
  */
 class math
 {
@@ -40,18 +37,22 @@ class math
      * Compute the standard deviation of the values in an array.
      * 
      * This method was originally provided by user levim@php.dot.net, in the comments
-     * for the correspdonging method of the stats PHP extension.
+     * for the corresponding method of the stats PHP extension.
      * see: https://www.php.net/manual/en/function.stats-standard-deviation.php#114473
      * 
      * Original comment:
-     * This user-land implementation follows the implementation quite strictly;
+     * 
+     * > This user-land implementation follows the implementation quite strictly;
      * it does not attempt to improve the code or algorithm in any way. It will
      * raise a warning if you have fewer than 2 values in your array, just like
      * the extension does (although as an E_USER_WARNING, not E_WARNING).
+     * >
      * 
+     * -- parameters:
      * @param array $a
      * @param bool $sample [optional] Defaults to false
-     * @return float|bool The standard deviation or false on error.
+     * 
+     * @return float|bool The standard deviation or FALSE on error.
      */
     static public function standard_deviation(array $a, $sample = false) {
         $n = count($a);

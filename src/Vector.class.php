@@ -245,7 +245,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * extending for $length.
      * 
      * This method is primarily designed to work with sequential indexes but
-     * will also work with associative arrays by and running the start and length
+     * will also work with associative arrays by running the start and length
      * through the extracted array keys.
      */
     public function remove_range(int $start, int $length)
@@ -408,7 +408,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the object closest to the middle of the array.
      * 
-     * - If the array is empty, returns null.
+     * - If the array is empty, returns NULL.
      * 
      * - If the array has less than 3 items, then return the first or last item depending
      * on the value of $weightedToFront.
@@ -418,8 +418,8 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * picks the item closer to the start or closer to the end.
      * 
      * -- parameters:
-     * @param $array                The array containing the items.
-     * @param $weightedToFront      TRUE to favour centre items closer to the start of the array and FALSE to prefer items closer to the end.
+     * @param $array The array containing the items.
+     * @param $weightedToFront TRUE to favour centre items closer to the start of the array and FALSE to prefer items closer to the end.
      */
 	public function middle(bool $weightedToFront = true)
 	{
@@ -452,7 +452,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * A callback may be provided as the match to perform more complex testing.
      * 
-     * Callback format: myFunc($value) -> bool
+     * Callback format: `myFunc($value) -> bool`
      * 
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
@@ -477,7 +477,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * A callback may be provided as the match to perform more complex testing.
      * 
-     * Callback format: myFunc($value) -> bool
+     * Callback format: `myFunc($value) -> bool`
      * 
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
@@ -496,7 +496,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Filter the contents of the vector using the provided callback.
      * 
-     * ARRAY_FILTER_USE_BOTH is provided as the flag to array_filter() so that
+     * `ARRAY_FILTER_USE_BOTH` is provided as the flag to array_filter() so that
      * your callback may optionally take the key as the second parameter.
      */
 	public function filter(callable $callback)
@@ -641,7 +641,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Apply a callback function to the vector. This version will optionally
      * supply the corresponding index/key of the value when needed.
      * 
-     * Callback format: myFunc($value, $index) -> mixed
+     * Callback format: `myFunc($value, $index) -> mixed`
      */
 	public function map(callable $callback)
 	{
@@ -753,7 +753,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
 	
     /**
-     * Sort the vector in either ASCENDING or DESCENDING direction. If the
+     * Sort the vector in either `ASCENDING` or `DESCENDING` direction. If the
      * vector is associative then index association is maintained, otherwise
      * new indexes are generated.
      * 
@@ -777,7 +777,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
     
     /**
-     * Sort the vector by the indexes in either ASCENDING or DESCENDING direction.
+     * Sort the vector by the indexes in either `ASCENDING` or `DESCENDING` direction.
      * 
      * Refer to the PHP documentation for all possible values on the $flags.
      */
@@ -1087,7 +1087,7 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * If the optional $initial is available, it will be used at the beginning
      * of the process, or as a final result in case the vector is empty.
      * 
-     * Callback format: myFunc( $carry, $item ) : mixed
+     * Callback format: `myFunc( $carry, $item ) : mixed`
      * 
      * Returns the resulting value.
      */
