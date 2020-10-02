@@ -2,6 +2,10 @@
 
 ------
 
+## API Reference
+
+
+
 [Importer](Importer.md)
 
 The Importer class allows easy importing of both small and large CSV files.
@@ -40,4 +44,54 @@ Both PackedSequence and PackedArray are array structures designed for working in
 - Use a [PackedArray](PackedArray.md) when your dataset has elements that vary in size and/or type.
 
 Both classes have almost identical methods and the examples below can easily be translated between the the two.
+
+[math](math.md)
+
+A broad collection of general mathematical functions. This class acts as a support class of statistical calculations for the DataFrame and Vector classes.
+
+------
+
+### Global Methods
+
+##### vector
+
+```php
+function vector(...$items)
+```
+
+Create a new Vector.
+
+This method takes a variable set of parameters, with each being added as a seperate element within the array.
+
+If only one element is passed in and it is an array then the array will be transformed into the vector.
+
+
+
+------
+
+##### dataframe
+
+```php
+function dataframe(?array $data = null, array $headers = null)
+```
+
+Create a new DataFrame with the supplied rows & columns. 
+
+**See** DataFrame::__construct() for a proper description.
+
+
+
+------
+
+### Constants
+
+```php
+define('ASCENDING', true);
+define('DESCENDING', false);
+define('OOB_ALL', 2);
+define('OOB_UPPER', 1);
+define('OOB_LOWER', 0);
+define('LAST_ROW', '__LASTROW__');
+define('FIRST_ROW', '__FIRSTROW__');
+```
 

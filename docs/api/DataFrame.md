@@ -249,7 +249,7 @@ Return the associative array containing all the data within the DataFrame.
 ------
 ##### flattened
 ```php
-public function flattened(bool $includeIndex = 1, $columns) 
+public function flattened(bool $includeIndex = true, $columns) 
 ```
 Flatten the DataFrame into a native array.
 
@@ -318,7 +318,7 @@ Return a copy of the DataFrame containing a random subset of the rows. The minim
 ------
 ##### change_header
 ```php
-public function change_header(string $column, string $newName, bool $inPlace = ) 
+public function change_header(string $column, string $newName, bool $inPlace = false) 
 ```
 Change the name of a column within the DataFrame. If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy is returned.
 
@@ -326,7 +326,7 @@ Change the name of a column within the DataFrame. If $inPlace is `TRUE` then thi
 ------
 ##### reindex_rows
 ```php
-public function reindex_rows(array $labels, bool $inPlace = ) 
+public function reindex_rows(array $labels, bool $inPlace = false) 
 ```
 Reindex the DataFrame using the provided labels. If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy is returned.
 
@@ -334,7 +334,7 @@ Reindex the DataFrame using the provided labels. If $inPlace is `TRUE` then this
 ------
 ##### reindex_rows_with_column
 ```php
-public function reindex_rows_with_column(string $column, bool $inPlace = ) 
+public function reindex_rows_with_column(string $column, bool $inPlace = false) 
 ```
 Push one of the columns out to become the row index. If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy is returned.
 
@@ -424,7 +424,7 @@ Return the number of rows.
 ------
 ##### values
 ```php
-public function values($columns = null, bool $filterNAN = 1) 
+public function values($columns = null, bool $filterNAN = true) 
 ```
 Return all values for the given column. If $filterNAN is `TRUE` then omit values that are `NULL`.
 
@@ -460,7 +460,7 @@ See: report()
 ------
 ##### clip
 ```php
-public function clip($lower, $upper, string $column = null, bool $inplace = ) 
+public function clip($lower, $upper, string $column = null, bool $inplace = false) 
 ```
 Provide a maximum or minimum (or both) constraint for the values on column.
 
@@ -476,11 +476,11 @@ If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy
 ------
 ##### prune
 ```php
-public function prune($lower, $upper, $column = null, $inplace = ) 
+public function prune($lower, $upper, $column = null, $inplace = false) 
 ```
 Remove any rows where the value of the provided column exeeds the provided lower or upper boundary, for a given column.
 
-If either the lower or upper constraint is not needed then passing in null will ignore it.
+If either the lower or upper constraint is not needed then passing in `NULL` will ignore it.
 
 If no column is specified then the filter applies to all columns.
 
@@ -494,7 +494,7 @@ public function oob($lower, $upper, $column = null)
 ```
 Return a new DataFrame containing the rows where the values of the given column exceed a lower and/or upper boundary.
 
-If either the lower or upper constraint is not needed then passing in null will ignore it.
+If either the lower or upper constraint is not needed then passing in `NULL` will ignore it.
 
 If no column is specified then the filter applies to all columns.
 
@@ -504,7 +504,7 @@ If no column is specified then the filter applies to all columns.
 ```php
 public function oob_region($theshhold, $direction, string $column) 
 ```
-Return a new 2-column DataFrame containing both the start and end points where valus for a specific column exceed a given threshold.
+Return a new 2-column DataFrame containing both the start and end points where values for a specific column exceed a given threshold.
 
 $direction can be `OOB_LOWER`, `OOB_UPPER` or `OOB_ALL` to dertermining if the threshhold is calculated as a minimum boundary, maximum boundary or either.
 
@@ -518,7 +518,7 @@ public function gaps($amount, string $usingColumn, string $resultColumn = '')
 ```
 Return a new 3-column DataFrame containing areas in the current where running values in a column exceed the given amount.
 
-For example, if you have a column of timestamps and those timestamps typically increase by N minutes per row, then this method can be used to find possible missing rows where the jump time is greater than the expected amount.
+For example, if you have a column of timestamps and those timestamps typically increase by N minutes per row, then this method can be used to find possible missing rows where the jump in time is greater than the expected amount.
 
 For every row where the given amount is exceeded, a row in the resulting DataFrame will exist where 'start' and 'end' list the values where the gap was found. A third column 'segments' details how many multiples of the amount exist between the values.
 
@@ -556,7 +556,7 @@ If no column is specified then the the check runs over all columns.
 ------
 ##### abs
 ```php
-public function abs($column = null, $inplace = ) 
+public function abs($column = null, $inplace = false) 
 ```
 Convert all values in a given column to their absolute value.
 
@@ -568,7 +568,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### std
 ```php
-public function std(bool $sample = , $columns) 
+public function std(bool $sample = false, $columns) 
 ```
 Compute a standard deviation of one or more columns.
 
@@ -754,7 +754,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### round
 ```php
-public function round($precision, int $mode = sqonk\phext\datakit\PHP_ROUND_HALF_UP) 
+public function round($precision, int $mode = PHP_ROUND_HALF_UP) 
 ```
 Round all values in the DataFrame up or down to the given decimal point precesion.
 
@@ -766,9 +766,10 @@ public function correlation(string $method, array $columns = null)
 ```
 Run a correlation over one or more columns to find similarities in values.
 
-If no column is specified then the the operation runs over all columns.
-
 The resulting DataFrame is a matrix of values representing the closeness of the ajoining values.
+
+- **$method** Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+- **$columns** Columns to use for the correlation. If no column is specified then the the operation runs over all columns.
 
 
 ------
@@ -800,7 +801,7 @@ The result is a GroupedDataFrame, containing all resulting DataFrames within.
 ------
 ##### drop_columns
 ```php
-public function drop_columns($columns, $inplace = ) 
+public function drop_columns($columns, $inplace = false) 
 ```
 Remove the specified columns from the DataFrame.
 
@@ -810,7 +811,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### drop_rows
 ```php
-public function drop_rows($start, $end = null, $inplace = ) 
+public function drop_rows($start, $end = null, $inplace = false) 
 ```
 Remove the rows starting at $start and ending at $end from the DataFrame, where $start and $end represent the relevant row indexes.
 
@@ -830,7 +831,7 @@ This method only compares corresponding values between rows of each column. That
 ------
 ##### drop_duplicates
 ```php
-public function drop_duplicates($inplace = , $columns) 
+public function drop_duplicates($inplace = false, $columns) 
 ```
 No documentation available.
 

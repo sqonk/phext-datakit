@@ -73,7 +73,8 @@ public function __construct(array $groups, string $groupedColumn)
 ```
 Construct a new GroupedDataFrame containing multiple DataFrame objects.
 
-@param $groups           Array of standard DataFrame objects. @param $groupedColumn    The singular DataFrame column that was used to split the original frame into the group.
+- **$groups** Array of standard DataFrame objects.
+- **$groupedColumn** The singular DataFrame column that was used to split the original frame into the group.
 
 
 ------
@@ -103,13 +104,13 @@ No documentation available.
 ------
 ##### combine
 ```php
-public function combine(bool $keepIndexes = 1) 
+public function combine(bool $keepIndexes = true) 
 ```
 Combine all frames within the group back into a singular DataFrame.
 
 If $keepIndexes is set to true then all existing indexes are kept and merged. Keep in mind that you may suffer data overwrite if one or more of the frames in the set have matching indexes.
 
-@param $keepIndexes  When set to false then the new DataFrame reindexes all rows with a standard numerical sequence starting from 0.
+- **$keepIndexes**  When set to `FALSE` then the new DataFrame reindexes all rows with a standard numerical sequence starting from 0.
 
 **Returns:**  the new combined DataFrame.
 
@@ -121,7 +122,9 @@ public function export($dir = '.', array $columns = null, string $delimeter = ',
 ```
 Functional map to the standard export within DataFrame.
 
-@param $dir          Path to the directory/folder to export the CSV to. @param $columns      Which columns to export. @param $delimeter    CSV delimiter.
+- **$dir** Path to the directory/folder to export the CSV to.
+- **$columns** Which columns to export.
+- **$delimeter** CSV delimiter.
 
 
 ------

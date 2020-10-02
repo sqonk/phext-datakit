@@ -12,7 +12,7 @@ A selection of routines for importing data from various static sources such as f
 ------
 ##### csv_data
 ```php
-static public function csv_data(callable $callback, string $data, bool $headersAreFirstRow = , array $customHeaders = null) 
+static public function csv_data(callable $callback, string $data, bool $headersAreFirstRow = false, array $customHeaders = null) 
 ```
 Import a CSV from a string containing the data.
 
@@ -35,7 +35,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 ------
 ##### csv_file
 ```php
-static public function csv_file(callable $callback, string $filePath, bool $headersAreFirstRow = , array $customHeaders = null, int $skipRows = 0) 
+static public function csv_file(callable $callback, string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) 
 ```
 Import a CSV from a local file on disk or a URL.
 
@@ -63,7 +63,7 @@ This method will throw an exception if an error is encountered at any point in t
 ------
 ##### yield_csv
 ```php
-static public function yield_csv(string $filePath, bool $headersAreFirstRow = , array $customHeaders = null, int $skipRows = 0) 
+static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) 
 ```
 Import a CSV from a local file on disk or a URL and yield one row at a time as a generator to an outer loop.
 
@@ -84,7 +84,7 @@ This method will throw an exception if an error is encountered at any point in t
 ------
 ##### csv_dataframe
 ```php
-static public function csv_dataframe(string $filePath, $columns = , int $skipRows = 0) 
+static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0) 
 ```
 Import a CSV directly into a DataFrame object in the most memory efficient way.
 
@@ -102,8 +102,7 @@ This method will throw an exception if an error is encountered at any point in t
 ------
 ##### delimitered_data
 ```php
-static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '
-', bool $headersAreFirstRow = , $customHeaders = null) 
+static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '\n', bool $headersAreFirstRow = false, $customHeaders = null) 
 ```
 Split a string of raw data down into rows and columns.
 

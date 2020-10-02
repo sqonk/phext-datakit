@@ -1,8 +1,8 @@
 <?php
 require '../vendor/autoload.php';
 
-use sqonk\phext\datakit\{PackedSequence,PackedArray,DataFrame,Vector,Importer,SMA,EMA,GroupedDataFrame,DOMScraper};
-use sqonk\phext\core\strings;
+use sqonk\phext\datakit\{PackedSequence,PackedArray,DataFrame,Vector,Importer,SMA,EMA,GroupedDataFrame,DOMScraper,math};
+use sqonk\phext\core\{strings,arrays};
 
 
 function formatComment($comment)
@@ -19,7 +19,7 @@ function formatComment($comment)
             if (! contains($para, '-- parameters:'))
             {
                 // standard paragraph
-                if (! starts_with(trim($para), '```'))
+                if (! starts_with(trim($para), '```') and ! starts_with(trim($para), '>'))
                     $para = str_replace(["\n", "\t", "@return"], [" ", " ", "**Returns:** "], $para);
                 //$para = preg_replace('/\$(.+?)\b/i', "\$$1", $para);
             }
@@ -95,7 +95,7 @@ function generateForClass($cl)
                 else if (is_string($def))
                     $def = sprintf("'%s'", str_replace(["\r", "\n"], ["\\r", "\\n"], $def));
                 else if ($p->isDefaultValueConstant())
-                    $def = $p->getDefaultValueConstantName();
+                    $def = arrays::last(explode('\\', $p->getDefaultValueConstantName()));
                 else if (is_null($def))
                     $def = 'null';
                 else if (is_bool($def))
@@ -130,6 +130,7 @@ function main()
     generateForClass(EMA::class);
     generateForClass(GroupedDataFrame::class);
     generateForClass(DOMScraper::class);
+    generateForClass(math::class);
 }
 
 main();

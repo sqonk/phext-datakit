@@ -235,7 +235,7 @@ public function remove_range(int $start, int $length)
 ```
 Remove a range of values from the vector from the index at $start and extending for $length.
 
-This method is primarily designed to work with sequential indexes but will also work with associative arrays by and running the start and length through the extracted array keys.
+This method is primarily designed to work with sequential indexes but will also work with associative arrays by running the start and length through the extracted array keys.
 
 
 ------
@@ -327,18 +327,18 @@ Return the last object in the array or null if array is empty.
 ------
 ##### middle
 ```php
-public function middle(bool $weightedToFront = 1) 
+public function middle(bool $weightedToFront = true) 
 ```
 Return the object closest to the middle of the array.
 
-- If the array is empty, returns null.
+- If the array is empty, returns `NULL`.
 
 - If the array has less than 3 items, then return the first or last item depending on the value of $weightedToFront.
 
 - Otherwise return the object closest to the centre. When dealing with arrays containing an even number of items then it will use the value of $weightedToFront to determine if it picks the item closer to the start or closer to the end.
 
-- **$array**                The array containing the items.
-- **$weightedToFront**      `TRUE` to favour centre items closer to the start of the array and `FALSE` to prefer items closer to the end.
+- **$array** The array containing the items.
+- **$weightedToFront** `TRUE` to favour centre items closer to the start of the array and `FALSE` to prefer items closer to the end.
 
 
 ------
@@ -360,13 +360,13 @@ Returns the first item in the vector found in the heystack or `FALSE` if none ar
 ------
 ##### any
 ```php
-public function any($match, bool $strict = ) 
+public function any($match, bool $strict = false) 
 ```
 Returns `TRUE` if any of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
 A callback may be provided as the match to perform more complex testing.
 
-Callback format: myFunc($value) -> bool
+Callback format: `myFunc($value) -> bool`
 
 For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-safe comparisons.
 
@@ -374,13 +374,13 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = ) 
+public function all($match, bool $strict = false) 
 ```
 Returns `TRUE` if all of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
 A callback may be provided as the match to perform more complex testing.
 
-Callback format: myFunc($value) -> bool
+Callback format: `myFunc($value) -> bool`
 
 For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-safe comparisons.
 
@@ -392,7 +392,7 @@ public function filter(callable $callback)
 ```
 Filter the contents of the vector using the provided callback.
 
-ARRAY_FILTER_USE_BOTH is provided as the flag to array_filter() so that your callback may optionally take the key as the second parameter.
+`ARRAY_FILTER_USE_BOTH` is provided as the flag to array_filter() so that your callback may optionally take the key as the second parameter.
 
 
 ------
@@ -482,7 +482,7 @@ public function map(callable $callback)
 ```
 Apply a callback function to the vector. This version will optionally supply the corresponding index/key of the value when needed.
 
-Callback format: myFunc($value, $index) -> mixed
+Callback format: `myFunc($value, $index) -> mixed`
 
 
 ------
@@ -506,7 +506,7 @@ Pad vector to the specified length with a value. If $count is positive then the 
 ------
 ##### pop
 ```php
-public function pop(int $amount = 1, bool $returnRemoved = ) 
+public function pop(int $amount = 1, bool $returnRemoved = false) 
 ```
 Shorten the vector by removing elements off the end of the array to the number specified in $amount. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes.
 
@@ -514,7 +514,7 @@ Shorten the vector by removing elements off the end of the array to the number s
 ------
 ##### shift
 ```php
-public function shift(int $amount = 1, bool $returnRemoved = ) 
+public function shift(int $amount = 1, bool $returnRemoved = false) 
 ```
 Modify the vector by removing elements off the beginning of the array to the number specified in $amount and return a vector containing the items removed. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes
 
@@ -534,7 +534,7 @@ For example, if you had a result set that contained a 'type' field, a correspond
 ------
 ##### groupby
 ```php
-public function groupby($keys, bool $keepEmptyKeys = ) 
+public function groupby($keys, bool $keepEmptyKeys = false) 
 ```
 Transfom the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in.
 
@@ -546,9 +546,9 @@ Unless $keepEmptyKeys is set to `TRUE` then any key values that are empty will b
 ------
 ##### sort
 ```php
-public function sort(bool $dir = sqonk\phext\datakit\ASCENDING, int $flags = sqonk\phext\datakit\SORT_REGULAR) 
+public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) 
 ```
-Sort the vector in either ASCENDING or DESCENDING direction. If the vector is associative then index association is maintained, otherwise new indexes are generated.
+Sort the vector in either `ASCENDING` or `DESCENDING` direction. If the vector is associative then index association is maintained, otherwise new indexes are generated.
 
 Refer to the PHP documentation for all possible values on the $flags.
 
@@ -556,9 +556,9 @@ Refer to the PHP documentation for all possible values on the $flags.
 ------
 ##### ksort
 ```php
-public function ksort(bool $dir = sqonk\phext\datakit\ASCENDING, int $flags = sqonk\phext\datakit\SORT_REGULAR) 
+public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) 
 ```
-Sort the vector by the indexes in either ASCENDING or DESCENDING direction.
+Sort the vector by the indexes in either `ASCENDING` or `DESCENDING` direction.
 
 Refer to the PHP documentation for all possible values on the $flags.
 
@@ -658,7 +658,7 @@ Return a copy of the vector containing a random subset of the elements. The mini
 ------
 ##### clip
 ```php
-public function clip($lower, $upper, bool $inplace = ) 
+public function clip($lower, $upper, bool $inplace = false) 
 ```
 Provide a maximum or minimum (or both) constraint for the values in the vector.
 
@@ -672,7 +672,7 @@ If $inPlace is `TRUE` then this operation modifies this vector otherwise a copy 
 ------
 ##### reverse
 ```php
-public function reverse(bool $inplace = ) 
+public function reverse(bool $inplace = false) 
 ```
 Reverse the current order of the values within the vector. If $inplace is `TRUE` then this method will modify the existing vector instead of returning a copy.
 
@@ -680,7 +680,7 @@ Reverse the current order of the values within the vector. If $inplace is `TRUE`
 ------
 ##### flip
 ```php
-public function flip(bool $inplace = ) 
+public function flip(bool $inplace = false) 
 ```
 Swap the keys and values within the vector. If $inplace is `TRUE` then this method will modify the existing vector instead of returning a copy.
 
@@ -782,7 +782,7 @@ Iteratively reduce the vector to a single value using a callback function.
 
 If the optional $initial is available, it will be used at the beginning of the process, or as a final result in case the vector is empty.
 
-Callback format: myFunc( $carry, $item ) : mixed
+Callback format: `myFunc( $carry, $item ) : mixed`
 
 Returns the resulting value.
 
@@ -808,7 +808,7 @@ Alias of self::normalise().
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = sqonk\phext\datakit\PHP_ROUND_HALF_UP) 
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) 
 ```
 Round all values in the vector up or down to the given decimal point precesion.
 

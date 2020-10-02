@@ -276,13 +276,13 @@ Return the last value in the array.
 ------
 ##### any
 ```php
-public function any($match, bool $strict = ) 
+public function any($match, bool $strict = false) 
 ```
 Returns `TRUE` if any of the values within the array are equal to the value provided, `FALSE` otherwise.
 
 A callback may be provided as the match to perform more complex testing.
 
-Callback format: myFunc($value) -> bool
+Callback format: `myFunc($value) -> bool`
 
 For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-safe comparisons.
 
@@ -290,13 +290,13 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = ) 
+public function all($match, bool $strict = false) 
 ```
 Returns `TRUE` if all of the values within the array are equal to the value provided, `FALSE` otherwise.
 
 A callback may be provided as the match to perform more complex testing.
 
-Callback format: myFunc($value) -> bool
+Callback format: `myFunc($value) -> bool`
 
 For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-safe comparisons.
 
@@ -332,7 +332,7 @@ public function filter(callable $callback)
 ```
 Filter the contents of the array using the provided callback.
 
-Callback format: myFunc($value, $index) -> bool
+Callback format: `myFunc($value, $index) -> bool`
 
 
 ------
@@ -342,7 +342,7 @@ public function map(callable $callback)
 ```
 Apply a callback function to the array.
 
-Callback format: myFunc($value, $index) -> mixed
+Callback format: `myFunc($value, $index) -> mixed`
 
 
 ------
@@ -408,9 +408,9 @@ Swap the positions of 2 values within the array.
 ------
 ##### sort
 ```php
-public function sort(bool $dir = sqonk\phext\datakit\ASCENDING) 
+public function sort(bool $dir = ASCENDING) 
 ```
-Sort the array in either ASCENDING or DESCENDING direction.
+Sort the array in either `ASCENDING` or `DESCENDING` direction.
 
 
 ------
@@ -488,7 +488,7 @@ Compute the variance of values within the array. If the array is empty `FALSE` w
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = sqonk\phext\datakit\PHP_ROUND_HALF_UP) 
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) 
 ```
 Round all values in the array up or down to the given decimal point precesion.
 
