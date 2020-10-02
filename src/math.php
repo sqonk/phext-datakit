@@ -343,17 +343,14 @@ class math
     }
 	
     /**
-     * --------------
+     * Compute a correlation using the Spearman method with the two given arrays.
      * 
-     * These methods are part of the spearman correlation and were originally
-     * written by Alejandro Mitrou.
+     * This method are part of the spearman correlation and were originally
+     * written by Alejandro Mitrou under the GPL license. 
      * 
+     * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
      */
-	
-	/**
-	 * Compute a correlation using the Spearman method with the two given arrays.
-	 */
     static public function correlation_spearman(array $data1, array $data2)
     {
         if (count($data1) == 0 && count($data2) == 0) {
@@ -383,12 +380,18 @@ class math
         if (! isset($ranking1) || ! isset($ranking2)) 
             return null; 
         
-        $distances = math::distances($ranking1, $ranking2);
-        return math::coefficient($distances);
+        $distances = self::distances($ranking1, $ranking2);
+        return self::coefficient($distances);
     }
     
 	/**
 	 * Compute the coefficient of an array of distances.
+	 * 
+	 * This method are part of the spearman correlation and were originally
+     * written by Alejandro Mitrou under the GPL license. 
+     * 
+     * see: http://www.wisetonic.com/
+     * see: https://github.com/amitrou/Spearman-Correlation
 	 */
     static public function coefficient(array $distances)
     {
@@ -407,6 +410,12 @@ class math
     /**
      * Return an array of distances computed from the values of the two
      * given arrays.
+     * 
+     * This method are part of the spearman correlation and were originally
+     * written by Alejandro Mitrou under the GPL license. 
+     * 
+     * see: http://www.wisetonic.com/
+     * see: https://github.com/amitrou/Spearman-Correlation
      */
     static public function distances(array $ranking1, array $ranking2)
     {
@@ -417,6 +426,13 @@ class math
         return $distances;
     }
     
+    /**
+     * This method are part of the spearman correlation and were originally
+     * written by Alejandro Mitrou under the GPL license. 
+     * 
+     * see: http://www.wisetonic.com/
+     * see: https://github.com/amitrou/Spearman-Correlation
+     */
     static protected function ranking(array $data)
     {
         $ranking    = array();
