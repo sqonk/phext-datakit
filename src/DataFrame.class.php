@@ -244,10 +244,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 *	Flatten the DataFrame into a native array.
 	 *
-	 *	@param $includeIndex: 	If TRUE then use the DataFrame indexes as the 
-	 *					        keys in the array.
-	 *	@param $columns		    One or more columns that should be used in the
-     *					        resulting array, all columns if null is supplied.
+	 * -- parameters:
+	 *	@param $includeIndex: 	If TRUE then use the DataFrame indexes as the keys in the array.
+	 *	@param $columns:		One or more columns that should be used in the resulting array, all columns if null is supplied.
      *   
      *  The columns can be supplied as a set of variable arguments or an array as the second argument.
 	*/
@@ -455,7 +454,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * more columns. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: myFunc($value, $column, $rowIndex) -> bool
+     * Callback format: `myFunc($value, $column, $rowIndex) -> bool`
      * 
      * For a row to make it into the filtered set then only ONE
      * of the columns need to equate to true from the callback.
@@ -487,7 +486,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * more columns. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: myFunc($value, $column, $rowIndex) -> bool
+     * Callback format: `myFunc($value, $column, $rowIndex) -> bool`
      * 
      * For a row to make it into the filtered set then ALL
      * of the columns need to equate to true from the callback.
@@ -517,7 +516,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * more columns. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: myFunc($row, $rowIndex) -> bool
+     * Callback format: `myFunc($row, $rowIndex) -> bool`
      * 
      * This function differs from filter() and unanfilter() in that
      * it passes the whole row to the callback. This is useful
@@ -537,9 +536,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Sort the DataFrame via one or more columns.
      * 
-     * If the last parameter passed in is either TRUE or FALSE
+     * If the last parameter passed in is either `ASCENDING` or `DESCENDING`
      * then it will determine the direction in which the dataframe
-     * is ordered. The default is ascending (TRUE).
+     * is ordered. The default is `ASCENDING`.
      */
     public function sort(...$columns)
     {
@@ -569,7 +568,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Sort the DataFrame using a callback and one or more columns.
      * 
-     * Callback format: myFunc($value1, $value2, $column) -> bool
+     * Callback format: `myFunc($value1, $value2, $column) -> bool`
      */
     public function usort(callable $callback, ...$columns)
     {
@@ -942,14 +941,14 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Return a new 2-column DataFrame containing both the start and endpoints
+     * Return a new 2-column DataFrame containing both the start and end points
      * where valus for a specific column exceed a given threshold.
      * 
-     * $direction can be OOB_LOWER, OOB_UPPER or OOB_ALL to dertermining if
+     * $direction can be `OOB_LOWER`, `OOB_UPPER` or `OOB_ALL` to dertermining if
      * the threshhold is calculated as a minimum boundary, maximum boundary or
      * either.
      * 
-     * Where oob() simply returns all the rows that exceed the threshold, this
+     * Where `oob()` simply returns all the rows that exceed the threshold, this
      * method will return a DataFrame of regions, where the start and end
      * values refer to the row indexes of the current DataFrame.
      */
@@ -2014,6 +2013,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If a set of columns are provided then all other
      * columns are stripped out of the result.
+     * 
+     * @return A new DataFrame with the modified data.
      */
     public function pivot(...$columns)
     {
@@ -2049,6 +2050,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * revert back into actual columns.
      * 
      * If no columns are supplied then all indexes are used.
+     * 
+     * @return A new DataFrame with the modified data.
      */
     public function depivot(...$columns)
     {
@@ -2094,6 +2097,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * name specified as a key becomes a column in the resulting
      * DataFrame and each column name specified as a value in the
      * array becomes the corresponding value of that column.
+     * 
+     * @return A new DataFrame with the transposed data.
      */
     public function transpose(string $groupColumn, array $mergeMap)
     {
@@ -2106,7 +2111,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * callback. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: myFunc($value, $columnName, $rowIndex)
+     * Callback format: `myFunc($value, $columnName, $rowIndex) -> mixed`
      */
     public function transform($callback, ...$columns)
     {
@@ -2152,7 +2157,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * callback to supply the data. The callback will be called
      * for every row currently in the DataFrame.
      * 
-     * Callback format: myFunc($row, $rowIndex)
+     * Callback format: `myFunc($row, $rowIndex)`
      * - $row: associative array containing the value for each column.
      */
     public function add_column(string $column, callable $callback)
@@ -2178,7 +2183,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This method does not modify the original value within the Dataframe.
      * 
-     * Callback format: myFunc($value)
+     * Callback format: `myFunc($value) -> mixed`
      */
     public function apply_display_transformer($callback, ...$columns)
     {
@@ -2193,39 +2198,32 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Produce a plot object (from the plotlib module) auto-configured
      * to create an image-based graph of one or more columns.
      * 
-     * $options represent the chart configuation.
-     *  - title: 		Filename of the chart. Defaults to the chart type
-     *                  and series being plotted.
-     *  - columns: 		Array of the column names to produce charts for.
-     *  - xcolumn: 		A column name to use as the x-axis.
-     *  - one: 			If TRUE then all columns will be rendered onto one chart.
-     *                  When FALSE multiple charts are generated.
-     *  - min:			The minimum Y-value to render.
-     *  - max:			The maximum Y-value to render.
-     *  - lines:		Array of infinite lines to be drawn onto the chart. Each
-     *                  item in the array is an associative array containing the
-     *                  the following options:
-     *  - direction:    Either VERTICAL or HORIZONTAL.
-     *  - value:        the numerical position on the respective axis that
-     *                  the line will be rendered.
-     *  - color:        a colour name (e.g. red, blue etc) for the line
-     *                  colour. Default is red.
-     *  - width:        the stroke width of the line, default is 1.
-     *  - labelangle:	Angular rotation of the x-axis labels, default is 0.
-     *  - bars:			A liniar array of values to represent an auxiliary/background
-     *                  bar chart dataset. This will plot on it's own Y axis.
-     *  - barColor:		The colour of the bars dataset, default is 'lightgray'.
-     *  - barWidth:		The width of each bar in the bars dataset, default is 7.
+     * -- parameters:
+     * @param $options represent the chart configuation.
+     *  -- title: 		Filename of the chart. Defaults to the chart type and series being plotted.
+     *  -- columns: 	Array of the column names to produce charts for.
+     *  -- xcolumn: 	A column name to use as the x-axis.
+     *  -- one: 		If TRUE then all columns will be rendered onto one chart. When FALSE multiple charts are generated.
+     *  -- min:			The minimum Y-value to render.
+     *  -- max:			The maximum Y-value to render.
+     *  -- lines:		Array of infinite lines to be drawn onto the chart. Each item in the array is an associative array containing the following options:
+     *  --- direction:    Either VERTICAL or HORIZONTAL.
+     *  --- value:        the numerical position on the respective axis that the line will be rendered.
+     *  --- color:        A colour name (e.g. red, blue etc) for the line colour. Default is red.
+     *  --- width:        The stroke width of the line, default is 1.
+     *  -- labelangle:	  Angular rotation of the x-axis labels, default is 0.
+     *  -- bars:		A liniar array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
+     *  -- barColor:	The colour of the bars dataset, default is 'lightgray'.
+     *  -- barWidth:	The width of each bar in the bars dataset, default is 7.
+     * @param $type represents the type of chart (e.g line, box, bar etc). Possible values:
+     *  -- line: 		line chart.
+     *  -- linefill: 	line chart with filled area.
+     *  -- bar:			bar chart.
+     *  -- barstacked:	bar chart with each series stacked atop for each data point.
+     *  -- scatter:		scatter chart.
+     *  -- box:			Similar to a stock plot but with a fifth median value.
      * 
-     * $type represents the type of chart (e.g line, box, bar etc). Possible values:
-     *  - line: 		line chart.
-     *  - linefill: 	line chart with filled area.
-     *  - bar:			bar chart.
-     *  - barstacked:	bar chart with each series stacked atop for each
-     *                  data point.
-     *  - scatter:		scatter chart.
-     *  - box:			Similar to a stock plot but with a fifth median value.
-     * 
+     * @return A BulkPlot object containing the plots to be rendered.
      * See: plotlib for possibly more information.
      */
     public function plot(string $type, array $options = [])
@@ -2292,6 +2290,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * background bar chart.
      * 
      * All other standard option keys can be passed in.
+     * 
+     * @return A BulkPlot object containing the plots to be rendered.
      */
 	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = [])
 	{
@@ -2333,6 +2333,8 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Create a box plot chart, which is a singular data point of box-like
      * appearance that illustrates the place of the 25%, 50% and 75% quantiles
      * as well as the outer whiskers.
+     * 
+     * @return A BulkPlot object containing the plots to be rendered.
      */
     public function box(...$columns)
     {
@@ -2356,14 +2358,16 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Create a bar chart styled in the fashion of a histogram.
      * 
+     * -- parameters:
      * @param $options is an array containing the following:
-     *  - columns:      array of column names to use (1 or more)
-     *  - bins:         number of bins to use for the histogram. Defaults to 10.
-     *  - cumulative:   create a stacked histogram showing the accumulative scale
-     *                  along with the main. Defaults to FALSE
-     *  - title:        displayed title of the histogram
-     *  - low:          low range bins filter. Defaults to NULL.
-     *  - high:         high range bins filter. Defaults to NULL.
+     *  -- columns:      array of column names to use (1 or more)
+     *  -- bins:         number of bins to use for the histogram. Defaults to 10.
+     *  -- cumulative:   create a stacked histogram showing the accumulative scale along with the main. Defaults to FALSE.
+     *  -- title:        displayed title of the histogram.
+     *  -- low:          low range bins filter. Defaults to NULL.
+     *  -- high:         high range bins filter. Defaults to NULL.
+     * 
+     * @return A BulkPlot object containing the plots to be rendered.
      */
     public function hist(array $options = [])
     {
@@ -2448,6 +2452,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Export the Dataframe to a delimetered text file (CSV).
      * 
+     * -- parameters:
      * @param $filePath:    The destination file.
      * @param $columns:     The columns to export, or all if null is supplied.
      * @param $delimeter:   The character that seperates each column.

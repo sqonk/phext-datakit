@@ -407,16 +407,19 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * Return the object closest to the middle of the array.
+     * 
      * - If the array is empty, returns null.
+     * 
      * - If the array has less than 3 items, then return the first or last item depending
      * on the value of $weightedToFront.
+     * 
      * - Otherwise return the object closest to the centre. When dealing with arrays containing
      * an even number of items then it will use the value of $weightedToFront to determine if it
      * picks the item closer to the start or closer to the end.
      * 
+     * -- parameters:
      * @param $array                The array containing the items.
-     * @param $weightedToFront      TRUE to favour centre items closer to the start of the array
-     *                              and FALSE to prefer items closer to the end.
+     * @param $weightedToFront      TRUE to favour centre items closer to the start of the array and FALSE to prefer items closer to the end.
      */
 	public function middle(bool $weightedToFront = true)
 	{

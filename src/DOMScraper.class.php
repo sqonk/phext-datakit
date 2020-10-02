@@ -64,17 +64,23 @@ class DOMScraper
      * and providing them back to your program for processing.
      * 
      * Elements array should be in format of:
+     * 
+     * ```
      * [   'type' => 'id|tag|class',
      * 'name' => 'elementID or tag type',
      * (optional) 'item' => int (used to only work said index in resulting array).
      * ]
+     * ```
      * 
      * e.g.
+     * 
+     * ```
      * traverse([
      * ['type' => 'id', 'name' => 'container'], # fetch DIV called container
      * ['type' => 'tag', 'name' => 'table', 'item' => 0] # get the first table inside 'container'
      * ['type' => 'tag' 'name' => 'tr'] # fetch all rows inside the first table.
      * ]);
+     * ```
      * 
      * In this example the table rows found from the last definition in the elements array would
      * be passed to your callback, which takes one parameter only.

@@ -2442,7 +2442,7 @@ A selection of routines for importing data from various static sources such as f
     @param $callback                A callback method to process each row. Pass in NULL to have the data returned at the end.
     @param $data                    The CSV data in string format.
     @param $headersAreFirstRow      TRUE or FALSE, where are not the first row contains headers.
-    @param $customHeaders           If the headers are not in the first row then you may optionally pass in an array of headers to be used in place.
+    @param $customHeaders           A custom set of column names to use as the keys in each row.
 
     @returns                        TRUE upon successful completion or the imported data array when no callback is being used. 
 */
@@ -2470,7 +2470,7 @@ static public function csv_data(?callable $callback, string $data, bool $headers
     @param $callback                A callback method to process each row. Pass in NULL to have the data returned at the end.
     @param $filePath                Path or URL to the file.
     @param $headersAreFirstRow      TRUE or FALSE, where are not the first row contains headers.
-    @param $customHeaders           If the headers are not in the first row then you may optionally pass in an array of headers to be used in place.
+    @param $customHeaders           A custom set of column names to use as the keys in each row.
     @param $skipRows                Skip over a specified number of rows at the start. Defaults to 0.
 
     @returns                        TRUE upon successful completion or the imported data array when no callback is being used. 
