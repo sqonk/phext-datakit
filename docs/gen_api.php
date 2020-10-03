@@ -83,6 +83,9 @@ function generateForClass($cl)
             if ($type = $p->getType())
                 $str .= $type->getName()." ";
             
+            if ($p->isVariadic())
+                $str .= '...';
+            
             if ($p->isPassedByReference())
                 $str .= '&$'.$p->getName();
             else

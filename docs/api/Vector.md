@@ -171,7 +171,7 @@ Setting the limit to `NULL` will remove the constraint altogether, which is the 
 ------
 ##### add
 ```php
-public function add($values) 
+public function add(...$values) 
 ```
 Add one or more elements to the end of the vector.
 
@@ -187,7 +187,7 @@ Set an element in the array to the provided key/index.
 ------
 ##### prepend
 ```php
-public function prepend($values) 
+public function prepend(...$values) 
 ```
 Add one or more elements to the start of the vector. If a constraint is set then excess elements will be removed from the end.
 
@@ -223,7 +223,7 @@ Return the value for a specified key. If the key is not present in the array the
 ------
 ##### remove
 ```php
-public function remove($keys) 
+public function remove(...$keys) 
 ```
 Remove one or more elements from the vector.
 
@@ -249,7 +249,7 @@ Remove all elements from the array.
 ------
 ##### isset
 ```php
-public function isset($keys) 
+public function isset(...$keys) 
 ```
 Returns `TRUE` if all the specified keys are present within the vector, `FALSE` otherwise.
 
@@ -398,7 +398,7 @@ Filter the contents of the vector using the provided callback.
 ------
 ##### intersect
 ```php
-public function intersect($otherArrays) 
+public function intersect(...$otherArrays) 
 ```
 Filter the vector based on the contents of one or more vectors or arrays and return a new vector containing just the elements that were deemed to exist in all.
 
@@ -406,7 +406,7 @@ Filter the vector based on the contents of one or more vectors or arrays and ret
 ------
 ##### diff
 ```php
-public function diff($otherArrays) 
+public function diff(...$otherArrays) 
 ```
 Filter the vector based on the contents of one or more arrays and return a new vector containing just the elements that were deemed not to be present in all.
 
@@ -414,7 +414,7 @@ Filter the vector based on the contents of one or more arrays and return a new v
 ------
 ##### only_keys
 ```php
-public function only_keys($keys) 
+public function only_keys(...$keys) 
 ```
 Return a copy of the vector containing only the values for the specified keys, with index association being maintained.
 

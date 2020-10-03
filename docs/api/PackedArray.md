@@ -182,7 +182,7 @@ Return the number of elements within the array.
 ------
 ##### add
 ```php
-public function add($values) 
+public function add(...$values) 
 ```
 Add a value to the end of the array. If the value is an array or a traversable object then it will be serialised prior to being stored.
 

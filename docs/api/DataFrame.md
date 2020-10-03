@@ -249,7 +249,7 @@ Return the associative array containing all the data within the DataFrame.
 ------
 ##### flattened
 ```php
-public function flattened(bool $includeIndex = true, $columns) 
+public function flattened(bool $includeIndex = true, ...$columns) 
 ```
 Flatten the DataFrame into a native array.
 
@@ -342,7 +342,7 @@ Push one of the columns out to become the row index. If $inPlace is `TRUE` then 
 ------
 ##### filter
 ```php
-public function filter(callable $callback, $columns) 
+public function filter(callable $callback, ...$columns) 
 ```
 Filter the DataFrame using the provided callback and one or more columns. If no columns are specified then the operation applies to all.
 
@@ -354,7 +354,7 @@ For a row to make it into the filtered set then only ONE of the columns need to 
 ------
 ##### unanfilter
 ```php
-public function unanfilter(callable $callback, $columns) 
+public function unanfilter(callable $callback, ...$columns) 
 ```
 Filter the DataFrame using the provided callback and one or more columns. If no columns are specified then the operation applies to all.
 
@@ -378,7 +378,7 @@ This function differs from filter() and unanfilter() in that it passes the whole
 ------
 ##### sort
 ```php
-public function sort($columns) 
+public function sort(...$columns) 
 ```
 Sort the DataFrame via one or more columns.
 
@@ -388,7 +388,7 @@ If the last parameter passed in is either `ASCENDING` or `DESCENDING` then it wi
 ------
 ##### usort
 ```php
-public function usort(callable $callback, $columns) 
+public function usort(callable $callback, ...$columns) 
 ```
 Sort the DataFrame using a callback and one or more columns.
 
@@ -432,7 +432,7 @@ Return all values for the given column. If $filterNAN is `TRUE` then omit values
 ------
 ##### report_data
 ```php
-public function report_data($columns) 
+public function report_data(...$columns) 
 ```
 Return the data array with all values parsed by any registered transformers.
 
@@ -442,7 +442,7 @@ If you wish to output a report to something else other than the command line the
 ------
 ##### report
 ```php
-public function report($columns) 
+public function report(...$columns) 
 ```
 Produce a formatted string, suitable for outputing to the commandline or browser, detailing all rows and the desired columns. If no columns are specified then all columns are used.
 
@@ -450,7 +450,7 @@ Produce a formatted string, suitable for outputing to the commandline or browser
 ------
 ##### print
 ```php
-public function print($columns) 
+public function print(...$columns) 
 ```
 Print to stdout the report for this DataFrame.
 
@@ -568,7 +568,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### std
 ```php
-public function std(bool $sample = false, $columns) 
+public function std(bool $sample = false, ...$columns) 
 ```
 Compute a standard deviation of one or more columns.
 
@@ -582,7 +582,7 @@ $sample is passed through to the standard deviation calculation to determine how
 ------
 ##### sum
 ```php
-public function sum($columns) 
+public function sum(...$columns) 
 ```
 Compute a sum of one or more columns.
 
@@ -594,7 +594,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### avg
 ```php
-public function avg($columns) 
+public function avg(...$columns) 
 ```
 Compute the average of one or more columns.
 
@@ -606,7 +606,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### max
 ```php
-public function max($columns) 
+public function max(...$columns) 
 ```
 Return the maximum value present for one or more columns.
 
@@ -618,7 +618,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### min
 ```php
-public function min($columns) 
+public function min(...$columns) 
 ```
 Return the minimum value present for one or more columns.
 
@@ -630,7 +630,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cumsum
 ```php
-public function cumsum($columns) 
+public function cumsum(...$columns) 
 ```
 Compute a cumulative sum of one or more columns.
 
@@ -642,7 +642,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cummax
 ```php
-public function cummax($columns) 
+public function cummax(...$columns) 
 ```
 Compute the cumulative maximum value for one or more columns.
 
@@ -654,7 +654,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cummin
 ```php
-public function cummin($columns) 
+public function cummin(...$columns) 
 ```
 Compute the cumulative minimum value for one or more columns.
 
@@ -666,7 +666,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cumproduct
 ```php
-public function cumproduct($columns) 
+public function cumproduct(...$columns) 
 ```
 Compute the cumulative product for one or more columns.
 
@@ -678,7 +678,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### median
 ```php
-public function median($columns) 
+public function median(...$columns) 
 ```
 Find the median value for one or more columns.
 
@@ -690,7 +690,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### product
 ```php
-public function product($columns) 
+public function product(...$columns) 
 ```
 Compute the product for one or more columns.
 
@@ -702,7 +702,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### variance
 ```php
-public function variance($columns) 
+public function variance(...$columns) 
 ```
 Compute the variance for one or more columns.
 
@@ -714,7 +714,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### normalise
 ```php
-public function normalise($columns) 
+public function normalise(...$columns) 
 ```
 Normalise one or more columns to a range between 0 and 1.
 
@@ -726,7 +726,7 @@ If exactly one column is supplied then a single array is returned, otherwise a D
 ------
 ##### normalize
 ```php
-public function normalize($columns) 
+public function normalize(...$columns) 
 ```
 Alias of self::normalise().
 
@@ -821,7 +821,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### duplicated
 ```php
-public function duplicated($columns) 
+public function duplicated(...$columns) 
 ```
 Find all duplicate values for a given set of columns, or every column if none are supplied.
 
@@ -831,7 +831,7 @@ This method only compares corresponding values between rows of each column. That
 ------
 ##### drop_duplicates
 ```php
-public function drop_duplicates($inplace = false, $columns) 
+public function drop_duplicates($inplace = false, ...$columns) 
 ```
 No documentation available.
 
@@ -839,7 +839,7 @@ No documentation available.
 ------
 ##### pivot
 ```php
-public function pivot($columns) 
+public function pivot(...$columns) 
 ```
 Generate a copy of the DataFrame with the columns and row indexes rotated to become the other.
 
@@ -853,7 +853,7 @@ If a set of columns are provided then all other columns are stripped out of the 
 ------
 ##### depivot
 ```php
-public function depivot($columns) 
+public function depivot(...$columns) 
 ```
 The reverse operation of pivot(). Rotate the row indexes and columns back in the other direction.
 
@@ -879,7 +879,7 @@ The $mergeMap is an associative array where by each column name specified as a k
 ------
 ##### transform
 ```php
-public function transform($callback, $columns) 
+public function transform($callback, ...$columns) 
 ```
 Transform the value of one or more columns using the provided callback. If no columns are specified then the operation applies to all.
 
@@ -911,7 +911,7 @@ Callback format: `myFunc($row, $rowIndex)` - $row: associative array containing 
 ------
 ##### apply_display_transformer
 ```php
-public function apply_display_transformer($callback, $columns) 
+public function apply_display_transformer($callback, ...$columns) 
 ```
 Apply a transformation callback for one or more columns when outputing the DataFrame. If no columns are specified then the operation applies to all.
 
@@ -977,7 +977,7 @@ All other standard option keys can be passed in.
 ------
 ##### box
 ```php
-public function box($columns) 
+public function box(...$columns) 
 ```
 Create a box plot chart, which is a singular data point of box-like appearance that illustrates the place of the 25%, 50% and 75% quantiles as well as the outer whiskers.
 

@@ -180,7 +180,7 @@ Print all values to the output buffer.
 ------
 ##### add
 ```php
-public function add($values) 
+public function add(...$values) 
 ```
 Add a value to the end of the array. If the value is an array or a traversable object then each element of it will instead be added.
 
