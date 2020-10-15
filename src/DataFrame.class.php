@@ -1855,14 +1855,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }
             }
             $this->data = arrays::compact($this->data);
-            $headers = [];
-            foreach ($this->headers as $h) {
-                foreach ($columns as $column) {
-                    if ($h != $column)
-                        $headers[] = $h;
-                }
-            }
-            $this->headers = $headers;
+            $this->headers = array_filter($this->headers, function($h) use ($columns) {
+                return (! arrays::contains($columns, $h));
+            });
+            
             foreach ($columns as $column) {
                 if (isset($this->transformers[$column]) && $column != $this->indexHeader) 
                     unset($this->transformers[$column]);
@@ -1882,7 +1878,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }
                 $modified[$index] = $row;
             }
-            $copy = $this->clone($modified);
+            $headers = array_filter($this->headers, function($h) use ($columns) {
+                return (! arrays::contains($columns, $h));
+            });
+            
+            $copy = $this->clone($modified, $headers);
             foreach ($columns as $column) {
                 if (isset($copy->transformers[$column]) && $column != $copy->indexHeader)
                     unset($copy->transformers[$column]);
