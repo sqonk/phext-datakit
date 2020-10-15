@@ -2454,11 +2454,12 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Export the Dataframe to a delimetered text file (CSV).
      * 
      * -- parameters:
-     * @param $filePath:    The destination file.
-     * @param $columns:     The columns to export, or all if null is supplied.
-     * @param $delimeter:   The character that seperates each column.
+     * @param $filePath: The destination file.
+     * @param $columns: The columns to export, or all if null is supplied.
+     * @param $delimeter: The character that seperates each column.
+     * @param $includeIndex: When TRUE, adds the dataframe row index as the first column.
      */
-    public function export(string $filePath, array $columns = null, string $delimeter = ',')
+    public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true)
     {
         $columns = $this->determineColumns($columns);
 		
@@ -2466,7 +2467,10 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         {
             $fh = fopen($filePath, 'w+');
             if ($this->showHeaders) {
-                $headers = array_merge([''], $columns);
+                $start = [];
+                if ($includeIndex)
+                    $start[] = 'index';
+                $headers = array_merge($start, $columns);
                 fputcsv($fh, $headers, $delimeter);
             }
 
@@ -2477,7 +2481,9 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     $tr = $this->transformers[$this->indexHeader];
                     $index = $tr($index);
                 }
-                $out = [$index];
+                $out = [];
+                if ($includeIndex)
+                    $out[] = $index;
                 foreach ($columns as $h) {
                     $value = $row[$h] ?? '';
                     if ($value && isset($this->transformers[$h])) {
