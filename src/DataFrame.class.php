@@ -152,9 +152,11 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
      */
-    public function clone($data)
+    public function clone($data, $headers = null)
     {
-        $copy = new DataFrame($data, $this->headers);
+        if (! $headers)
+            $headers = $this->headers;
+        $copy = new DataFrame($data, $headers);
         $copy->transformers = $this->transformers;
         $copy->indexHeader = $this->indexHeader;
         $copy->showGenericIndexes = $this->showGenericIndexes;
