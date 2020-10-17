@@ -181,7 +181,7 @@ Produce an exact replica of the dataframe.
 ------
 ##### clone
 ```php
-public function clone($data) 
+public function clone($data, $headers = null) 
 ```
 Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
 
@@ -1005,13 +1005,14 @@ Create a bar chart styled in the fashion of a histogram.
 ------
 ##### export
 ```php
-public function export(string $filePath, array $columns = null, string $delimeter = ',') 
+public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true) 
 ```
 Export the Dataframe to a delimetered text file (CSV).
 
-- **$filePath:**    The destination file.
-- **$columns:**     The columns to export, or all if null is supplied.
-- **$delimeter:**   The character that seperates each column.
+- **$filePath:** The destination file.
+- **$columns:** The columns to export, or all if null is supplied.
+- **$delimeter:** The character that seperates each column.
+- **$includeIndex:** When `TRUE`, adds the dataframe row index as the first column.
 
 
 ------
