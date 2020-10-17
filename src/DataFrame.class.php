@@ -2210,7 +2210,7 @@ class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *  -- min:			The minimum Y-value to render.
      *  -- max:			The maximum Y-value to render.
      *  -- lines:		Array of infinite lines to be drawn onto the chart. Each item in the array is an associative array containing the following options:
-     *  --- direction:    Either 'v' or 'h'.
+     *  --- direction:    Either 'v' (Vertical) or 'h' (Horizontal).
      *  --- value:        the numerical position on the respective axis that the line will be rendered.
      *  --- color:        A colour name (e.g. red, blue etc) for the line colour. Default is red.
      *  --- width:        The stroke width of the line, default is 1.
