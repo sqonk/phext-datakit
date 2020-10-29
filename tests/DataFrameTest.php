@@ -304,15 +304,15 @@ class DataFrameTest extends TestCase
     public function testAbs()
     {
          $data = [
-             ['sepal-length' => '5.1', 'sepal-width' => '-3.5', 'petal-length' => '1.4', 'petal-width' =>  '0.2', 'class' => 'Iris-setosa'],
-             ['sepal-length' => '-7.0', 'sepal-width' => '3.2', 'petal-length' => '4.7', 'petal-width' =>  '-1.4', 'class' => 'Iris-versicolor'],
-             ['sepal-length' => '6.3', 'sepal-width' => '3.3', 'petal-length' => '-6.0', 'petal-width' => '-2.5', 'class' => 'Iris-virginica']
+             ['sepal-length' => 5.1, 'sepal-width' => -3.5, 'petal-length' => 1.4, 'petal-width' =>  0.2, 'class' => 'Iris-setosa'],
+             ['sepal-length' => -7.0, 'sepal-width' => 3.2, 'petal-length' => 4.7, 'petal-width' =>  -1.4, 'class' => 'Iris-versicolor'],
+             ['sepal-length' => 6.3, 'sepal-width' => 3.3, 'petal-length' => -6.0, 'petal-width' => -2.5, 'class' => 'Iris-virginica']
          ];
          $df = dataframe($data);
          
          // return copy
          foreach ($df->abs('sepal-length') as $i => $row)
-             $this->assertEquals(abs($data[$i]['sepal-length']), $row['sepal-length']);
+             $this->assertEquals(abs((float)$data[$i]['sepal-length']), (float)$row['sepal-length']);
         
          foreach ($df->abs() as $i => $row) {
              foreach ($row as $key => $v)
@@ -685,7 +685,7 @@ class DataFrameTest extends TestCase
         [$df] = $this->_loadFrame();
         
         $df->apply_display_transformer(function($v) {
-            return floor($v);
+            return floor((float)$v);
         }, 'sepal-length', 'sepal-width');
         
         $exp = [
