@@ -232,18 +232,25 @@ class PackedArrayTest extends TestCase
     
     public function testSort()
     {
+        $input = [5,2,3,1,4];
+        $ps = new PackedArray($input);
+        $ps->sort();
+        $expected = [1,2,3,4,5];
+        foreach ($ps as $i => $v)
+            $this->assertSame($expected[$i], $v);
+        
         $input = ['John', 'Sarah', 'Derek', 'Cameron'];
         $ps = new PackedArray($input);
         $ps->sort();
         
         $expected = ['Cameron', 'Derek', 'John', 'Sarah'];
         foreach ($ps as $i => $v)
-            $this->assertSame($v, $expected[$i]);
+            $this->assertSame($expected[$i], $v);
         
         $ps->sort(DESCENDING);
         $expected = array_reverse($expected);
         foreach ($ps as $i => $v)
-            $this->assertSame($v, $expected[$i]);
+            $this->assertSame($expected[$i], $v);
     }
     
     public function testReverse()
@@ -254,7 +261,7 @@ class PackedArrayTest extends TestCase
         
         $expected = array_reverse($input);
         foreach ($ps as $i => $v)
-            $this->assertSame($v, $expected[$i]);
+            $this->assertSame($expected[$i], $v);
     }
     
     public function testSum()

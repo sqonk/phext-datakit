@@ -646,22 +646,37 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         $start = 0;
         $end = $this->count()-1;
         
+        $cmp = function($newValue, $current) use ($dir) {
+            if ($current === null)
+                return ($dir == ASCENDING) ? -1 : 1; // packed arrays do not store NULL so this is the initialiser.
+            if (is_string($newValue) and is_string($current)) {
+                return strcmp($newValue, $current);
+            }            
+            
+            return $newValue <=> $current;
+        };
+        
         while ($start < $end)
         {
-            $minMax = ($dir == ASCENDING) ? PHP_INT_MAX : -PHP_INT_MAX;
+            $minMax = null;
             $selectedIndex = 0;
             foreach (sequence($start, $end) as $index)
             {
                 $value = $this->get($index);
                 if ($key !== null)
-                    $value = $value[$key];
-                if (($dir == ASCENDING and $value < $minMax) or ($dir == DESCENDING and $value > $minMax)) {
+                    $value = $value[$key];                
+                
+                if (($dir == ASCENDING && $cmp($value, $minMax) < 0) 
+                    or ($dir == DESCENDING and $cmp($value, $minMax) > 0)) {
                     $selectedIndex = $index;
                     $minMax = $value;
                 }
             }
             
-            $this->swap($selectedIndex, $start);
+            if ($selectedIndex != $start) {
+                $this->swap($selectedIndex, $start);
+            }
+                
             $start++; 
         }
         
