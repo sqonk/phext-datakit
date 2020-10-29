@@ -41,6 +41,24 @@ class VectorTest extends TestCase
         
         $this->assertSame(null, $ps->get(-1));
         $this->assertSame(null, $ps->get(9));
+        
+        $arr = vector([
+            ['name' => 'Phil', 'age' => 20],
+            ['name' => 'Jane', 'age' => 25],
+            ['name' => 'Jill', 'age' => 18],
+            ['name' => 'Jane', 'age' => 33], // duplicate name test (should find prior item).
+        ]);
+        
+        $r = $arr->get(function($item) {
+            return $item['name'] == 'Jane';
+        });
+        
+        $this->assertEquals(['name' => 'Jane', 'age' => 25], $r);
+        
+        $r = $arr->get(function($item) {
+            return $item['name'] == 'Bob';
+        });
+        $this->assertNull($r);
     }
     
     public function testAdd()

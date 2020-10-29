@@ -219,6 +219,14 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      */
 	public function get($key, $default = null)
 	{
+        if (is_callable($key) && ! is_string($key))
+        {
+            foreach ($this->_array as $index => $item) {
+                if ($key($item, $index))
+                    return $item;
+            }
+            return null;
+        }
 		return $this->_array[$key] ?? $default;
 	}
 	
