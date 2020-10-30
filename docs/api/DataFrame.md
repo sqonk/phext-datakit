@@ -153,7 +153,7 @@ No documentation available.
 ------
 ##### __toString
 ```php
-public function __toString() 
+public function __toString() : string
 ```
 Converting the DataFrame to a string produces the report.
 

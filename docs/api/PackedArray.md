@@ -102,7 +102,7 @@ No documentation available.
 ------
 ##### __toString
 ```php
-public function __toString() 
+public function __toString() : string
 ```
 No documentation available.
 

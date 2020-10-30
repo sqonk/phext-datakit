@@ -214,8 +214,16 @@ class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
 	
     /**
-     * Return the value for a specified key. If the key is not present
-     * in the array then the default value is returned instead.
+     * Return the value for a specified key. If the key is not present in the array then 
+     * the default value is returned instead.
+     * 
+     * You may optionally pass a callback as the $key. When you do this the callback is used
+     * as a filter, where by the first item the callback returns TRUE for will be returned
+     * by the function as the found object.
+     * 
+     * Callback format: `myFunc($value, $index) -> bool`
+     * 
+     * @return The found item or NULL if nothing was located for the key.
      */
 	public function get($key, $default = null)
 	{

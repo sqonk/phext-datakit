@@ -35,7 +35,7 @@ Return the calculated result of the EMA as it currently stands. You can optional
 ------
 ##### __toString
 ```php
-public function __toString() 
+public function __toString() : string
 ```
 No documentation available.
 
