@@ -27,7 +27,7 @@ use sqonk\phext\core\{arrays,strings};
  * In particular it sports a variety of basic mathematical and
  * statistical functions.
  */
-class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
+final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 {
 	// The internal native array used to store the data.
 	protected $_array;

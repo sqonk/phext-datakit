@@ -37,7 +37,7 @@ use sqonk\phext\core\{arrays,strings};
  * 
  * Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
  */
-class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
+final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     protected $data;
     protected $headers = [];

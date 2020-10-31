@@ -30,7 +30,7 @@ namespace sqonk\phext\datakit;
 
 use sqonk\phext\core\arrays;
 
-class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
+final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 {
 	// The collection of DataFrames.
     protected $sets;
