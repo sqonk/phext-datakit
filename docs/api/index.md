@@ -45,6 +45,10 @@ Both PackedSequence and PackedArray are array structures designed for working in
 
 Both classes have almost identical methods and the examples below can easily be translated between the the two.
 
+[CSV](CSV.md)
+
+The CSV class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
+
 [math](math.md)
 
 A broad collection of general mathematical functions. This class acts as a support class of statistical calculations for the DataFrame and Vector classes.

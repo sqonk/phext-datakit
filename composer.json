@@ -17,6 +17,7 @@
     ],
 	"autoload": {
 		"files": [
+            "src/CSV.class.php",
 			"src/Importer.class.php", 
 			"src/math.php", 
 			"src/SMA.class.php", 
