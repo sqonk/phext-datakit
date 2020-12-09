@@ -46,8 +46,8 @@ class ImporterTest extends TestCase
         $loaded = Importer::csv_data(null, $dataNoHead, false, ['Name', 'Age', 'Height']);
         $this->assertSame($expected, $loaded);
         
-        $this->expectException(LengthException::class);
-        Importer::csv_data(null, '', true);
+        $this->expectError(E_USER_NOTICE);
+        $this->assertSame(false, Importer::csv_data(null, '', true));
     }
     
     public function testCsvFile()
@@ -70,7 +70,7 @@ class ImporterTest extends TestCase
         $loaded = Importer::csv_file(null, __DIR__.'/iris-h.csv', false, $headers, 1);
         $this->assertSame($expected, $loaded);
         
-        $this->expectException(Exception::class);
+        $this->expectException(RuntimeException::class);
         Importer::csv_file(null, __DIR__.'/nofilehere.csv', true);
     }
     
@@ -93,7 +93,7 @@ class ImporterTest extends TestCase
             $loaded[] = $row;
         $this->assertSame($expected, $loaded);
         
-        $this->expectException(Exception::class);
+        $this->expectException(RuntimeException::class);
         foreach (Importer::yield_csv(__DIR__.'/nofilehere.csv', false, $headers, 1) as $row);
     }
     
@@ -112,7 +112,7 @@ class ImporterTest extends TestCase
         $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', $headers, 1);
         $this->assertSame($expected, $df->data());
         
-        $this->expectException(Exception::class);
+        $this->expectException(RuntimeException::class);
         Importer::csv_dataframe(__DIR__.'/nofilehere.csv', true);
     }
     
@@ -139,7 +139,7 @@ class ImporterTest extends TestCase
         }, $dataNoHead, ',', "\n", false, $headers);
         $this->assertSame($expected, $loaded);
         
-        $this->expectException(LengthException::class);
-        Importer::delimitered_data(function($row) {}, '', ',');
+        $this->expectError(E_USER_WARNING);
+        $this->assertSame(false, Importer::delimitered_data(function($row) {}, '', ','));
     }
 }

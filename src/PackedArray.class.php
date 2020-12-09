@@ -331,8 +331,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      */
     public function pop(&$poppedValue = null)
     {
-        if ($this->count() == 0)
-            throw new \Exception('Tried to pop an array that has no elements.');
+        if ($this->count() == 0) {
+            trigger_error('Tried to pop an array that has no elements.', E_USER_WARNING);
+            return $this;
+        }
         
         $idx = $this->count()-1;
         $poppedValue = $this->get($idx);
@@ -345,8 +347,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      */
     public function shift(&$shiftedItem = null)
     {
-        if ($this->count() == 0)
-            throw new \Exception('Tried to shift an array that has no elements.');
+        if ($this->count() == 0) {
+            trigger_error('Tried to shift an array that has no elements.', E_USER_WARNING);
+            return $this;
+        }
         
         $shiftedItem = $this->get(0);
         return $this->delete(0);
@@ -710,15 +714,17 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      */
     public function normalise()
     {
+        $out = new PackedSequence('d');
+        
         $length = $this->count(); 
         if ($length < 1) {
-            throw new \LengthException("The packed sequence has zero elements");
+            trigger_error('The packed array has zero elements.', E_USER_NOTICE);
+            return $out;
         }
         
         $min = $this->min();
         $max = $this->max();
         
-        $out = new PackedSequence('d');
         foreach ($this as $value)          
             $out[] = ($value - $min) / ($max - $min);
         

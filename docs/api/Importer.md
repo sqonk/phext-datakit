@@ -29,7 +29,9 @@ In the cases were the CSV has no column headers then the supplied array will be 
 - **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
 - **$customHeaders** A custom set of column headers to override any existing or absent headers.
 
-**Returns:**  `TRUE` upon successful completion or the imported data array when no callback is being used.
+**Returns:**  `TRUE` upon successful completion or the imported data array when no callback is being used. `FALSE` on failure to process the data source.
+
+This method will generate a user level warning if data is empty or can not otherwise be derived into at least 1 line of applicable data.
 
 
 ------
@@ -57,7 +59,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 
 **Returns:**  `TRUE` upon successful completion or the imported data array when no callback is being used.
 
-This method will throw an exception if an error is encountered at any point in the process.
+This method will throw a `RuntimeException` if the file can not be opened for any reason.
 
 
 ------
@@ -78,7 +80,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 
 **Returns:**  A generator for use in a foreach loop.
 
-This method will throw an exception if an error is encountered at any point in the process.
+This method will throw a `RuntimeException` if the file can not be opened for any reason.
 
 
 ------
@@ -94,7 +96,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 - **$columns** When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column. Passing `FALSE` or any other value will result in sequential column headers.
 - **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
 
-This method will throw an exception if an error is encountered at any point in the process.
+@see Importer::yield_csv() for possible errors or exceptions that may be raised.
 
 **Returns:**  A DataFrame object containing the rows from the CSV, or `NULL` if no rows were retrieved.
 
@@ -121,9 +123,9 @@ where $row is an array of the values retrieved from the current row or line in t
 - **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
 - **$customHeaders** A custom set of column headers to override any existing or absent headers.
 
-**Returns:**  `TRUE` upon successful completion or the compiled data array when not using a callback.
+**Returns:**  `TRUE` upon successful completion or the compiled data array when not using a callback. `FALSE` on failure to process the data source.
 
-This method will throw an exception if an error is encountered at any point in the process or the provided data can not be broken down into lines using the provided line ending character.
+This method will generate a user level warning if data is empty or can not otherwise be derived into at least 1 line of applicable data.
 
 
 ------

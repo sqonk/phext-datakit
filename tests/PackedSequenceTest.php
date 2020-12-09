@@ -122,8 +122,8 @@ class PackedSequenceTest extends TestCase
         foreach ($ps as $i => $v)
             $this->assertSame($v, $expected[$i]);
         
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Tried to pop a sequence that has no elements.');
+        $this->expectError(E_USER_WARNING);
+        $this->expectErrorMessage('Tried to pop a sequence that has no elements.');
         $ps = new PackedSequence('i');
         $ps->pop();
     }
@@ -138,8 +138,8 @@ class PackedSequenceTest extends TestCase
         foreach ($ps as $i => $v)
             $this->assertSame($v, $expected[$i]);
         
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Tried to shift a sequence that has no elements.');
+        $this->expectError(E_USER_WARNING);
+        $this->expectErrorMessage('Tried to shift a sequence that has no elements.');
         $ps = new PackedSequence('i');
         $ps->shift();
     }
@@ -461,7 +461,7 @@ class PackedSequenceTest extends TestCase
         foreach ($data as $i => $value)
             $this->assertEquals($value, $exp[$i]);
                 
-        $this->expectException(LengthException::class);
+        $this->expectError(E_USER_NOTICE);
         $data = new PackedSequence('i');
         $data->normalise();
         

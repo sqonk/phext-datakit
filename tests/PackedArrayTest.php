@@ -121,8 +121,8 @@ class PackedArrayTest extends TestCase
         foreach ($ps as $i => $v)
             $this->assertSame($v, $expected[$i]);
         
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Tried to pop an array that has no elements.');
+        $this->expectError(E_USER_WARNING);
+        $this->expectErrorMessage('Tried to pop an array that has no elements.');
         $ps = new PackedArray;
         $ps->pop();
     }
@@ -137,8 +137,8 @@ class PackedArrayTest extends TestCase
         foreach ($ps as $i => $v)
             $this->assertSame($v, $expected[$i]);
         
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Tried to shift an array that has no elements.');
+        $this->expectError(E_USER_WARNING);
+        $this->expectErrorMessage('Tried to shift an array that has no elements.');
         $ps = new PackedArray;
         $ps->shift();
     }
@@ -467,7 +467,7 @@ class PackedArrayTest extends TestCase
         foreach ($data as $i => $value)
             $this->assertEquals($value, $exp[$i]);
                 
-        $this->expectException(LengthException::class);
+        $this->expectError(E_USER_NOTICE);
         $data = new PackedArray;
         $data->normalise();
         

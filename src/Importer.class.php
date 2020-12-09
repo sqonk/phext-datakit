@@ -45,16 +45,22 @@ class Importer
      * @param $customHeaders A custom set of column headers to override any existing or absent headers.
      * 
      * @return TRUE upon successful completion or the imported data array when no callback is
-     * being used.
+     * being used. FALSE on failure to process the data source.
+     * 
+     * This method will generate a user level warning if data is empty or can not otherwise be derived into
+     * at least 1 line of applicable data.
      */
     static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow = false, ?array $customHeaders = null)
     {
-        $imported = ($callback) ? null : [];
         $lines = explode("\n", trim($data));
         $count = count($lines);
+        
         if ($count == 0 or ($count == 1 && $lines[0] === '')) {
-            throw new \LengthException("Provided CSV data is empty.");
+            trigger_error('Provided CSV data is empty.', E_USER_NOTICE);
+            return $callback ? false : [];
         }
+        
+        $imported = ($callback) ? null : [];
         
         if ($headersAreFirstRow || is_array($customHeaders))
         {
@@ -135,7 +141,7 @@ class Importer
      * 
      * @return TRUE upon successful completion or the imported data array when no callback is being used.
      * 
-     * This method will throw an exception if an error is encountered at any point in the process.
+     * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
     static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
     {
@@ -143,9 +149,8 @@ class Importer
         
         try
         {
-    		$fh = @fopen($filePath, 'r');
-    		if (! is_resource($fh))
-    			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
+    		if (! $fh = @fopen($filePath, 'r'))
+    			throw new \RuntimeException("[{$filePath}] could not be opened, empty handle returned.");
 		
     		@flock($fh, LOCK_SH);
             
@@ -211,16 +216,14 @@ class Importer
      * 
      * @return A generator for use in a foreach loop.
      * 
-     * This method will throw an exception if an error is encountered at any point in the process.
+     * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
     static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
     {
         try
         {
-    		$fh = @fopen($filePath, 'r');
-        
-    		if (! is_resource($fh))
-    			throw new \Exception("[{$filePath}] could not be opened, empty handle returned.");
+    		if (! $fh = @fopen($filePath, 'r'))
+    			throw new \RuntimeException("[{$filePath}] could not be opened, empty handle returned.");
             @flock($fh, LOCK_SH);
             
             // Skip over a specified number of rows at the start. Defaults to 0.
@@ -272,7 +275,7 @@ class Importer
      * @param $columns When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column. Passing FALSE or any other value will result in sequential column headers.
      * @param $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
-     * This method will throw an exception if an error is encountered at any point in the process.
+     * @see Importer::yield_csv() for possible errors or exceptions that may be raised.
      * 
      * @return A DataFrame object containing the rows from the CSV, or NULL if no rows were retrieved.
      */
@@ -282,7 +285,6 @@ class Importer
             $customHeaders = $columns;
             $headersAreFirstRow = false;
         }
-            
         
         else {
             $customHeaders = null;
@@ -322,17 +324,20 @@ class Importer
      * @param $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
      * @param $customHeaders A custom set of column headers to override any existing or absent headers.
      * 
-     * @return TRUE upon successful completion or the compiled data array when not using a callback.
+     * @return TRUE upon successful completion or the compiled data array when not using a callback. FALSE on failure to process the data source.
      * 
-     * This method will throw an exception if an error is encountered at any point in the process or the provided data
-     * can not be broken down into lines using the provided line ending character.
+     * This method will generate a user level warning if data is empty or can not otherwise be derived into
+     * at least 1 line of applicable data.
      */
     static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, $customHeaders = null)
     {
         $lines = explode($lineDelimiter, trim($data));
         $count = count($lines);
-        if ($count == 0 or ($count == 1 && $lines[0] === '')) 
-            throw new \LengthException("Provided data can not be broken apart using the provided line delimiter, or the data is empty.");
+        if ($count == 0 or ($count == 1 && $lines[0] === ''))  {
+            trigger_error('Provided data can not be broken apart using the provided line delimiter, or the data is empty.', E_USER_WARNING);
+            return $callback ? false : [];
+            
+        }
         
         if ($headersAreFirstRow || is_array($customHeaders))
             $headers = $headersAreFirstRow ? explode($itemDelimiter, array_shift($lines)) : $customHeaders;

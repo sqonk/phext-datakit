@@ -463,9 +463,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function filter(callable $callback, ...$columns)
     {
-        $columns = $this->determineColumns($columns);
-        if (count($columns) == 0)
-            throw new \LengthException('filtering requires at least one column.');
+        $columns = $this->determineColumns($columns); 
+            
         $filtered = [];
         foreach ($this->data as $index => $row) {
             $pass = false;
@@ -496,8 +495,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function unanfilter(callable $callback, ...$columns)
     {
         $columns = $this->determineColumns($columns);
-        if (count($columns) == 0)
-            throw new \LengthException("filtering requires at least one column");
+            
         $filtered = [];
         foreach ($this->data as $index => $row) {
             $pass = true;
@@ -549,8 +547,6 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 			$asc = array_pop($columns);
 		
         $columns = $this->determineColumns($columns);
-        if (count($columns) == 0)
-            throw new \LengthException("sorting requires at least one column");
 		
         uasort($this->data, function($a, $b) use ($columns, $asc) {
             $cmp = 0;
@@ -1703,7 +1699,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         $accepted_methods = ['pearson', 'spearman'];
         if (! arrays::contains($accepted_methods, $method)) {
-            throw new \InvalidArgumentException("$method is not a support correlation method");
+            throw new \InvalidArgumentException("$method is not a supported correlation method.");
         }
         $result = [];
         $columns = count($matrix);
@@ -2059,7 +2055,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function depivot(...$columns)
     {
         if (! arrays::contains($this->headers, '_index') or ! arrays::contains($this->headers, '_value'))
-            throw new Exception('This dataframe is not a pivot frame and there can be de-pivoted');
+            throw new \RuntimeException('This dataframe is not a pivot frame and therefore can not be de-pivoted');
         
         if (count($columns) == 0)
         {
