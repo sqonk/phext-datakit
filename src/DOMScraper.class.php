@@ -43,8 +43,8 @@ class DOMScraper
     {
         $this->dom = new \DomDocument;
 		try {
+            $this->dom->preserveWhiteSpace = false;
             @$this->dom->loadHTML($contents);
-            @$this->dom->preserveWhiteSpace = false;
 		}
         finally {
         	// do nothing.
