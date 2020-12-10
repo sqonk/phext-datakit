@@ -43,6 +43,7 @@ Datakit Features by Example
 * [SMA](#sma) Simple Moving Average calculator
 * [EMA](#ema): Exponential Moving Average calculator
 * [DOMScraper](#domscaper): A light weight and unsophisticated web scraper
+* [CSV](#csv): A class for producing CSV documents.
 * [PackedSequence and PackedArray](#packedsequence-and-packedarray)
   * [Adding and Removing](#packed-structures---adding-and-removing)
   * [Head, Tail and Slice](#packed-structures---head-tail-and-slice)
@@ -261,6 +262,56 @@ function($tr) {
 	
 	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");
 });
+```
+
+
+
+### CSV
+
+The CSV class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
+
+```php
+$csv = new CSV;
+
+# set a mapping between the desired column headers and the array keys.
+$csv->set_map(['Name' => 'a', 'Age' => 'b', 'Number' => 'c']);
+
+# add a row using an associative array.
+$csv->add_record(['a' => 'Doug', 'b' => 32, 'c' => 20]);
+
+# add another row, this time with an object that adheres to ArrayAccess.
+$csv->add_record(vector(['a' => 'Jane', 'b' => 25, 'c' => 21]));
+
+println($csv);
+/*
+Will print: 
+
+Name,Age,Number
+Doug,32,20
+Jane,25,21
+*/
+
+# Add a set of rows all at once.
+$more_rows = [
+  ['a' => 'Cameron', 'b' => 16, 'c' => 16],
+  ['a' => 'Kim', 'b' => 28, 'c' => 19],
+  ['a' => 'Jim', 'b' => 32, 'c' => 20],
+  ['a' => 'Amanda', 'b' => 35, 'c' => 33]
+];
+$csv->add_records($more_rows);
+                     
+println($csv);
+/*
+Will print: 
+
+Name,Age,Number
+Doug,32,20
+Jane,25,21
+Cameron,16,16
+Kim,28,19
+Jim,32,20
+Amanda,35,33
+*/                     
 ```
 
 
