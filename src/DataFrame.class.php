@@ -1638,11 +1638,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Round all values in the DataFrame up or down to the given
-     * decimal point precesion.
+     * Round all values in one or more columns up or down to the given decimal point 
+     * precesion.
+     * 
+     * -- parameters:
+     * @param $precision the number of decimal points values should be rounded to.
+     * @param $mode rounding mode, either PHP_ROUND_HALF_UP, PHP_ROUND_HALF_DOWN, PHP_ROUND_HALF_EVEN or PHP_ROUND_HALF_ODD. See the PHP documentation for information on how each option behaves. Defaults to PHP_ROUND_HALF_UP.
+     * @param $columns The columns to round. If no column is specified then the operation runs over all columns.
      */
-    public function round($precision, int $mode = PHP_ROUND_HALF_UP)
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array $columns = null): DataFrame
     {
+        $columns = $this->determineColumns($columns); 
+        
         foreach ($this->data as &$row)
         {
             foreach ($row as $key => $value) {
