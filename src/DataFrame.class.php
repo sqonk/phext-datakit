@@ -335,7 +335,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Return a copy of the DataFrame only containing the the rows
+     * Return a copy of the DataFrame only containing the rows
      * starting from $start through to the given length.
      */
     public function slice(int $start, ?int $length = null)
@@ -1052,7 +1052,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Returns TRUE if ANY of the rows for a given column match
      * the given value.
      * 
-     * If no column is specified then the the check runs over
+     * If no column is specified then the check runs over
      * all columns.
      */
     public function any($value, string $column = null)
@@ -1082,7 +1082,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Returns TRUE if ALL of the rows for a given column match
      * the given value.
      * 
-     * If no column is specified then the the check runs over
+     * If no column is specified then the check runs over
      * all columns.
      */
     public function all($value, $column = null)
@@ -1112,7 +1112,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Convert all values in a given column to their absolute
      * value.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If $inPlace is TRUE then this operation modifies the current
@@ -1173,7 +1173,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute a standard deviation of one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1206,7 +1206,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute a sum of one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1238,7 +1238,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the average of one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1269,7 +1269,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the maximum value present for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1299,7 +1299,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the minimum value present for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1329,7 +1329,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute a cumulative sum of one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1362,7 +1362,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Compute the cumulative maximum value for one or more
      * columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1394,7 +1394,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Compute the cumulative minimum value for one or more
      * columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1425,7 +1425,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the cumulative product for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1456,7 +1456,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Find the median value for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1487,7 +1487,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the product for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1518,7 +1518,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the variance for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1549,7 +1549,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Normalise one or more columns to a range between 0 and 1.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single array is
@@ -1610,7 +1610,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the value for a given quantile for one or more columns.
      * 
-     * If no column is specified then the the operation runs over
+     * If no column is specified then the operation runs over
      * all columns.
      * 
      * If exactly one column is supplied then a single value is
@@ -1663,7 +1663,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * -- parameters:
      * @param $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
-     * @param $columns Columns to use for the correlation. If no column is specified then the the operation runs over all columns.
+     * @param $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
      */
     public function correlation(string $method, array $columns = null)
     {
