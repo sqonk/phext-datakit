@@ -502,6 +502,11 @@ class DataFrameTest extends TestCase
             return $v == 5.1;
         }, 'sepal-length', 'petal-length');
         $this->assertEquals($exp, $filtered->data());
+        
+        $filtered = $df->filter(function($v, $col) {
+            return $v == 59;
+        }, 'sepal-length', 'petal-length');
+        $this->assertEquals(null, $filtered);
     }
     
     public function testUnanfilter()
@@ -534,6 +539,11 @@ class DataFrameTest extends TestCase
             return $row['sepal-length'] == 5.1;
         });
         $this->assertEquals($exp, $filtered->data());
+        
+        $filtered = $df->ufilter(function($row) {
+            return $row['sepal-length'] == 59;
+        });
+        $this->assertEquals(null, $filtered);
     }
     
     public function testIndexes()
@@ -834,6 +844,9 @@ class DataFrameTest extends TestCase
             $this->assertEquals($exp[$i]['lower'], $row['lower']);
             $this->assertEquals($exp[$i]['upper'], $row['upper']);
         }
+        
+        $oob = $df->oob(-1, 99);
+        $this->assertEquals(null, $oob);
     }
     
     public function testOobRegions()
@@ -894,6 +907,9 @@ class DataFrameTest extends TestCase
         foreach ($oob as $i => $row) {
             $this->assertSame($exp[$i], $row);
         }
+        
+        $oob = dataframe($data)->oob_region(999, OOB_UPPER, 'amps');
+        $this->assertEquals(null, $oob);
     }
     
     public function testTransform()
