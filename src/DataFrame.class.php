@@ -54,7 +54,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new DataFrame($data, $headers);
 	}
     
-    static public function empty_frames()
+    static public function empty_frames(): bool
     {
         return defined('EMPTY_DATAFRAMES') && EMPTY_DATAFRAMES;
     }
@@ -107,7 +107,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See: report()
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->report();
     }
@@ -152,7 +152,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
      */
-    public function clone($data, $headers = null)
+    public function clone($data, $headers = null): DataFrame
     {
         if (! $headers)
             $headers = $this->headers;
@@ -167,7 +167,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Whether or not the DataFrame should display the column headers when it is printed. The default is TRUE.
      */
-    public function display_headers($display = null)
+    public function display_headers($display = null): DataFrame
     {   
         if ($display === null)
             return $this->showHeaders;
@@ -182,7 +182,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This is automatically disabled for pivoted DataFrames.
      */
-    public function display_generic_indexes($display = null)
+    public function display_generic_indexes($display = null): DataFrame
     {
         if ($display === null)
             return $this->showGenericIndexes;
@@ -197,7 +197,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See reindex_rows_with_column() instead.
      */
-    public function index($indexHeader = null)
+    public function index($indexHeader = null): DataFrame
     {
         if ($indexHeader === null)
             return $this->indexHeader;
@@ -212,7 +212,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See apply_display_transformer() instead.
      */
-    public function transformers($transformers = null)
+    public function transformers($transformers = null): DataFrame
     {
         if ($transformers === null)
             return $this->transformers;
@@ -223,7 +223,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Returns TRUE if and only if all values within the given column ontain a valid number.
      */
-    public function column_is_numeric($column)
+    public function column_is_numeric($column): bool
     {
         $count = 0;
         foreach ($this->data as &$row) {
@@ -238,7 +238,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the associative array containing all the data within the DataFrame.
      */
-    public function data()
+    public function data(): array
     {
         return $this->data;
     }
@@ -252,7 +252,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *   
      *  The columns can be supplied as a set of variable arguments or an array as the second argument.
 	*/
-    public function flattened(bool $includeIndex = true, ...$columns)
+    public function flattened(bool $includeIndex = true, ...$columns): array
     {
         if (count($columns) == 1 and is_array($columns[0]))
             $columns = $columns[0];
@@ -274,7 +274,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the row at $index.
      */
-    public function row($index)
+    public function row($index): array
     {
         if ($index === LAST_ROW)  {
             $row = arrays::last($this->data);
@@ -294,7 +294,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return an array of all the current row indexes.
      */
-    public function indexes()
+    public function indexes(): array
     {
         return array_keys($this->data);
     }
@@ -302,7 +302,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * All column headers currently in the DataFrame.
      */
-    public function headers()
+    public function headers(): array
     {
         return $this->headers;
     }
@@ -311,7 +311,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the DataFrame only containing the number
      * of rows from the start as specified by $count.
      */
-    public function head(int $count)
+    public function head(int $count): DataFrame
     {
         if ($count >= count($this->data))
             return $this->clone($this->data);
@@ -324,7 +324,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the DataFrame only containing the number
      * of rows from the end as specified by $count.
      */
-    public function tail(int $count)
+    public function tail(int $count): DataFrame
     {
         $total = count($this->data);
         if ($count >= $total)
@@ -338,7 +338,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the DataFrame only containing the rows
      * starting from $start through to the given length.
      */
-    public function slice(int $start, ?int $length = null)
+    public function slice(int $start, ?int $length = null): DataFrame
     {
         $total = count($this->data);
         if ($start >= $total)
@@ -356,7 +356,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * can be supplied to focus the random sample to a
      * more constrained subset.
      */
-    public function sample(int $minimum, ?int $maximum = null)
+    public function sample(int $minimum, ?int $maximum = null): DataFrame
     {
         $max = count($this->data);
         if ($maximum !== null && $maximum < $max)
@@ -375,7 +375,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * is TRUE then this operation modifies the receiver otherwise
      * a copy is returned.
      */
-    public function change_header(string $column, string $newName, bool $inPlace = false)
+    public function change_header(string $column, string $newName, bool $inPlace = false): DataFrame
     {
         if ($inPlace)
         {
@@ -422,7 +422,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * is TRUE then this operation modifies the receiver otherwise
      * a copy is returned.
      */
-    public function reindex_rows(array $labels, bool $inPlace = false)
+    public function reindex_rows(array $labels, bool $inPlace = false): DataFrame
     { 
 		$values = array_values($this->data);
 		if (count($labels) > count($values))
@@ -444,7 +444,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * is TRUE then this operation modifies the receiver otherwise
      * a copy is returned.
      */
-    public function reindex_rows_with_column(string $column, bool $inPlace = false)
+    public function reindex_rows_with_column(string $column, bool $inPlace = false): DataFrame
     {
         $df = $this->reindex_rows($this->values($column), $inPlace);
         $df->indexHeader = $column;
@@ -461,7 +461,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * For a row to make it into the filtered set then only ONE
      * of the columns need to equate to true from the callback.
      */
-    public function filter(callable $callback, ...$columns)
+    public function filter(callable $callback, ...$columns): ?DataFrame
     {
         $columns = $this->determineColumns($columns); 
             
@@ -492,7 +492,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * For a row to make it into the filtered set then ALL
      * of the columns need to equate to true from the callback.
      */
-    public function unanfilter(callable $callback, ...$columns)
+    public function unanfilter(callable $callback, ...$columns): ?DataFrame
     {
         $columns = $this->determineColumns($columns);
             
@@ -523,7 +523,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * if your condition of inclusion requires cross comparing
      * data across columns within the row.
      */
-    public function ufilter(callable $callback)
+    public function ufilter(callable $callback): ?DataFrame
     {
         $filtered = [];
         foreach ($this->data as $index => $row) {
@@ -540,7 +540,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * then it will determine the direction in which the dataframe
      * is ordered. The default is `ASCENDING`.
      */
-    public function sort(...$columns)
+    public function sort(...$columns): DataFrame
     {
 		$asc = true;
 		if (count($columns) > 0 && is_bool(arrays::last($columns))) 
@@ -568,7 +568,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc($value1, $value2, $column) -> bool`
      */
-    public function usort(callable $callback, ...$columns)
+    public function usort(callable $callback, ...$columns): DataFrame
     {
         $columns = $this->determineColumns($columns);
         if (count($columns) == 0)
@@ -590,7 +590,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return an array containing both the number of rows and columns.
      */
-    public function shape()
+    public function shape(): array
     {
         $cols = 0;
         foreach ($this->data as $row) {
@@ -629,7 +629,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return the number of rows.
      */
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
@@ -654,7 +654,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return all values for the given column. If $filterNAN is
      * TRUE then omit values that are NULL.
      */
-    public function values($columns = null, bool $filterNAN = true)
+    public function values($columns = null, bool $filterNAN = true): array
     {
         $columns = $this->determineColumns($columns);        
         
@@ -680,7 +680,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * command line then this method will allow you to present the data
      * as desired.
      */
-    public function report_data(...$columns)
+    public function report_data(...$columns): array
     {
         $columns = $this->determineColumns($columns); 
         $data = [];
@@ -714,7 +714,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * the desired columns. If no columns are specified then
      * all columns are used.
      */
-    public function report(...$columns)
+    public function report(...$columns): string
     {
         [$data, $columns] = $this->report_data(...$columns);
         
@@ -726,7 +726,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See: report()
      */
-    public function print(...$columns)
+    public function print(...$columns): void
     {
         println($this->report(...$columns));
     }
@@ -745,7 +745,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies the receiver otherwise
      * a copy is returned.
      */
-    public function clip($lower, $upper, string $column = null, bool $inplace = false)
+    public function clip($lower, $upper, string $column = null, bool $inplace = false): DataFrame
     {
         if ($inplace)
         {
@@ -815,7 +815,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies the receiver otherwise
      * a copy is returned.
      */
-    public function prune($lower, $upper, $column = null, $inplace = false)
+    public function prune($lower, $upper, $column = null, $inplace = false): ?DataFrame
     {
         if ($inplace)
         {
@@ -881,7 +881,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If no column is specified then the filter applies to all columns.
      */
-    public function oob($lower, $upper, $column = null)
+    public function oob($lower, $upper, $column = null): ?DataFrame
     {
         $data = [];
         $count = count($this->data);
@@ -935,7 +935,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }
             }
         }
-        return new DataFrame($data, $cols);
+        return (count($data) > 0 or self::empty_frames()) ? new DataFrame($data, $cols) : null;
     }
     
     /**
@@ -950,7 +950,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * method will return a DataFrame of regions, where the start and end
      * values refer to the row indexes of the current DataFrame.
      */
-    public function oob_region($theshhold, $direction, string $column)
+    public function oob_region($theshhold, $direction, string $column): ?DataFrame
     {
         $data = [];
         $current = null;
@@ -1009,7 +1009,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * comparison in one column while filling the resulting DataFrame with
      * referenced values from another column.
      */
-    public function gaps($amount, string $usingColumn, string $resultColumn = '')
+    public function gaps($amount, string $usingColumn, string $resultColumn = ''): ?DataFrame
     {
         $result = [];
         $last = null;
@@ -1040,7 +1040,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Produces a new DataFrame containing counts for the number of times each value
      * occurs in the given column.
      */
-	public function frequency(string $column)
+	public function frequency(string $column): DataFrame
 	{
         $out = [];
         foreach (array_count_values($this->values($column)) as $col => $value)
@@ -1055,7 +1055,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If no column is specified then the check runs over
      * all columns.
      */
-    public function any($value, string $column = null)
+    public function any($value, string $column = null): bool
     {
         foreach ($this->data as $row)
         {
@@ -1085,7 +1085,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If no column is specified then the check runs over
      * all columns.
      */
-    public function all($value, $column = null)
+    public function all($value, $column = null): bool
     {
         foreach ($this->data as $row)
         {
@@ -1118,7 +1118,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies the current
      * DataFrame, otherwise a copy is returned.
      */
-    public function abs($column = null, $inplace = false)
+    public function abs($column = null, $inplace = false): DataFrame
     {
         if ($inplace)
         {
@@ -1672,7 +1672,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
      * @param $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
      */
-    public function correlation(string $method, array $columns = null)
+    public function correlation(string $method, array $columns = null): DataFrame
     {
         $columns = $this->determineColumns($columns);        
         $matrix = [];
@@ -1748,7 +1748,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If any of the columns have a display transformer attached, then
      * they will be formatted accordingly prior to output.
      */
-    public function summary()
+    public function summary(): string
     {
         $count = $this->size()->data();
         $std = $this->std()->data();
@@ -1802,7 +1802,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * The result is a GroupedDataFrame, containing all resulting
      * DataFrames within.
      */
-    public function groupby(string $column)
+    public function groupby(string $column): GroupedDataFrame
     {
         $groups = [];
         $na = [];
@@ -1843,7 +1843,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies the
      * current DataFrame, otherwise a copy is returned.
      */
-    public function drop_columns($columns, $inplace = false)
+    public function drop_columns($columns, $inplace = false): DataFrame
     {
         $columns = $this->determineColumns($columns);
         
@@ -1902,7 +1902,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies the
      * current DataFrame, otherwise a copy is returned.
      */
-    public function drop_rows($start, $end = null, $inplace = false)
+    public function drop_rows($start, $end = null, $inplace = false): DataFrame
     {
         if (is_numeric($start) and is_numeric($end)) {
             if ($inplace) {
@@ -1938,7 +1938,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * of each column. That is, it the comparison is performed
      * vertically, not horizontally.
      */
-    public function duplicated(...$columns)
+    public function duplicated(...$columns): array
     {
         $columns = $this->determineColumns($columns);
         
@@ -1982,7 +1982,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See duplicated() for more information.
      */
-    public function drop_duplicates($inplace = false, ...$columns)
+    public function drop_duplicates($inplace = false, ...$columns): DataFrame
     {
         $duplicates = $this->duplicated(...$columns);
         
@@ -2022,7 +2022,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A new DataFrame with the modified data.
      */
-    public function pivot(...$columns)
+    public function pivot(...$columns): DataFrame
     {
         $columns = $this->determineColumns($columns);
         
@@ -2059,7 +2059,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A new DataFrame with the modified data.
      */
-    public function depivot(...$columns)
+    public function depivot(...$columns): DataFrame
     {
         if (! arrays::contains($this->headers, '_index') or ! arrays::contains($this->headers, '_value'))
             throw new \RuntimeException('This dataframe is not a pivot frame and therefore can not be de-pivoted');
@@ -2106,7 +2106,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A new DataFrame with the transposed data.
      */
-    public function transpose(string $groupColumn, array $mergeMap)
+    public function transpose(string $groupColumn, array $mergeMap): DataFrame
     {
         $this->sort($groupColumn);
         return new DataFrame(arrays::transpose($this->data, $groupColumn, $mergeMap));
@@ -2119,7 +2119,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc($value, $columnName, $rowIndex) -> mixed`
      */
-    public function transform($callback, ...$columns)
+    public function transform($callback, ...$columns): DataFrame
     {
         $columns = $this->determineColumns($columns);
         foreach ($this->data as $index => &$row)
@@ -2145,7 +2145,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * ** Do not use new or unknown keys not already present
      * in the DataFrame.
      */
-    public function add_row(array $row = [], $index = '')
+    public function add_row(array $row = [], $index = ''): DataFrame
     {
         if (count($this->data) == 0 and ! $this->headers) 
             $this->headers = array_keys($row);
@@ -2166,7 +2166,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Callback format: `myFunc($row, $rowIndex)`
      * - $row: associative array containing the value for each column.
      */
-    public function add_column(string $column, callable $callback)
+    public function add_column(string $column, callable $callback): DataFrame
     {
         foreach ($this->data as $index => &$row)
         {
@@ -2191,7 +2191,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc($value) -> mixed`
      */
-    public function apply_display_transformer($callback, ...$columns)
+    public function apply_display_transformer($callback, ...$columns): DataFrame
     {
         $columns = $this->determineColumns($columns);
         foreach ($columns as $column) {
@@ -2232,7 +2232,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @return A BulkPlot object containing the plots to be rendered.
      * See: plotlib for possibly more information.
      */
-    public function plot(string $type, array $options = [])
+    public function plot(string $type, array $options = []): BulkPlot
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
         $title = arrays::safe_value($options, 'title', '');
@@ -2299,7 +2299,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
-	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = [])
+	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = []): BulkPlot
 	{
 		$series = [ $this->matrix($openP, $closeP, $lowP, $highP) ];
 		
@@ -2342,7 +2342,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
-    public function box(...$columns)
+    public function box(...$columns): DataFrame
     {
         $columns = $this->determineColumns($columns);
         $plot = new BulkPlot('box');
@@ -2375,7 +2375,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
-    public function hist(array $options = [])
+    public function hist(array $options = []): BulkPlot
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
         $bins = arrays::safe_value($options, 'bins', 10);
@@ -2464,7 +2464,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param $delimeter: The character that seperates each column.
      * @param $includeIndex: When TRUE, adds the dataframe row index as the first column.
      */
-    public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true)
+    public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true): void
     {
         $columns = $this->determineColumns($columns);
 		
