@@ -1189,7 +1189,7 @@ _____	______	_______	_______
 
 ### DataFrame
 
-The DataFrame is a class inspired by, and loosely based off of, a class by the same name from the Pandas library in Python. It specialises in working with 2 dimensional arrays (rows and columns) that may originate from data sources such as CSV files or data fetched from a relational database.
+The DataFrame specialises in working with 2 dimensional arrays (rows and columns) that may originate from data sources such as CSV files or data fetched from a relational database.
 
 Various basic statistical and mathematical functions are provided as well numerous methods for transforming and manipulating the underlying data and presentation thereof.
 
