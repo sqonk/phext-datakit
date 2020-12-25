@@ -81,7 +81,7 @@ function dataframe(?array $data = null, array $headers = null)
 
 Create a new DataFrame with the supplied rows & columns. 
 
-**See** DataFrame::__construct() for a proper description.
+**See** [DataFrame::__construct](DataFrame.md#__construct) for a proper description.
 
 
 

@@ -161,7 +161,7 @@ Return the number of elements in the array.
 ------
 ##### constrain
 ```php
-public function constrain(int $limit) 
+public function constrain(int $limit) : sqonk\phext\datakit\Vector
 ```
 Set a rolling capacity limit on the vector. Once set, old values will be shifted off of the beginning to make room for new values once the capacity is reached.
 
@@ -171,7 +171,7 @@ Setting the limit to `NULL` will remove the constraint altogether, which is the 
 ------
 ##### add
 ```php
-public function add(...$values) 
+public function add(...$values) : sqonk\phext\datakit\Vector
 ```
 Add one or more elements to the end of the vector.
 
@@ -179,7 +179,7 @@ Add one or more elements to the end of the vector.
 ------
 ##### set
 ```php
-public function set($key, $value) 
+public function set($key, $value) : sqonk\phext\datakit\Vector
 ```
 Set an element in the array to the provided key/index.
 
@@ -187,7 +187,7 @@ Set an element in the array to the provided key/index.
 ------
 ##### prepend
 ```php
-public function prepend(...$values) 
+public function prepend(...$values) : sqonk\phext\datakit\Vector
 ```
 Add one or more elements to the start of the vector. If a constraint is set then excess elements will be removed from the end.
 
@@ -195,7 +195,7 @@ Add one or more elements to the start of the vector. If a constraint is set then
 ------
 ##### fill
 ```php
-public function fill(int $amount, callable $callback) 
+public function fill(int $amount, callable $callback) : sqonk\phext\datakit\Vector
 ```
 Add a value supplied by the callback to the end of the vector a set number of times.
 
@@ -205,7 +205,7 @@ The callback should take no parameters.
 ------
 ##### prefill
 ```php
-public function prefill(int $amount, callable $callback) 
+public function prefill(int $amount, callable $callback) : sqonk\phext\datakit\Vector
 ```
 Add a value supplied by the callback to the start of the vector a set number of times.
 
@@ -229,7 +229,7 @@ Callback format: `myFunc($value, $index) -> bool`
 ------
 ##### remove
 ```php
-public function remove(...$keys) 
+public function remove(...$keys) : sqonk\phext\datakit\Vector
 ```
 Remove one or more elements from the vector.
 
@@ -237,7 +237,7 @@ Remove one or more elements from the vector.
 ------
 ##### remove_range
 ```php
-public function remove_range(int $start, int $length) 
+public function remove_range(int $start, int $length) : sqonk\phext\datakit\Vector
 ```
 Remove a range of values from the vector from the index at $start and extending for $length.
 
@@ -247,7 +247,7 @@ This method is primarily designed to work with sequential indexes but will also 
 ------
 ##### clear
 ```php
-public function clear() 
+public function clear() : sqonk\phext\datakit\Vector
 ```
 Remove all elements from the array.
 
@@ -255,7 +255,7 @@ Remove all elements from the array.
 ------
 ##### isset
 ```php
-public function isset(...$keys) 
+public function isset(...$keys) : bool
 ```
 Returns `TRUE` if all the specified keys are present within the vector, `FALSE` otherwise.
 
@@ -263,7 +263,7 @@ Returns `TRUE` if all the specified keys are present within the vector, `FALSE` 
 ------
 ##### keys
 ```php
-public function keys() 
+public function keys() : sqonk\phext\datakit\Vector
 ```
 Return all indexes of the array.
 
@@ -271,7 +271,7 @@ Return all indexes of the array.
 ------
 ##### empty
 ```php
-public function empty() 
+public function empty() : bool
 ```
 Returns `TRUE` if there are 0 elements in the array, `FALSE` otherwise.
 
@@ -279,7 +279,7 @@ Returns `TRUE` if there are 0 elements in the array, `FALSE` otherwise.
 ------
 ##### values
 ```php
-public function values($key = null) 
+public function values($key = null) : sqonk\phext\datakit\Vector
 ```
 Return all values for a given key in the vector. This assumes all elements inside of the vector are an array or object.
 
@@ -289,7 +289,7 @@ If no key is provided then it will return all primary values in the vector.
 ------
 ##### unique
 ```php
-public function unique($key = null) 
+public function unique($key = null) : sqonk\phext\datakit\Vector
 ```
 Return a new vector containing all unique values in the current.
 
@@ -299,7 +299,7 @@ If $key is provided then the operation is performed on the values resulting from
 ------
 ##### frequency
 ```php
-public function frequency($key = null) 
+public function frequency($key = null) : sqonk\phext\datakit\Vector
 ```
 Produces a new vector containing counts for the number of times each value occurs in the array.
 
@@ -309,7 +309,7 @@ If $key is provided then the operation is performed on the values resulting from
 ------
 ##### prune
 ```php
-public function prune($empties = '') 
+public function prune($empties = '') : sqonk\phext\datakit\Vector
 ```
 Remove all entries where the values corresponding to 'empties' are omitted.
 
@@ -366,7 +366,7 @@ Returns the first item in the vector found in the heystack or `FALSE` if none ar
 ------
 ##### any
 ```php
-public function any($match, bool $strict = false) 
+public function any($match, bool $strict = false) : bool
 ```
 Returns `TRUE` if any of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
@@ -380,7 +380,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = false) 
+public function all($match, bool $strict = false) : bool
 ```
 Returns `TRUE` if all of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
@@ -394,7 +394,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### filter
 ```php
-public function filter(callable $callback) 
+public function filter(callable $callback) : sqonk\phext\datakit\Vector
 ```
 Filter the contents of the vector using the provided callback.
 
@@ -404,7 +404,7 @@ Filter the contents of the vector using the provided callback.
 ------
 ##### intersect
 ```php
-public function intersect(...$otherArrays) 
+public function intersect(...$otherArrays) : sqonk\phext\datakit\Vector
 ```
 Filter the vector based on the contents of one or more vectors or arrays and return a new vector containing just the elements that were deemed to exist in all.
 
@@ -412,7 +412,7 @@ Filter the vector based on the contents of one or more vectors or arrays and ret
 ------
 ##### diff
 ```php
-public function diff(...$otherArrays) 
+public function diff(...$otherArrays) : sqonk\phext\datakit\Vector
 ```
 Filter the vector based on the contents of one or more arrays and return a new vector containing just the elements that were deemed not to be present in all.
 
@@ -420,7 +420,7 @@ Filter the vector based on the contents of one or more arrays and return a new v
 ------
 ##### only_keys
 ```php
-public function only_keys(...$keys) 
+public function only_keys(...$keys) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector containing only the values for the specified keys, with index association being maintained.
 
@@ -432,7 +432,7 @@ It should be noted that if a key is not  present in the current vector then it w
 ------
 ##### contains
 ```php
-public function contains($needle) 
+public function contains($needle) : bool
 ```
 Search the array for the given needle (subject). This function is an alias of Vector::any().
 
@@ -440,7 +440,7 @@ Search the array for the given needle (subject). This function is an alias of Ve
 ------
 ##### ends_with
 ```php
-public function ends_with($needle) 
+public function ends_with($needle) : bool
 ```
 Determines if the array ends with the needle.
 
@@ -448,7 +448,7 @@ Determines if the array ends with the needle.
 ------
 ##### starts_with
 ```php
-public function starts_with($needle) 
+public function starts_with($needle) : bool
 ```
 Determines if the array starts with the needle.
 
@@ -456,7 +456,7 @@ Determines if the array starts with the needle.
 ------
 ##### trim
 ```php
-public function trim() 
+public function trim() : sqonk\phext\datakit\Vector
 ```
 Trim all entries in the array (assumes all entries are strings).
 
@@ -464,7 +464,7 @@ Trim all entries in the array (assumes all entries are strings).
 ------
 ##### implode
 ```php
-public function implode(string $delimier = '', string $subDelimiter = '') 
+public function implode(string $delimier = '', string $subDelimiter = '') : string
 ```
 Join all elements in the vector into a string using the supplied delimier as the seperator.
 
@@ -474,7 +474,7 @@ This assumes all elements in the vector are capable of being cast to a string.
 ------
 ##### implode_only
 ```php
-public function implode_only(string $delimier, array $keys, string $subDelimiter = '') 
+public function implode_only(string $delimier, array $keys, string $subDelimiter = '') : string
 ```
 Implode the vector using the desired delimiter and subdelimiter.
 
@@ -484,7 +484,7 @@ This method is primarily intended for non-senquential/associative vectors and di
 ------
 ##### map
 ```php
-public function map(callable $callback) 
+public function map(callable $callback) : sqonk\phext\datakit\Vector
 ```
 Apply a callback function to the vector. This version will optionally supply the corresponding index/key of the value when needed.
 
@@ -494,7 +494,7 @@ Callback format: `myFunc($value, $index) -> mixed`
 ------
 ##### chunk
 ```php
-public function chunk(int $itemsPerBatch) 
+public function chunk(int $itemsPerBatch) : sqonk\phext\datakit\Vector
 ```
 Split the array into batches each containing a total specified by $itemsPerBatch.
 
@@ -504,7 +504,7 @@ The final batch may contain less than the specified batch count if the array tot
 ------
 ##### pad
 ```php
-public function pad(int $count, $value) 
+public function pad(int $count, $value) : sqonk\phext\datakit\Vector
 ```
 Pad vector to the specified length with a value. If $count is positive then the array is padded on the right, if it's negative then on the left. If the absolute value of $count is less than or equal to the length of the array then no padding takes place.
 
@@ -512,7 +512,7 @@ Pad vector to the specified length with a value. If $count is positive then the 
 ------
 ##### pop
 ```php
-public function pop(int $amount = 1, bool $returnRemoved = false) 
+public function pop(int $amount = 1, bool $returnRemoved = false) : sqonk\phext\datakit\Vector
 ```
 Shorten the vector by removing elements off the end of the array to the number specified in $amount. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes.
 
@@ -520,7 +520,7 @@ Shorten the vector by removing elements off the end of the array to the number s
 ------
 ##### shift
 ```php
-public function shift(int $amount = 1, bool $returnRemoved = false) 
+public function shift(int $amount = 1, bool $returnRemoved = false) : sqonk\phext\datakit\Vector
 ```
 Modify the vector by removing elements off the beginning of the array to the number specified in $amount and return a vector containing the items removed. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes
 
@@ -528,7 +528,7 @@ Modify the vector by removing elements off the beginning of the array to the num
 ------
 ##### transpose
 ```php
-public function transpose(string $groupKey, array $mergeMap) 
+public function transpose(string $groupKey, array $mergeMap) : sqonk\phext\datakit\Vector
 ```
 Transform a set of rows and columns with vertical data into a horizontal configuration where the resulting array contains a column for each different value for the given fields in the merge map (associative array).
 
@@ -540,7 +540,7 @@ For example, if you had a result set that contained a 'type' field, a correspond
 ------
 ##### groupby
 ```php
-public function groupby($keys, bool $keepEmptyKeys = false) 
+public function groupby($keys, bool $keepEmptyKeys = false) : sqonk\phext\datakit\Vector
 ```
 Transfom the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in.
 
@@ -552,7 +552,7 @@ Unless $keepEmptyKeys is set to `TRUE` then any key values that are empty will b
 ------
 ##### sort
 ```php
-public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) 
+public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) : sqonk\phext\datakit\Vector
 ```
 Sort the vector in either `ASCENDING` or `DESCENDING` direction. If the vector is associative then index association is maintained, otherwise new indexes are generated.
 
@@ -562,7 +562,7 @@ Refer to the PHP documentation for all possible values on the $flags.
 ------
 ##### ksort
 ```php
-public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) 
+public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR) : sqonk\phext\datakit\Vector
 ```
 Sort the vector by the indexes in either `ASCENDING` or `DESCENDING` direction.
 
@@ -572,7 +572,7 @@ Refer to the PHP documentation for all possible values on the $flags.
 ------
 ##### keyed_sort
 ```php
-public function keyed_sort($key) 
+public function keyed_sort($key) : sqonk\phext\datakit\Vector
 ```
 Sort the vector based on the value of a key inside of the sub-array/object.
 
@@ -588,7 +588,7 @@ See ksort for sorting the vector based on the array indexes.
 ------
 ##### shuffle
 ```php
-public function shuffle() 
+public function shuffle() : sqonk\phext\datakit\Vector
 ```
 Randomise the elements within the vector.
 
@@ -596,7 +596,7 @@ Randomise the elements within the vector.
 ------
 ##### rotate_back
 ```php
-public function rotate_back() 
+public function rotate_back() : sqonk\phext\datakit\Vector
 ```
 Treat the vector as a rotary collection and move each item back one place in order. The item at the end will be moved to the front.
 
@@ -606,7 +606,7 @@ This method is designed for sequential arrays, indexes are not preserved.
 ------
 ##### rotate_right
 ```php
-public function rotate_right() 
+public function rotate_right() : sqonk\phext\datakit\Vector
 ```
 Alias of rotate_back()
 
@@ -614,7 +614,7 @@ Alias of rotate_back()
 ------
 ##### rotate_forward
 ```php
-public function rotate_forward() 
+public function rotate_forward() : sqonk\phext\datakit\Vector
 ```
 Treat the vector as a rotary collection and move each item forward one place in order. The item at the front will be moved to the end.
 
@@ -624,7 +624,7 @@ This method is designed for sequential arrays, indexes are not preserved.
 ------
 ##### rotate_left
 ```php
-public function rotate_left() 
+public function rotate_left() : sqonk\phext\datakit\Vector
 ```
 Alias of rotate_forward()
 
@@ -632,7 +632,7 @@ Alias of rotate_forward()
 ------
 ##### head
 ```php
-public function head(int $count) 
+public function head(int $count) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector only containing the number of rows from the start as specified by $count.
 
@@ -640,7 +640,7 @@ Return a copy of the vector only containing the number of rows from the start as
 ------
 ##### tail
 ```php
-public function tail(int $count) 
+public function tail(int $count) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector only containing the number of rows from the end as specified by $count.
 
@@ -648,7 +648,7 @@ Return a copy of the vector only containing the number of rows from the end as s
 ------
 ##### slice
 ```php
-public function slice(int $start, int $length = null) 
+public function slice(int $start, int $length = null) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector only containing the the rows starting from $start through to the given length.
 
@@ -656,7 +656,7 @@ Return a copy of the vector only containing the the rows starting from $start th
 ------
 ##### sample
 ```php
-public function sample(int $minimum, int $maximum = null) 
+public function sample(int $minimum, int $maximum = null) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector containing a random subset of the elements. The minimum and maximum values can be supplied to focus the random sample to a more constrained subset.
 
@@ -678,7 +678,7 @@ If $inPlace is `TRUE` then this operation modifies this vector otherwise a copy 
 ------
 ##### reverse
 ```php
-public function reverse(bool $inplace = false) 
+public function reverse(bool $inplace = false) : sqonk\phext\datakit\Vector
 ```
 Reverse the current order of the values within the vector. If $inplace is `TRUE` then this method will modify the existing vector instead of returning a copy.
 
@@ -686,7 +686,7 @@ Reverse the current order of the values within the vector. If $inplace is `TRUE`
 ------
 ##### flip
 ```php
-public function flip(bool $inplace = false) 
+public function flip(bool $inplace = false) : sqonk\phext\datakit\Vector
 ```
 Swap the keys and values within the vector. If $inplace is `TRUE` then this method will modify the existing vector instead of returning a copy.
 
@@ -742,7 +742,7 @@ Compute the product of the values within the vector.
 ------
 ##### cumsum
 ```php
-public function cumsum() 
+public function cumsum() : sqonk\phext\datakit\Vector
 ```
 Compute a cumulative sum of the values within the vector.
 
@@ -750,7 +750,7 @@ Compute a cumulative sum of the values within the vector.
 ------
 ##### cummax
 ```php
-public function cummax() 
+public function cummax() : sqonk\phext\datakit\Vector
 ```
 Compute the cumulative maximum value within the vector.
 
@@ -758,7 +758,7 @@ Compute the cumulative maximum value within the vector.
 ------
 ##### cummin
 ```php
-public function cummin() 
+public function cummin() : sqonk\phext\datakit\Vector
 ```
 Compute the cumulative minimum value within the vector.
 
@@ -766,7 +766,7 @@ Compute the cumulative minimum value within the vector.
 ------
 ##### cumproduct
 ```php
-public function cumproduct() 
+public function cumproduct() : sqonk\phext\datakit\Vector
 ```
 Compute the cumulative product of the values within the vector.
 
@@ -796,7 +796,7 @@ Returns the resulting value.
 ------
 ##### normalise
 ```php
-public function normalise() 
+public function normalise() : sqonk\phext\datakit\Vector
 ```
 Normalise the vector to a range between 0 and 1.
 
@@ -806,7 +806,7 @@ This method expects the contents of the vector to be numerical. You will need to
 ------
 ##### normalize
 ```php
-public function normalize() 
+public function normalize() : sqonk\phext\datakit\Vector
 ```
 Alias of self::normalise().
 
@@ -814,7 +814,7 @@ Alias of self::normalise().
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) 
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : sqonk\phext\datakit\Vector
 ```
 Round all values in the vector up or down to the given decimal point precesion.
 
