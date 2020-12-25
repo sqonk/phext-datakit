@@ -47,11 +47,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     protected $showGenericIndexes = true;
 	
 	/** 
-     *   Static equivilent of `new DataFrame()`.
+     *   Static equivilent of `new DataFrame`.
      */
-	static public function make(array $data, array $headers = null)
+	static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false)
 	{
-		return new DataFrame($data, $headers);
+		return new DataFrame($data, $headers, $isVerticalDataSet);
 	}
     
     static public function empty_frames(): bool
@@ -115,14 +115,35 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	// ------- Main class methods
     
     /**
-     * Construct a new dataframe with the provided data. You may optionally provided the 
+     * Construct a new dataframe with the provided data. You may optionally provide the 
      * set of column headers in the second parameter. If you choose to do this then they 
      * should match the keys in the array.
      * 
-     * NOTE: The provided array must have at least one element/row and must also be 
-     * 2-dimensional in structure.
+     * -- parameters:
+     * @param $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correpsond to the headers of each column. 
+     * @param $headers An optional custom set of column headers.
+     * @param $isVerticalDataSet When set to TRUE the $data array is interpretted as a veritical series of columns instead of rows. Defaults to FALSE.
+     * 
+     * Standard data array format:
+     * 
+     * ``` php
+     * [
+     *     ['col 1' => value, 'col 2' => value ... 'col Nth' => value],
+     *     ['col 1' => value, 'col 2' => value ... 'col Nth' => value]
+     * ]
+     * ```
+     * 
+     * Data Array format for vertical data sets:
+     * 
+     * ``` php
+     * [
+     *     'col 1' => [... values],
+     *     'col 2' => [... values],
+     *     'col Nth' => [... values]
+     * ]
+     * ```
      */
-    public function __construct(?array $data = null, ?array $headers = null)
+    public function __construct(?array $data = null, ?array $headers = null, bool $isVerticalDataSet = false)
     {
         if ($data === null) {
             if (! self::empty_frames())
@@ -132,6 +153,17 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
         else if (! self::empty_frames() and count($data) == 0 and ($headers === null or count($headers) == 0))
             throw new \LengthException('A DataFrame needs at least one row of data.');
+        
+        if ($isVerticalDataSet)
+        {
+            # data has been supplied as a keyed set of columns, translate to rows.
+            $headers = array_keys($data);
+            $rows = [];
+            foreach (arrays::zip(...array_values($data)) as $values) {
+                $rows[] = array_combine($headers, $values);
+            }
+            $data = &$rows;
+        }
         
         $this->data = $data;
         $this->headers = $headers;

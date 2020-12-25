@@ -34,6 +34,23 @@ class DataFrameTest extends TestCase
         return [$df, $data];
     }
     
+    public function testCreateFromVerticalDataset()
+    {
+        $data = [
+            'col 1' => range(1, 3),
+            'col 2' => ['a', 'b', 'c']
+        ];
+        $exp = [
+            ['col 1' => 1, 'col 2' => 'a'],
+            ['col 1' => 2, 'col 2' => 'b'],
+            ['col 1' => 3, 'col 2' => 'c']
+        ];
+
+        $df = dataframe($data, null, true);
+
+        $this->assertSame($exp, $df->data());
+    }
+    
     public function testRows()
     {
         [$df, $data] = $this->_loadFrame();

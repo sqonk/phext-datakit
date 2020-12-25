@@ -48,9 +48,9 @@ function vector(...$items)
 /**
  * Create a new DataFrame with the supplied rows & columns.
  * 
- * @see DataFrame::__construct() for a proper description.
+ * @see [DataFrame::__construct()](DataFrame.md#__construct) for a proper description.
  */
-function dataframe(?array $data = null, array $headers = null)
+function dataframe(?array $data = null, array $headers = null, bool $isVerticalDataSet = false)
 {
-	return new \sqonk\phext\datakit\DataFrame($data, $headers);
+	return new \sqonk\phext\datakit\DataFrame($data, $headers, $isVerticalDataSet);
 }
