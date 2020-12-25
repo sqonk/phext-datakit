@@ -126,7 +126,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         if ($data === null) {
             if (! self::empty_frames())
-                throw new \InvalidArgumentException('Data array can not be null. A valid array must be given.');
+                throw new \InvalidArgumentException("The data array can not be null. A valid array must be given. If you need to work with empty DataFrames you can do so by defining 'EMPTY_DATAFRAMES' as TRUE.");
             else
                 $data = [];
         }
