@@ -122,7 +122,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     * Setting the limit to NULL will remove the constraint altogether,
     * which is the default.
     */
-	public function constrain(?int $limit)
+	public function constrain(?int $limit): Vector
 	{
 		$this->constraint = $limit;
 		return $this;
@@ -131,7 +131,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Add one or more elements to the end of the vector.
 	 */
-	public function add(...$values)
+	public function add(...$values): Vector
 	{
 		foreach ($values as $value)
 			$this->_array[] = $value;
@@ -148,7 +148,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Set an element in the array to the provided key/index.
      */
-	public function set($key, $value)
+	public function set($key, $value): Vector
 	{
 		$isEmpty = $this->empty();
 		
@@ -170,7 +170,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Add one or more elements to the start of the vector. If a constraint
      * is set then excess elements will be removed from the end.
      */
-	public function prepend(...$values)
+	public function prepend(...$values): Vector
 	{
 		array_unshift($this->_array, ...$values);
 		
@@ -189,7 +189,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * The callback should take no parameters.
      */
-	public function fill(int $amount, callable $callback)
+	public function fill(int $amount, callable $callback): Vector
 	{
 		foreach (sequence(0, $amount-1) as $i) {
 			$this->add($callback($i));
@@ -204,7 +204,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * The callback should take no parameters.
      */
-	public function prefill(int $amount, callable $callback)
+	public function prefill(int $amount, callable $callback): Vector
 	{
 		foreach (sequence(0, $amount-1) as $i) {
 			$this->prepend($callback($i));
@@ -241,7 +241,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Remove one or more elements from the vector.
      */
-	public function remove(...$keys)
+	public function remove(...$keys): Vector
 	{
 		$modified = false;
 		foreach ($keys as $key) {
@@ -264,7 +264,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * will also work with associative arrays by running the start and length
      * through the extracted array keys.
      */
-    public function remove_range(int $start, int $length)
+    public function remove_range(int $start, int $length): Vector
     {
         $keys = array_keys($this->_array);
         if ($start + $length > count($keys)-1)
@@ -285,17 +285,19 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Remove all elements from the array.
 	 */
-	public function clear()
+	public function clear(): Vector
 	{
 		unset($this->_array);
 		$this->_array = [];
+        
+        return $this;
 	}
 	
     /**
      * Returns TRUE if all the specified keys are present within the vector, FALSE
      * otherwise.
      */
-	public function isset(...$keys)
+	public function isset(...$keys): bool
 	{
 		$vkeys = new Vector(array_keys($this->_array));
 		foreach ($keys as $key) {
@@ -309,7 +311,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Return all indexes of the array.
 	 */
-	public function keys()
+	public function keys(): Vector
 	{
 		return new Vector(array_keys($this->_array));
 	}
@@ -317,7 +319,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Returns TRUE if there are 0 elements in the array, FALSE otherwise.
 	 */
-	public function empty()
+	public function empty(): bool
 	{
 		return $this->count() == 0;
 	}
@@ -328,7 +330,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If no key is provided then it will return all primary values in the vector.
      */
-    public function values($key = null)
+    public function values($key = null): Vector
 	{
 		return new Vector($this->_values($key));
 	}
@@ -358,7 +360,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * from looking up $key on each element in the vector. This assumes all elements
      * inside of the vector are an array or object.
      */
-	public function unique($key = null)
+	public function unique($key = null): Vector
 	{
 		if ($key === null)
 			$out = $this->_array;
@@ -377,7 +379,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * from looking up $key on each element in the vector, assuming all elements
      * inside of the vector are an array or object.
      */
-	public function frequency($key = null)
+	public function frequency($key = null): Vector
 	{
 		if ($key === null)
 			$out = $this->_array;
@@ -391,7 +393,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Remove all entries where the values corresponding to 'empties' are omitted.
      */
-    public function prune($empties = '')
+    public function prune($empties = ''): Vector
     {
 		$modified = false;
         foreach ($this->_array as $key => $value) { 
@@ -402,6 +404,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 		if ($modified and $this->isSequential)
 			$this->_array = $this->_values(); // re-index the array.
+        
         return $this;
     }
 	
@@ -473,7 +476,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function any($match, bool $strict = false)
+	public function any($match, bool $strict = false): bool
 	{
 		if (is_callable($match))
 		{
@@ -498,7 +501,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function all($match, bool $strict = false)
+	public function all($match, bool $strict = false): bool
 	{
 		$isCallback = is_callable($match);
 		foreach ($this->_array as $value) {
@@ -515,7 +518,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * `ARRAY_FILTER_USE_BOTH` is provided as the flag to array_filter() so that
      * your callback may optionally take the key as the second parameter.
      */
-	public function filter(callable $callback)
+	public function filter(callable $callback): Vector
 	{
 		return new Vector(array_filter($this->_array, $callback, ARRAY_FILTER_USE_BOTH));
 	}
@@ -524,7 +527,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Filter the vector based on the contents of one or more vectors or arrays and return a
      * new vector containing just the elements that were deemed to exist in all.
      */
-    public function intersect(...$otherArrays)
+    public function intersect(...$otherArrays): Vector
 	{
 		$adjusted = [];
 		foreach ($otherArrays as $index => $array) {
@@ -543,7 +546,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * new vector containing just the elements that were deemed not to be present
      * in all.
      */
-    public function diff(...$otherArrays)
+    public function diff(...$otherArrays): Vector
 	{
 		$adjusted = [];
 		foreach ($otherArrays as $index => $array) {
@@ -569,7 +572,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * It should be noted that if a key is not  present in the current vector then it will
      * not be present in the resulting vector.
      */
-	public function only_keys(...$keys)
+	public function only_keys(...$keys): Vector
 	{
 		if ($this->isSequential) 
 		{	
@@ -590,7 +593,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Search the array for the given needle (subject). This function is an
      * alias of Vector::any().
      */
-    public function contains($needle)
+    public function contains($needle): bool
     {
         return self::any($needle);
     }
@@ -598,7 +601,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Determines if the array ends with the needle.
      */
-    public function ends_with($needle)
+    public function ends_with($needle): bool
     {
         return arrays::ends_with($this->_array, $needle);
     }
@@ -606,7 +609,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Determines if the array starts with the needle.
      */
-    public function starts_with($needle)
+    public function starts_with($needle): bool
     {
         return arrays::starts_with($this->_array, $needle);
     }
@@ -614,7 +617,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Trim all entries in the array (assumes all entries are strings).
      */
-    public function trim()
+    public function trim(): Vector
     {
         return new Vector(array_map('trim', $this->_array));
     }
@@ -626,7 +629,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * This assumes all elements in the vector are capable of being cast to a
      * string.
      */
-	public function implode(string $delimier = '', string $subDelimiter = '')
+	public function implode(string $delimier = '', string $subDelimiter = ''): string
 	{
 		$transformed = $this->map(function($element) use ($subDelimiter) {
 			if (is_array($element)) 
@@ -648,7 +651,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * and differs from the standard implode in that it will only implode the values
      * associated with the specified keys/indexes.
      */
-	public function implode_only(string $delimier, array $keys, string $subDelimiter = '')
+	public function implode_only(string $delimier, array $keys, string $subDelimiter = ''): string
 	{
 		return $this->only_keys(...$keys)->implode($delimier, $subDelimiter);
 	}
@@ -659,7 +662,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc($value, $index) -> mixed`
      */
-	public function map(callable $callback)
+	public function map(callable $callback): Vector
 	{
 		return new Vector(arrays::map($this->_array, $callback));
 	}
@@ -671,7 +674,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * The final batch may contain less than the specified batch count if
      * the array total does not divide evenly.
      */
-	public function chunk(int $itemsPerBatch)
+	public function chunk(int $itemsPerBatch): Vector
 	{
 		return new Vector(array_map(function($v) {
 			return new Vector($v);
@@ -684,7 +687,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * absolute value of $count is less than or equal to the length of the array
      * then no padding takes place.
      */
-	public function pad(int $count, $value)
+	public function pad(int $count, $value): Vector
 	{
 		$this->_array = array_pad($this->_array, $count, $value);
 		
@@ -696,7 +699,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * specified in $amount. If $returnRemoved is TRUE then the items removed will
      * be returned, otherwise it returns a reference to itself for chaining purposes.
      */
-    public function pop(int $amount = 1, bool $returnRemoved = false)
+    public function pop(int $amount = 1, bool $returnRemoved = false): Vector
     {
         if ($this->count() == 0)
             throw new \Exception('Tried to pop a vector that has no elements.');
@@ -715,7 +718,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $returnRemoved is TRUE then the items removed will be returned, otherwise
      * it returns a reference to itself for chaining purposes
      */
-    public function shift(int $amount = 1, bool $returnRemoved = false)
+    public function shift(int $amount = 1, bool $returnRemoved = false): Vector
     {
         if ($this->count() == 0)
             throw new \Exception('Tried to shift a vector that has no elements.');
@@ -742,7 +745,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * many columns as there are differing values for the type field, with each column
      * containing the corresponding value from the 'reading' field.
      */
-    public function transpose(string $groupKey, array $mergeMap)
+    public function transpose(string $groupKey, array $mergeMap): Vector
 	{
 		$this->keyed_sort($groupKey);
 		return new Vector(arrays::transpose($this->_array, $groupKey, $mergeMap));
@@ -758,7 +761,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Unless $keepEmptyKeys is set to TRUE then any key values that are empty will be omitted.
      */
-	public function groupby($keys, bool $keepEmptyKeys = false)
+	public function groupby($keys, bool $keepEmptyKeys = false): Vector
 	{
 		$this->keyed_sort($keys);
 		$r = arrays::group_by($this->_array, $keys, $keepEmptyKeys);
@@ -775,7 +778,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Refer to the PHP documentation for all possible values on the $flags.
      */
-	public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR)
+	public function sort(bool $dir = ASCENDING, int $flags = SORT_REGULAR): Vector
 	{
 		if ($this->isSequential) {
 			if ($dir == ASCENDING) 
@@ -797,7 +800,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Refer to the PHP documentation for all possible values on the $flags.
      */
-	public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR)
+	public function ksort(bool $dir = ASCENDING, int $flags = SORT_REGULAR): Vector
 	{
 		if ($dir == ASCENDING) 
 			ksort($this->_array, $flags);
@@ -819,7 +822,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See ksort for sorting the vector based on the array indexes.
      */
-	public function keyed_sort($key)
+	public function keyed_sort($key): Vector
 	{
 		arrays::key_sort($this->_array, $key, ! $this->isSequential);
 		
@@ -829,7 +832,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Randomise the elements within the vector.
      */
-    public function shuffle()
+    public function shuffle(): Vector
     {
         shuffle($this->_array);
         return $this;
@@ -841,7 +844,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This method is designed for sequential arrays, indexes are not preserved.
      */
-    public function rotate_back()
+    public function rotate_back(): Vector
     {
         $item = array_pop($this->_array);
         $this->prepend($item);
@@ -851,7 +854,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of rotate_back()
      */
-    public function rotate_right()
+    public function rotate_right(): Vector
     {
         return $this->rotate_back();
     }
@@ -862,7 +865,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This method is designed for sequential arrays, indexes are not preserved.
      */
-    public function rotate_forward()
+    public function rotate_forward(): Vector
     {
         $item = array_shift($this->_array);
         $this->add($item);
@@ -872,7 +875,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of rotate_forward()
      */
-    public function rotate_left()
+    public function rotate_left(): Vector
     {
         return $this->rotate_forward();
     }
@@ -881,7 +884,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the vector only containing the number
      * of rows from the start as specified by $count.
      */
-    public function head(int $count)
+    public function head(int $count): Vector
     {
         if ($count >= $this->count())
             return new Vector($this->_array);
@@ -893,7 +896,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the vector only containing the number
      * of rows from the end as specified by $count.
      */
-    public function tail(int $count)
+    public function tail(int $count): Vector
     {
         $total = $this->count();
         if ($count >= $total)
@@ -906,7 +909,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the vector only containing the the rows
      * starting from $start through to the given length.
      */
-    public function slice(int $start, ?int $length = null)
+    public function slice(int $start, ?int $length = null): Vector
     {
         $total = count($this->_array);
         if ($start >= $total)
@@ -922,7 +925,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return a copy of the vector containing a random subset of the elements. The minimum and
      * maximum values can be supplied to focus the random sample to a more constrained subset.
      */
-    public function sample(int $minimum, ?int $maximum = null)
+    public function sample(int $minimum, ?int $maximum = null): Vector
     {
         $count = $this->count();
         if ($maximum != null && $maximum < $count)
@@ -981,7 +984,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * is TRUE then this method will modify the existing vector instead of
      * returning a copy.
      */
-    public function reverse(bool $inplace = false)
+    public function reverse(bool $inplace = false): Vector
     {
         if ($inplace) {
             $this->_array = array_reverse($this->_array);
@@ -995,7 +998,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * this method will modify the existing vector instead of returning a
      * copy.
      */
-	public function flip(bool $inplace = false)
+	public function flip(bool $inplace = false): Vector
 	{
 		if ($inplace) {
 			$this->_array = array_flip($this->_array);
@@ -1059,7 +1062,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute a cumulative sum of the values within the vector.
      */
-    public function cumsum()
+    public function cumsum(): Vector
     {
         return new Vector(math::cumulative_sum($this->_array));
 	}
@@ -1067,7 +1070,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the cumulative maximum value within the vector.
      */
-    public function cummax()
+    public function cummax(): Vector
     {
         return new Vector(math::cumulative_max($this->_array));
 	}
@@ -1075,7 +1078,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the cumulative minimum value within the vector.
      */
-    public function cummin()
+    public function cummin(): Vector
     {
         return new Vector(math::cumulative_min($this->_array));
 	}
@@ -1083,7 +1086,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the cumulative product of the values within the vector.
      */
-	public function cumproduct()
+	public function cumproduct(): Vector
 	{
 		return new Vector(math::cumulative_prod($this->_array));
 	}
@@ -1120,7 +1123,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * numerical. You will need to filter any invalid values prior
      * to running the normalisation.
      */
-    public function normalise()
+    public function normalise(): Vector
     {
         return new Vector(math::normalise($this->_array));
     }
@@ -1128,7 +1131,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of self::normalise().
      */
-    public function normalize()
+    public function normalize(): Vector
     {
         return self::normalise();
     }
@@ -1136,7 +1139,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Round all values in the vector up or down to the given decimal point precesion.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP)
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): Vector
     {
         foreach ($this->_array as $key => $value)
         {
