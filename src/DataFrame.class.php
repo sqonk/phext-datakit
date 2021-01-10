@@ -2374,7 +2374,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
-    public function box(...$columns): DataFrame
+    public function box(...$columns): BulkPlot
     {
         $columns = $this->determineColumns($columns);
         $plot = new BulkPlot('box');
