@@ -2387,7 +2387,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             $whisker = ($q75-$q25) * 1.5;
             $series = [$q25, $q75, $q25-$whisker, $q75+$whisker, $q50];
             
-            $plot->add('box', [$series], ['legend' => $h, 'hideAllTicks' => true]);
+            $plot->add('box', [$series], [
+                'legend' => $h, 
+                'hideAllTicks' => true,
+                'font' => FF_FONT1
+            ]);
         }
         
         return $plot;
@@ -2398,23 +2402,23 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * -- parameters:
      * @param $options is an array containing the following:
-     *  -- columns:      array of column names to use (1 or more)
-     *  -- bins:         number of bins to use for the histogram. Defaults to 10.
-     *  -- cumulative:   create a stacked histogram showing the accumulative scale along with the main. Defaults to FALSE.
-     *  -- title:        displayed title of the histogram.
-     *  -- low:          low range bins filter. Defaults to NULL.
-     *  -- high:         high range bins filter. Defaults to NULL.
+     *  -- columns: Array of column names to use (1 or more)
+     *  -- bins: Number of bins to use for the histogram. Defaults to 10.
+     *  -- cumulative: Create a stacked histogram showing the accumulative scale along with the main. Defaults to FALSE.
+     *  -- title: Displayed title of the histogram.
+     *  -- low: Low range bins filter. Defaults to NULL.
+     *  -- high: High range bins filter. Defaults to NULL.  
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
     public function hist(array $options = []): BulkPlot
     {
         $columns = $this->determineColumns(arrays::safe_value($options, 'columns'));
-        $bins = arrays::safe_value($options, 'bins', 10);
-        $dlow = arrays::safe_value($options, 'low', null);
-        $dhigh = arrays::safe_value($options, 'high', null);
-        $is_cumulative = arrays::safe_value($options, 'cumulative', false);
-        $title = arrays::safe_value($options, 'title', 'hist');
+        $bins = $options['bins'] ?? 10;
+        $dlow = $options['low'] ?? null;
+        $dhigh = $options['high'] ?? null;
+        $is_cumulative = $options['cumulative'] ?? false; 
+        $title = $options['title'] ?? 'hist';
         
         $b_array = null;
         if (is_array($bins)) {
@@ -2427,8 +2431,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         foreach ($columns as $h)
         {
             $values = $this->values($h);
-            $min = ($dlow !== null) ? $dlow : floor(min($values));
-            $max = ($dhigh !== null) ? $dhigh : ceil(max($values));
+            $min = ($dlow !== null) ? $dlow : floor((float)min($values));
+            $max = ($dhigh !== null) ? $dhigh : ceil((float)max($values));
             $delta = ($max - $min) / $bins;
             
             $processed = [];
@@ -2472,6 +2476,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     'legend' => [$h, 'accumulated'], 
                     'matchBorder' => true,
                     'width' => 1.0,
+                    'font' => FF_FONT1
                 ]); 
             }
             else {
@@ -2479,9 +2484,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     'legend' => $h,
                     'matchBorder' => true,
                     'width' => 1.0,
+                    'font' => FF_FONT1
                 ]); 
             }
-            
         }
         
         return $plot;
