@@ -18,6 +18,8 @@ declare(strict_types=1);
 * permissions and limitations under the License.
 */
 
+require __DIR__.'/TCFuncs.php';
+
 use PHPUnit\Framework\TestCase;
 use sqonk\phext\datakit\Importer as import;
 
@@ -1090,7 +1092,7 @@ class DataFrameTest extends TestCase
         return $pixels;    
     }
     
-    /*protected function gdAvailable()
+    protected function gdAvailable()
     {
         $exists = function_exists('imagecreatefromstring') && function_exists('imagecreatefrompng');
         if (! $exists) {
@@ -1099,67 +1101,37 @@ class DataFrameTest extends TestCase
         return $exists;
     }
     
+    protected function compareImages(string $rendered, string $example)
+    {
+        $rendered = imagecreatefromstring($rendered);
+        $example = imagecreatefrompng(__DIR__."/plots/$example.png");
+        
+        $rpixels = $this->pixels($rendered);
+        $epixels = $this->pixels($example);
+        
+        foreach (sequence(0, 299) as $y) {
+            foreach (sequence(0, 399) as $x) {
+                $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Coords: (x:$x,y:$y)");
+            }
+        }  
+    }
+    
     public function testBoxPlot()
     {
         if (! $this->gdAvailable())
             return;
-        
-        $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-        $dataset = import::csv_dataframe('docs/iris.data', $columns);
-        array_pop($columns);
-        $params = $columns;
-        $params[] = ['font' => [FF_FONT1, FS_NORMAL, 8]];
-        $plot = $dataset->box(...$params);
-        $images = $plot->render(400, 300, false);
-        
-        foreach ($images as $i => $img)
-        {
-            $file = "plots/box_{$columns[$i]}.png";
-            $prerender = imagecreatefrompng(__DIR__."/$file");
-            $rendered = imagecreatefromstring($img); 
-            //file_put_contents("box_{$columns[$i]}.png", $img);
-            
-            $rpixels = $this->pixels($rendered);
-            $epixels = $this->pixels($prerender);
-        
-            foreach (sequence(0, 299) as $y) {
-                foreach (sequence(0, 399) as $x) { 
-                    $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for 'box_{$columns[$i]}'");
-                }
-            } 
-        }
+                
+        foreach (boxPlot() as $i => $img)
+            $this->compareImages($img, "box_$i");
     }
     
     public function testHistogram()
     {
         if (! $this->gdAvailable())
             return;
-        
-        $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-        $dataset = import::csv_dataframe('docs/iris.data', $columns);
-        array_pop($columns);
-        $plot = $dataset->hist(['columns' => $columns]);
-        $images = $plot->render(400, 300, false);
-        
-        foreach ($images as $i => $img)
-        {
-            $n = "hist_{$columns[$i]}.png"; 
-            $file = "plots/$n";
-            $prerender = imagecreatefrompng(__DIR__."/$file");
-            $rendered = imagecreatefromstring($img); 
-            //file_put_contents($n, $img);
-            
-            $rpixels = $this->pixels($rendered);
-            $epixels = $this->pixels($prerender);
-        
-            foreach (sequence(0, 299) as $y) {
-                foreach (sequence(0, 399) as $x) {
-                    $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for 'box_{$columns[$i]}'");
-                }
-            }
-        }
+                
+        foreach (histogram() as $i => $img)
+            $this->compareImages($img, "hist_$i");
     }
     
     public function testHistogramWithBins()
@@ -1167,59 +1139,17 @@ class DataFrameTest extends TestCase
         if (! $this->gdAvailable())
             return;
         
-        $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-        $dataset = import::csv_dataframe('docs/iris.data', $columns);
-        array_pop($columns);
-        $plot = $dataset->hist(['columns' => $columns, 'bins' => 5, 'title' => 'hist8']);
-        $images = $plot->render(400, 300, false);
-        
-        foreach ($images as $i => $img)
-        {
-            $n = "histBins5_{$columns[$i]}.png"; 
-            $file = "plots/$n";
-            $prerender = imagecreatefrompng(__DIR__."/$file");
-            $rendered = imagecreatefromstring($img); 
-            
-            $rpixels = $this->pixels($rendered);
-            $epixels = $this->pixels($prerender);
-        
-            foreach (sequence(0, 299) as $y) {
-                foreach (sequence(0, 399) as $x) {
-                    $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for 'box_{$columns[$i]}'");
-                }
-            }
-        }
+        foreach (histogramWithBins() as $i => $img)
+            $this->compareImages($img, "histbin_$i");
     }
     
-    public function testCumulativeHistogram()
+    public function testsCumulativeHistogram()
     {
         if (! $this->gdAvailable())
             return;
         
-        $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-        $dataset = import::csv_dataframe('docs/iris.data', $columns);
-        array_pop($columns);
-        $plot = $dataset->hist(['columns' => $columns, 'cumulative' => true]);
-        $images = $plot->render(400, 300, false);
-        
-        foreach ($images as $i => $img)
-        {
-            $n = "cumhist_{$columns[$i]}.png";
-            $file = "plots/$n";
-            $prerender = imagecreatefrompng(__DIR__."/$file");
-            $rendered = imagecreatefromstring($img); 
-            
-            $rpixels = $this->pixels($rendered);
-            $epixels = $this->pixels($prerender);
-        
-            foreach (sequence(0, 299) as $y) {
-                foreach (sequence(0, 399) as $x) {
-                    $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for 'cumhist{$columns[$i]}'");
-                }
-            }
-        }
+        foreach (cumulativeHistogram() as $i => $img)
+            $this->compareImages($img, "histcum_$i");
     }
     
     public function testPlot()
@@ -1227,26 +1157,7 @@ class DataFrameTest extends TestCase
         if (! $this->gdAvailable())
             return;
         
-        $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-        $dataset = import::csv_dataframe('docs/iris.data', $columns);
-        array_pop($columns);
-        $plot = $dataset->plot('line', ['columns' => $columns, 'cumulative' => true, 'one' => true]);
-        [$img] = $plot->render(700, 500, false);
-        
-        
-        $n = "plot_line.png"; 
-        $file = "plots/$n";
-        $prerender = imagecreatefrompng(__DIR__."/$file");
-        $rendered = imagecreatefromstring($img); 
-        
-        $rpixels = $this->pixels($rendered);
-        $epixels = $this->pixels($prerender);
-    
-        foreach (sequence(0, 299) as $y) {
-            foreach (sequence(0, 399) as $x) {
-                $this->assertEquals($epixels[$y][$x], $rpixels[$y][$x], "Pixel $y:$x does not match for plot'}'");
-            }
-        }
-    }*/
+        foreach (genericPlot() as $i => $img)
+            $this->compareImages($img, "gen_$i");
+    }
 }
