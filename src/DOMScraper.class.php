@@ -64,6 +64,11 @@ class DOMScraper
      * Traverse a hierarchal series of elements in the document, drilling down to the final set
      * and providing them back to your program for processing.
      * 
+     * -- parameters:
+     * @param $elements The configuration array of elements to traverse (see below examples).
+     * @param $callback A callback method that will repeatably receive each element at the end of the traversal chain.
+     * @param $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as NULL.
+     * 
      * Elements array should be in format of:
      * 
      * ```
@@ -80,7 +85,7 @@ class DOMScraper
      * ['type' => 'id', 'name' => 'container'], # fetch DIV called container
      * ['type' => 'tag', 'name' => 'table', 'item' => 0] # get the first table inside 'container'
      * ['type' => 'tag' 'name' => 'tr'] # fetch all rows inside the first table.
-     * ]);
+     * ], ...$callback);
      * ```
      * 
      * In this example the table rows found from the last definition in the elements array would
