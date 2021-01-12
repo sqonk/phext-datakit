@@ -29,7 +29,8 @@ namespace sqonk\phext\datakit;
  */
 
 use sqonk\phext\core\arrays;
-
+use \DomDocument;
+use \DOMNode;
 
 class DOMScraper
 {
@@ -87,9 +88,10 @@ class DOMScraper
      * 
      * @return array [BOOL $pass, STRING $errorMessage].
      * 
-     * returned $pass is TRUE if 1 or more items were found and passed to the callback, FALSE otherwise.
+     * The first element of the result ($pass) is TRUE if 1 or more items were found and passed to 
+     * the callback, FALSE otherwise.
      */
-    public function traverse(array $elements, callable $callback, $current = null)
+    public function traverse(array $elements, callable $callback, DOMNode $current = null): array
     {
         if (count($elements) == 0)
             throw new \InvalidArgumentException("elements array can not be empty");
