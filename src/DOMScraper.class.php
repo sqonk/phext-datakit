@@ -162,4 +162,24 @@ class DOMScraper
         
         return [(count($items) > 0), ''];
     }
+    
+    /**
+     * This method is the same as `traverse` but operates as a Generator for use within a foreach loop. Unlike
+     * the `traverse` method however, `yield` will first gather all found elements in memory and then distribute
+     * them one at a time to your foreach loop.
+     * 
+     * -- parameters:
+     * @param $elements The configuration array of elements to traverse (see below examples).
+     * @param $result If passed in, sets the value to the result of the `traverse` method that was called internally.
+     */
+    public function yield(array $elements, &$result = null): \Generator
+    {
+        $found = [];
+        $result = $this->traverse($elements, function($element) use (&$found) {
+            $found[] = $element;
+        });
+        
+        foreach ($found as $e)
+            yield $e;
+    }
 }
