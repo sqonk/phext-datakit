@@ -1002,7 +1002,7 @@ All other standard option keys can be passed in.
 ------
 ##### box
 ```php
-public function box(...$columns) : sqonk\phext\datakit\DataFrame
+public function box(...$columns) : sqonk\phext\plotlib\BulkPlot
 ```
 Create a box plot chart, which is a singular data point of box-like appearance that illustrates the place of the 25%, 50% and 75% quantiles as well as the outer whiskers.
 
@@ -1017,12 +1017,12 @@ public function hist(array $options = []) : sqonk\phext\plotlib\BulkPlot
 Create a bar chart styled in the fashion of a histogram.
 
 - **$options** is an array containing the following:
-	- columns:      array of column names to use (1 or more)
-	- bins:         number of bins to use for the histogram. Defaults to 10.
-	- cumulative:   create a stacked histogram showing the accumulative scale along with the main. Defaults to `FALSE`.
-	- title:        displayed title of the histogram.
-	- low:          low range bins filter. Defaults to `NULL`.
-	- high:         high range bins filter. Defaults to `NULL`.
+	- columns: Array of column names to use (1 or more)
+	- bins: Number of bins to use for the histogram. Defaults to 10.
+	- cumulative: Create a stacked histogram showing the accumulative scale along with the main. Defaults to `FALSE`.
+	- title: Displayed title of the histogram.
+	- low: Low range bins filter. Defaults to `NULL`.
+	- high: High range bins filter. Defaults to `NULL`.
 
 **Returns:**  A BulkPlot object containing the plots to be rendered.
 
