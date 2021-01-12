@@ -245,7 +245,7 @@ use sqonk\phext\datakit\DOMScraper;
 // Load the example HTML file into memory and pass it to the scraper.
 $scraper = new DOMScraper(file_get_contents('docs/people.html'));
 
-$scraper->traverse([
+$result = $scraper->traverse([
 	['type' => 'id', 'name' => 'pageData'],
 	['type' => 'tag', 'name' => 'table', 'item' => 1],
 	['type' => 'tag', 'name' => 'tbody'],
@@ -262,6 +262,35 @@ function($tr) {
 	
 	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");
 });
+```
+
+.. or using a Generator:
+
+```php
+use sqonk\phext\datakit\DOMScraper;
+
+// Load the example HTML file into memory and pass it to the scraper.
+$scraper = new DOMScraper(file_get_contents('docs/people.html'));
+
+$chain = [
+	['type' => 'id', 'name' => 'pageData'],
+	['type' => 'tag', 'name' => 'table', 'item' => 1],
+	['type' => 'tag', 'name' => 'tbody'],
+	['type' => 'tag', 'name' => 'tr']
+];
+foreach ($scraper->yield($chain, $result) as $tr)
+{
+  $tds = $tr->getElementsByTagName('td');
+	
+	$firstName = $tds[0]->textContent;
+	$lastName = $tds[1]->textContent;
+	$role = $tds[2]->textContent;
+	$hours = $tds[3]->textContent;
+	$days = $tds[4]->textContent;
+	
+	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");  
+}
+
 ```
 
 
