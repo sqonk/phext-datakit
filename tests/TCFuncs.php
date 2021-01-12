@@ -2,11 +2,13 @@
 
 use sqonk\phext\datakit\Importer as import;
 
+define('IRISCSV', __DIR__.'/../docs/iris.data');
+
 function boxPlot(bool $writeToFile = false): array
 {
     $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-    $dataset = import::csv_dataframe(__DIR__.'/iris.data', $columns, 1);
+    $dataset = import::csv_dataframe(IRISCSV, $columns);
     array_pop($columns);
 
     $plot = $dataset->box(...$columns);
@@ -24,7 +26,7 @@ function histogram(bool $writeToFile = false): array
 {
     $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-    $dataset = import::csv_dataframe(__DIR__.'/iris.data', $columns, 1);
+    $dataset = import::csv_dataframe(IRISCSV, $columns);
     array_pop($columns);
     
     $plot = $dataset->hist([
@@ -44,7 +46,7 @@ function histogramWithBins(bool $writeToFile = false): array
 {
     $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-    $dataset = import::csv_dataframe(__DIR__.'/iris.data', $columns, 1);
+    $dataset = import::csv_dataframe(IRISCSV, $columns);
     array_pop($columns);
     $plot = $dataset->hist(['columns' => $columns, 'bins' => 5, 'title' => 'hist8']);
     $images = $plot->render(400, 300, false);
@@ -61,7 +63,7 @@ function cumulativeHistogram(bool $writeToFile = false): array
 {
     $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-    $dataset = import::csv_dataframe(__DIR__.'/iris.data', $columns, 1);
+    $dataset = import::csv_dataframe(IRISCSV, $columns);
     array_pop($columns);
     $plot = $dataset->hist(['columns' => $columns, 'cumulative' => true]);
     $images = $plot->render(400, 300, false);
@@ -78,7 +80,7 @@ function genericPlot(bool $writeToFile = false): array
 {
     $columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
 
-    $dataset = import::csv_dataframe(__DIR__.'/iris.data', $columns, 1);
+    $dataset = import::csv_dataframe(IRISCSV, $columns);
     array_pop($columns);
     
     $plot = $dataset->plot('line', ['columns' => $columns, 'one' => true, 'font' => FF_FONT1]);
