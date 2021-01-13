@@ -120,7 +120,8 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
      */
 	public function result(?int $precision = null): float
 	{
-        $precision ??= $this->defaultPrecision;
+        if ($precision === null)
+            $precision = $this->defaultPrecision;
         
 		$avg = $this->averages->last();
 		return ($precision !== null) ? round($avg, $precision) : $avg;
