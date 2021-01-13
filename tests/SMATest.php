@@ -36,7 +36,6 @@ class SMATest extends TestCase
     public function testCount()
     {
         $sma = new SMA(5);
-        $expected = [1.0,1.5,2.0,2.5,3.0,4.0,5.0,6.0,7.0,8.0];
         foreach (range(1, 10) as $i) {
             $sma->add($i);
         }
@@ -96,7 +95,7 @@ class SMATest extends TestCase
     
     public function testGetViaArrayAccess()
     {
-        $sma = new SMA(3);
+        $sma = new SMA(3, 1);
         $sma->add(1,2,3);
         $this->assertSame(1.5, $sma[1]);
     }
