@@ -83,7 +83,11 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
     // ======================
 	
     /**
-     * Construct a new SMA with the specified maximum number of values.
+     * Construct a new SMA with the specified maximum number of values. 
+     * 
+     * -- parameters:
+     * @param $maxItems The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
+     * @param $defaultPrecision If set, will automatically round all averages to given decimal precision.
      */
 	public function __construct(int $maxItems, ?int $defaultPrecision = null)
 	{
@@ -97,7 +101,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
 	
     /**
-     * Add a new value to the SMA. The value must be numerical in nature.
+     * Add one or more new values to the SMA. The value must be numerical in nature.
      */
 	public function add(...$values): SMA
 	{
