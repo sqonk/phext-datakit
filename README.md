@@ -246,21 +246,21 @@ use sqonk\phext\datakit\DOMScraper;
 $scraper = new DOMScraper(file_get_contents('docs/people.html'));
 
 $result = $scraper->traverse([
-	['type' => 'id', 'name' => 'pageData'],
-	['type' => 'tag', 'name' => 'table', 'item' => 1],
-	['type' => 'tag', 'name' => 'tbody'],
-	['type' => 'tag', 'name' => 'tr']
+  ['type' => 'id', 'name' => 'pageData'],
+  ['type' => 'tag', 'name' => 'table', 'item' => 1],
+  ['type' => 'tag', 'name' => 'tbody'],
+  ['type' => 'tag', 'name' => 'tr']
 ], 
 function($tr) {
-	$tds = $tr->getElementsByTagName('td');
+  $tds = $tr->getElementsByTagName('td');
 	
-	$firstName = $tds[0]->textContent;
-	$lastName = $tds[1]->textContent;
-	$role = $tds[2]->textContent;
-	$hours = $tds[3]->textContent;
-	$days = $tds[4]->textContent;
+  $firstName = $tds[0]->textContent;
+  $lastName = $tds[1]->textContent;
+  $role = $tds[2]->textContent;
+  $hours = $tds[3]->textContent;
+  $days = $tds[4]->textContent;
 	
-	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");
+  println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");
 });
 ```
 
@@ -273,22 +273,22 @@ use sqonk\phext\datakit\DOMScraper;
 $scraper = new DOMScraper(file_get_contents('docs/people.html'));
 
 $chain = [
-	['type' => 'id', 'name' => 'pageData'],
-	['type' => 'tag', 'name' => 'table', 'item' => 1],
-	['type' => 'tag', 'name' => 'tbody'],
-	['type' => 'tag', 'name' => 'tr']
+  ['type' => 'id', 'name' => 'pageData'],
+  ['type' => 'tag', 'name' => 'table', 'item' => 1],
+  ['type' => 'tag', 'name' => 'tbody'],
+  ['type' => 'tag', 'name' => 'tr']
 ];
 foreach ($scraper->yield($chain, $result) as $tr)
 {
   $tds = $tr->getElementsByTagName('td');
 	
-	$firstName = $tds[0]->textContent;
-	$lastName = $tds[1]->textContent;
-	$role = $tds[2]->textContent;
-	$hours = $tds[3]->textContent;
-	$days = $tds[4]->textContent;
+  $firstName = $tds[0]->textContent;
+  $lastName = $tds[1]->textContent;
+  $role = $tds[2]->textContent;
+  $hours = $tds[3]->textContent;
+  $days = $tds[4]->textContent;
 	
-	println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");  
+  println("Name: $firstName $lastName", "Role: $role", "Works: $days ($hours)");  
 }
 
 ```
