@@ -279,7 +279,7 @@ class Importer
      * 
      * @return A DataFrame object containing the rows from the CSV, or NULL if no rows were retrieved.
      */
-    static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0)
+    static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0): ?DataFrame
     {
         if (is_array($columns)) {
             $customHeaders = $columns;
@@ -358,5 +358,102 @@ class Importer
 		}
         
         return is_array($data) ? $data : true;
+    }
+    
+    /**
+     * Loads data out of a MySQL database into a DataFrame. $source can either be a table name or 
+     * a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data 
+     * into your script for research or general utility purposes using simplistic queries.
+     * 
+     * NOTE: Requires the MySQLi extension to be installed and active.
+     * 
+     * CAUTION: This method is designed for CLI usage only and will trigger a warning if called from
+     * any other SAPI. Additionally it performs <u>no</u> escaping or other security checks and so
+     * should <u>not</u> be used in any situation where common sense security would be expected or the input 
+     * can not be trusted.
+     * 
+     * -- parameters:
+     * @param $database Name of the MySQL database to query.
+     * @param $source Either the name of table within the database or a full SELECT statement. 
+     * @param $server Server address where the database is hosted. Defaults to 'localhost'.
+     * @param $username Username used to log into the database. Defaults to 'root'.
+     * @param $password Matching password for the username. Defaults to ''.
+     * 
+     * @throws InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws RuntimeException If the MySQL library generates an error from executing the query.
+     * 
+     * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
+     */
+    static public function mysql_dataframe(string $database, string $source, string $server = 'localhost', string $username = 'root', string $password = ''): ?DataFrame
+    {
+        if (php_sapi_name() != 'cli')
+            trigger_error("### WARNING: Importer::mysql_dataframe() is designed for CLI usage only. It should **not** be exposed for web usage.", E_USER_WARNING);
+        
+        $source = trim($source);    
+        $lower = strtolower($source);
+        
+        $restricted = ['update', 'delete', 'insert', 'create', 'alter', 
+            'drop', 'event', 'execute', 'grant', 'lock', 'trigger'];
+        foreach ($restricted as $action) {
+            if (starts_with($lower, "$action "))
+                throw new \InvalidArgumentException("This method is designed for data retrieval only. Queries that modify the database are not permitted.");
+        }            
+        
+        if (! starts_with($lower, 'select '))
+            $source = sprintf("SELECT * FROM `%s`", $source);
+        
+        $db = new \mysqli($server, $username, $password, $database);
+        $r = $db->query($source);
+        
+        if (is_object($r)) 
+            return $r->num_rows == 0 ? null : dataframe($r->fetch_all(MYSQLI_ASSOC));
+        
+        else if ($db->errno != 0) 
+            throw new \RuntimeException("{$db->errno} {$db->error}\n$source");
+    }
+    
+    /**
+     * Loads data out of a SQLite database into a DataFrame. $source can either be a table name or 
+     * a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data 
+     * into your script for research or general utility purposes using simplistic queries.
+     * 
+     * NOTE: Requires the SQLite3 extension to be installed and active.
+     * 
+     * -- parameters:
+     * @param $database Name of the MySQL database to query.
+     * @param $source Either the name of table within the database or a full SELECT statement. 
+     * 
+     * @throws InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws RuntimeException If the SQLite library generates an error from executing the query.
+     * 
+     * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
+     */
+    static public function sqlite_dataframe(string $filepath, string $source): ?DataFrame
+    {
+        $source = trim($source); 
+        $lower = strtolower($source);
+        
+        $restricted = ['update', 'delete', 'insert', 'create', 'alter', 
+            'drop', 'event', 'execute', 'grant', 'lock', 'trigger'];
+        foreach ($restricted as $action) {
+            if (starts_with($lower, "$action "))
+                throw new \InvalidArgumentException("This method is designed for data retrieval only. Queries that modify the database are not permitted.");
+        }            
+        
+        if (! starts_with($lower, 'select '))
+            $source = "SELECT * FROM $source";
+        
+        $db = new \SQLite3($filepath, SQLITE3_OPEN_READONLY);
+        if ($r = $db->query($source)) {
+            $rows = [];
+            while ($row = $r->fetchArray(SQLITE3_ASSOC))
+                $rows[] = $row;
+            
+            return count($rows) ? dataframe($rows) : null;
+        }
+        [$error, $msg] = [$db->lastErrorCode(), $db->lastErrorMsg()];
+        
+        if ($error)
+            throw new \RuntimeException("$error {$msg}\n$source");
     }
 }

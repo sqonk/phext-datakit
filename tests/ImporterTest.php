@@ -142,4 +142,36 @@ class ImporterTest extends TestCase
         $this->expectError(E_USER_WARNING);
         $this->assertSame(false, Importer::delimitered_data(function($row) {}, '', ','));
     }
+    
+    public function testSqliteDataframe()
+    {
+        if (! class_exists('SQLite3'))
+            return; // bypass test if extenion is not installed.
+        
+        $path = __DIR__.'/test.sqlite';
+        if (file_exists($path))
+            unlink($path); // clear out any previous test.
+        
+        $db = new SQLite3($path);
+        $db->exec("CREATE TABLE Sample (id INTEGER PRIMARY KEY, letter TEXT, score INTEGER, num INTEGER)");
+        
+        $letters = 'abcdefghijklmnopqrstuvwxyz';
+        $expected = [];
+        foreach (range(0, 25) as $i) {
+            [$letter, $score] = [$letters[$i], $i*10];
+            $db->exec("INSERT INTO Sample (letter,score,num) VALUES ('$letter',$score,$i)");
+            $expected[] = ['id' => $i+1, 'letter' => $letter, 'score' => $score, 'num' => $i];
+        }
+        
+        $df = Importer::sqlite_dataframe($path, 'Sample');
+        $this->assertSame(26, $df->count());
+        $this->assertSame($expected, $df->data());
+        
+        $this->assertSame(null, Importer::sqlite_dataframe($path, "SELECT * from Sample where id > 100"));
+        
+        $this->expectException(InvalidArgumentException::class);
+        Importer::sqlite_dataframe($path, "INSERT INTO Sample (letter,score,num) VALUES ('a',1,1)");
+        
+        unlink($path);
+    }
 }
