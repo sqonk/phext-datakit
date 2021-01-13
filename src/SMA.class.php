@@ -133,7 +133,8 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function all(?int $precision = null): array
     {
-        $precision ??= $this->defaultPrecision;
+        if ($precision === null)
+            $precision = $this->defaultPrecision;
         
         if ($precision) {
             $copy = clone $this->averages;
