@@ -215,6 +215,46 @@ foreach (range(1, 20) as $i)
 }
 ```
 
+Or add multiple values then run through the acquired averages:
+
+```php
+// create a moving average of 3 items, with a default rounding precision to 
+// 2 decimal places.
+$sma = new SMA(maxItems:3, defaultPrecision:2);
+
+// add a series of numbers to the moving average as the input.
+$sma->add(1, 0.43, 3, 4.33, 5, 6, 8);
+
+// print all calculated averages, rounded to 3 decimal places.
+println($sma->all(precision:3));
+/*
+array (
+  0 => 1.0,
+  1 => 0.715,
+  2 => 1.477,
+  3 => 2.587,
+  4 => 4.11,
+  5 => 5.11,
+  6 => 6.333,
+)
+*/
+
+// The calculated averages can also be looped through..
+foreach ($sma as $i => $avg)
+  println("Average at position $i: $avg");
+/*
+Average at position 0: 1
+Average at position 1: 0.72
+Average at position 2: 1.48
+Average at position 3: 2.59
+Average at position 4: 4.11
+Average at position 5: 5.11
+Average at position 6: 6.33
+*/
+```
+
+
+
 ### EMA
 
 The EMA class is used to compute Exponential Moving Averages. It is used by alternating between adding new values to the array and calculating the current average.
@@ -234,6 +274,46 @@ foreach (range(1, 20) as $i)
 	println("Position $i, Average: $avg");
 }
 ```
+
+Or add multiple values then run through the acquired averages:
+
+```php
+// create a moving average of 3 items, with a default rounding precision to 
+// 2 decimal places.
+$ema = new EMA(maxItems:3, defaultPrecision:2);
+
+// add a series of numbers to the moving average as the input.
+$ema->add(1, 0.43, 3, 4.33, 5, 6, 8);
+
+// print all calculated averages, rounded to 3 decimal places.
+println($ema->all(precision:3));
+/*
+array (
+  0 => 1.0,
+  1 => 0.715,
+  2 => 1.858,
+  3 => 3.094,
+  4 => 4.047,
+  5 => 5.023,
+  6 => 6.512,
+)
+*/
+
+// The calculated averages can also be looped through..
+foreach ($ema as $i => $avg)
+  println("Average at position $i: $avg");
+/*
+Average at position 0: 1
+Average at position 1: 0.72
+Average at position 2: 1.86
+Average at position 3: 3.09
+Average at position 4: 4.05
+Average at position 5: 5.02
+Average at position 6: 6.51
+*/
+```
+
+
 
 ### DOMScaper
 
