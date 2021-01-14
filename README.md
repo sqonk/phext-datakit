@@ -35,7 +35,7 @@ Please see the [API Reference](docs/api/index.md) for full documentation on each
 Datakit Features by Example
 ----------------
 
-* [Importer](#importer) for working with CSV and delimitered files
+* [Importer](#importer) for working with CSV, delimited files and other data sources.
 	- [CSV Files](#importer---csv---files)
 	- [CSV In Memory](#importer---csv---data)
 	- [CSV Automated Processing](#importer---csv---data)
