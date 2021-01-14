@@ -122,7 +122,9 @@ Add a single record to the CSV. This method differs from `add_raw_row()` in that
 
 - **array|ArrayAccess** $record An associative array or object containing the row of data.
 
-@throws RuntimeException If no field map has been set. @throws InvalidArgumentException If the provided record is not of the correct type.
+
+**Throws:**  RuntimeException If no field map has been set. 
+**Throws:**  InvalidArgumentException If the provided record is not of the correct type.
 
 **Returns:**  The CSV object.
 
@@ -136,7 +138,8 @@ Add multiple records to the CSV.
 
 - **array|ArrayAccess** $records The array of records to add.
 
-@throws InvalidArgumentException If $records is not of the correct type.
+
+**Throws:**  InvalidArgumentException If $records is not of the correct type.
 
 @see add_record() for other possible exceptions that may be thrown.
 

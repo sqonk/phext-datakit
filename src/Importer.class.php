@@ -379,8 +379,8 @@ class Importer
      * @param $username Username used to log into the database. Defaults to 'root'.
      * @param $password Matching password for the username. Defaults to ''.
      * 
-     * @throws InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
-     * @throws RuntimeException If the MySQL library generates an error from executing the query.
+     * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws `RuntimeException` If the MySQL library generates an error from executing the query.
      * 
      * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */
@@ -423,8 +423,8 @@ class Importer
      * @param $database Name of the MySQL database to query.
      * @param $source Either the name of table within the database or a full SELECT statement. 
      * 
-     * @throws InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
-     * @throws RuntimeException If the SQLite library generates an error from executing the query.
+     * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws `RuntimeException` If the SQLite library generates an error from executing the query.
      * 
      * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */

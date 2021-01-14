@@ -8,6 +8,8 @@ A selection of routines for importing data from various static sources such as f
 [yield_csv](#yield_csv)
 [csv_dataframe](#csv_dataframe)
 [delimitered_data](#delimitered_data)
+[mysql_dataframe](#mysql_dataframe)
+[sqlite_dataframe](#sqlite_dataframe)
 
 ------
 ##### csv_data
@@ -86,7 +88,7 @@ This method will throw a `RuntimeException` if the file can not be opened for an
 ------
 ##### csv_dataframe
 ```php
-static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0) 
+static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0) : ?sqonk\phext\datakit\DataFrame
 ```
 Import a CSV directly into a DataFrame object in the most memory efficient way.
 
@@ -126,6 +128,49 @@ where $row is an array of the values retrieved from the current row or line in t
 **Returns:**  `TRUE` upon successful completion or the compiled data array when not using a callback. `FALSE` on failure to process the data source.
 
 This method will generate a user level warning if data is empty or can not otherwise be derived into at least 1 line of applicable data.
+
+
+------
+##### mysql_dataframe
+```php
+static public function mysql_dataframe(string $database, string $source, string $server = 'localhost', string $username = 'root', string $password = '') : ?sqonk\phext\datakit\DataFrame
+```
+Loads data out of a MySQL database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data into your script for research or general utility purposes using simplistic queries.
+
+NOTE: Requires the MySQLi extension to be installed and active.
+
+CAUTION: This method is designed for CLI usage only and will trigger a warning if called from any other SAPI. Additionally it performs <u>no</u> escaping or other security checks and so should <u>not</u> be used in any situation where common sense security would be expected or the input can not be trusted.
+
+- **$database** Name of the MySQL database to query.
+- **$source** Either the name of table within the database or a full SELECT statement.
+- **$server** Server address where the database is hosted. Defaults to 'localhost'.
+- **$username** Username used to log into the database. Defaults to 'root'.
+- **$password** Matching password for the username. Defaults to ''.
+
+
+**Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
+**Throws:**  `RuntimeException` If the MySQL library generates an error from executing the query.
+
+**Returns:**  A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
+
+
+------
+##### sqlite_dataframe
+```php
+static public function sqlite_dataframe(string $filepath, string $source) : ?sqonk\phext\datakit\DataFrame
+```
+Loads data out of a SQLite database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data into your script for research or general utility purposes using simplistic queries.
+
+NOTE: Requires the SQLite3 extension to be installed and active.
+
+- **$database** Name of the MySQL database to query.
+- **$source** Either the name of table within the database or a full SELECT statement.
+
+
+**Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
+**Throws:**  `RuntimeException` If the SQLite library generates an error from executing the query.
+
+**Returns:**  A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
 
 
 ------
