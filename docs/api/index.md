@@ -38,12 +38,14 @@ The GroupedDataFrame is a special class that manages a group of normal DataFrame
 
 [PackedArray](PackedArray.md)
 
-Both PackedSequence and PackedArray are array structures designed for working in tight memory situations. A full description is available further down in the method reference.
+Both PackedSequence and PackedArray are array structures designed for working in tight memory situations. 
 
 - Use a [PackSequence](PackedSequence.md) for working with a uniform set of elements of the same type and byte size (e.g. all Ints or all floats).
 - Use a [PackedArray](PackedArray.md) when your dataset has elements that vary in size and/or type.
 
-Both classes have almost identical methods and the examples below can easily be translated between the the two.
+These classes should not be considered a blanket replacement for native arrays, instead the key is to identify when they are a better fit for any particular problem.
+
+In general native arrays offer flexibility and speed over memory consumption, where as packed arrays/sequences prioritise memory usage for a little less flexibility. They are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
 
 [CSV](CSV.md)
 

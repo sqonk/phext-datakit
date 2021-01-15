@@ -11,9 +11,6 @@ Auto-packing and unpacking is available for values going in and out of the array
 
 Auto-Packing works as follows: - integers are either encoded as 32bit/4 byte or 64bit/8-byte sequences, depending on the hardware being used. - decimal numbers are always encoded as double precision 8-byte sequences. - strings are input directly. - objects and arrays are serialised.
 
-This class should not be considered a blanket replacement for native arrays, instead the key is to identify when it is a better fit for any particular problem.
-
-In general native arrays offer flexibility and speed over memory consumption, where as a packed array prioritises memory usage for a little less flexibility. PackedArrays are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
 #### Methods
 [offsetSet](#offsetset)
 [offsetGet](#offsetget)
