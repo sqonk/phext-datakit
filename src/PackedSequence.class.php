@@ -126,7 +126,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
                 $this->add($value);
     }
     
-    public function count()
+    public function count(): int
     {
         return $this->size / $this->itemSize;
     }
@@ -134,7 +134,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Print all values to the output buffer.
      */
-    public function print(string $prependMessage = '')
+    public function print(string $prependMessage = ''): void
     {
         if ($prependMessage)
             println($prependMessage);
@@ -154,7 +154,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Add a value to the end of the array. If the value is an array or a
      * traversable object then each element of it will instead be added.
      */
-    public function add(...$values)
+    public function add(...$values): PackedSequence
     {
         foreach ($values as $value)
         {
@@ -179,7 +179,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Insert a new item into the array at a given index anywhere up to the end of the array.
      */
-    public function insert(int $index, $value)
+    public function insert(int $index, $value): PackedSequence
     {
         $count = $this->count();
         
@@ -211,7 +211,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Overwrite an existing value with the one provided. If $index is greater than the current
      * count then the value is appended to the end.
      */
-    public function set(int $index, $value)
+    public function set(int $index, $value): PackedSequence
     {
         $count = $this->count();
         
@@ -254,7 +254,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Remove an item from the array  at the given index.
      */
-    public function delete(int $index)
+    public function delete(int $index): PackedSequence
     {
         $count = $this->count();
         
@@ -282,7 +282,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Pop an item off the end of the array. If $poppedValue is provided
      * then it is filled with the value that was removed.
      */
-    public function pop(&$poppedValue = null)
+    public function pop(&$poppedValue = null): PackedSequence
     {
         if ($this->count() == 0) {
             trigger_error('Tried to pop a sequence that has no elements.', E_USER_WARNING);
@@ -298,7 +298,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Shift an item off the start of the array. If $shiftedItem is provided
      * then it is filled with the value that was removed.
      */
-    public function shift(&$shiftedItem = null)
+    public function shift(&$shiftedItem = null): PackedSequence
     {
         if ($this->count() == 0) {
             trigger_error('Tried to shift a sequence that has no elements.', E_USER_WARNING);
@@ -312,7 +312,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Remove all elements from the array.
 	 */
-	public function clear()
+	public function clear(): PackedSequence
 	{
 		$this->size = 0;
         $this->buffer->ftruncate(0);
@@ -324,7 +324,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Return a new vector containing all indexes.
 	 */
-	public function keys()
+	public function keys(): Vector
 	{
 		return new Vector(range(0, $this->count()-1));
 	}
@@ -332,7 +332,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Returns TRUE if there are 0 elements in the array, FALSE otherwise.
 	 */
-	public function empty()
+	public function empty(): bool
 	{
 		return $this->count() == 0;
 	}
@@ -364,7 +364,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function any($match, bool $strict = false)
+	public function any($match, bool $strict = false): bool
 	{
 		if (is_callable($match))
 		{
@@ -396,7 +396,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function all($match, bool $strict = false)
+	public function all($match, bool $strict = false): bool
 	{
 		$isCallback = is_callable($match);
 		foreach ($this as $value) {
@@ -411,7 +411,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Search the array for the given needle (subject). This function is an
      * alias of any().
      */
-    public function contains($needle)
+    public function contains($needle): bool
     {
         return self::any($needle);
     }
@@ -419,7 +419,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Determines if the array ends with the needle.
      */
-    public function ends_with($needle)
+    public function ends_with($needle): bool
     {
         return $this->last() == $needle;
     }
@@ -427,7 +427,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Determines if the array starts with the needle.
      */
-    public function starts_with($needle)
+    public function starts_with($needle): bool
     {
         return $this->first() == $needle;
     }
@@ -437,7 +437,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * 
      * Callback format: `myFunc($value, $index) -> bool`
      */
-	public function filter(callable $callback)
+	public function filter(callable $callback): PackedSequence
 	{
         $size = $this->packCode ?? $this->itemSize;
         $filtered = new PackedSequence($size);
@@ -452,7 +452,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * 
      * Callback format: `myFunc($value, $index) -> mixed`
      */
-    public function map(callable $callback)
+    public function map(callable $callback): PackedSequence
     {
         $size = $this->packCode ?? $this->itemSize;
         $mapped = new PackedSequence($size);
@@ -465,7 +465,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Pad the array to the specified length with a value. If $count is positive then
      * the array is padded on the right, if it's negative then on the left.
      */
-	public function pad(int $count, $value)
+	public function pad(int $count, $value): PackedSequence
 	{
         if ($count > 0)
         {
@@ -485,7 +485,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Return a copy of the array only containing the number
      * of rows from the start as specified by $count.
      */
-    public function head(int $count)
+    public function head(int $count): PackedSequence
     {
         if ($count >= $this->count()) 
             return $this->slice(0);
@@ -497,7 +497,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Return a copy of the array only containing the number
      * of rows from the end as specified by $count.
      */
-    public function tail(int $count)
+    public function tail(int $count): PackedSequence
     {
         if ($count == 0) {
             $size = $this->packCode ?? $this->itemSize;
@@ -514,7 +514,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Return a copy of the array only containing the the rows
      * starting from $start through to the given length.
      */
-    public function slice(int $start, ?int $length = null)
+    public function slice(int $start, ?int $length = null): PackedSequence
     {
         $total = $this->count();
         if ($start >= $total)
@@ -535,7 +535,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Return a copy of the array containing a random subset of the elements. The minimum and
      * maximum values can be supplied to focus the random sample to a more constrained subset.
      */
-    public function sample(int $minimum, ?int $maximum = null)
+    public function sample(int $minimum, ?int $maximum = null): PackedSequence
     {
         $count = $this->count();
         if ($maximum != null && $maximum < $count)
@@ -557,7 +557,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * If either the lower or upper constraint is not needed then passing in null will
      * ignore it.
      */
-    public function clip($lower, $upper = null)
+    public function clip($lower, $upper = null): PackedSequence
     {
         foreach ($this as $key => $value)
         {
@@ -573,7 +573,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Swap the positions of 2 values within the array.
      */
-    public function swap(int $index1, int $index2)
+    public function swap(int $index1, int $index2): PackedSequence
     {
         $val1 = $this->get($index1);
         $this->set($index1, $this->get($index2));
@@ -584,7 +584,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Sort the array in either `ASCENDING` or `DESCENDING` direction.
      */
-    public function sort(bool $dir = ASCENDING)
+    public function sort(bool $dir = ASCENDING): PackedSequence
     {
         $start = 0;
         $end = $this->count()-1;
@@ -612,7 +612,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Reserve the order of the elements.
      */
-    public function reverse()
+    public function reverse(): PackedSequence
     {
         $count = $this->count();
         
@@ -672,7 +672,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Normalise the array to a range between 0 and 1.
      */
-    public function normalise()
+    public function normalise(): PackedSequence
     {
         $out = new PackedSequence('d');
         
@@ -694,7 +694,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Alias of self::normalise().
      */
-    public function normalize()
+    public function normalize(): PackedSequence
     {
         return self::normalise();
     }
@@ -742,7 +742,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Round all values in the array up or down to the given decimal point precesion.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP)
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): PackedSequence
     {
         foreach ($this as $key => $value)
         {
