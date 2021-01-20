@@ -199,7 +199,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Whether or not the DataFrame should display the column headers when it is printed. The default is TRUE.
      */
-    public function display_headers($display = null): DataFrame
+    public function display_headers($display = null)
     {   
         if ($display === null)
             return $this->showHeaders;
@@ -214,7 +214,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This is automatically disabled for pivoted DataFrames.
      */
-    public function display_generic_indexes($display = null): DataFrame
+    public function display_generic_indexes($display = null)
     {
         if ($display === null)
             return $this->showGenericIndexes;
@@ -229,7 +229,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See reindex_rows_with_column() instead.
      */
-    public function index($indexHeader = null): DataFrame
+    public function index($indexHeader = null)
     {
         if ($indexHeader === null)
             return $this->indexHeader;
@@ -244,7 +244,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See apply_display_transformer() instead.
      */
-    public function transformers($transformers = null): DataFrame
+    public function transformers($transformers = null)
     {
         if ($transformers === null)
             return $this->transformers;
