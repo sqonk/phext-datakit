@@ -158,11 +158,13 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
             $data = $keepIndexes ? $df->data() : array_values($df->data());
             $combined = array_merge($combined, $data);   
         }
-        $df = new DataFrame($combined);
-        $df->transformers($this->sets[0]->transformers());
-        $df->index($this->sets[0]->index());
-        $df->display_generic_indexes($this->sets[0]->display_generic_indexes());
-        $df->display_headers($this->sets[0]->display_headers());
+        $keys = array_keys($this->sets);
+        $first = $this->sets[$keys[0]];
+        $df = new DataFrame($combined); 
+        $df->transformers($first->transformers());
+        $df->index($first->index());
+        $df->display_generic_indexes($first->display_generic_indexes());
+        $df->display_headers($first->display_headers());
         return $df;
     }
     
