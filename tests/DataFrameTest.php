@@ -661,12 +661,13 @@ class DataFrameTest extends TestCase
     
     public function testGroupby()
     {
-        $df = dataframe([
+        $original = [
             ['name' => 'Falcon', 'Animal' => 'bird', 'Age' => 8, 'size' => 'big'],
             ['name' => 'Pigeon', 'Animal' => 'bird', 'Age' => 4, 'size' => 'small'],
             ['name' => 'Goat', 'Animal' => 'mammal', 'Age' => 12, 'size' => 'small'],
             ['name' => 'Possum', 'Animal' => 'mammal', 'Age' => 2, 'size' => 'big']
-        ]);
+        ];
+        $df = dataframe($original);
         $g = $df->groupby('Animal');
         
         $exp = [
@@ -681,6 +682,8 @@ class DataFrameTest extends TestCase
         ];
         
         $this->assertSame($exp, array_values($g->data()));
+        
+        $this->assertSame($original, $g->combine()->data());
     }
     
     public function testTranspose()
