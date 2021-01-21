@@ -951,6 +951,28 @@ class DataFrameTest extends TestCase
             $this->assertSame($exp[$i], $row['n']);
     }
     
+    public function testReplace()
+    {
+        $orig = [
+            'Col 1' => range(1, 100),
+            'Col 2' => range(200, 300)
+        ];
+         
+        $df = dataframe($orig, null, true);
+        $df->add_row(['Col 2' => 31]); // test empty row as well.
+        
+        $replacement = range(1000, 1101);
+        $df->replace('Col 1', $replacement);
+        $this->assertSame($replacement, $df->values('Col 1', false));
+        
+        $this->expectException(InvalidArgumentException::class);
+        $df->replace('Col 3', $replacement);
+        
+        
+        $this->expectException(LengthException::class);
+        $df->replace('Col 1', range(2,99));
+    }
+    
     public function testPivotDepivot()
     {
         $dataset = dataframe([

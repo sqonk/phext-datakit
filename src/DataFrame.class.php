@@ -2165,6 +2165,37 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this;
     }
     
+    
+    /**
+     * Replace all the values for a column with another set of values.
+     * 
+     * The new value array should hold the exact amount of items as the amount
+     * of rows within the DataFrame.
+     * 
+     * -- parameters:
+     * @param $column The column/header that will have its set of values replaced.
+     * @param $newValues An array of replacement values.
+     * 
+     * @throws InvalidArgumentException If the specified column is not present.
+     * @throws LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
+     */
+    public function replace(string $column, array $newValues): DataFrame
+    {
+        if (! arrays::contains($this->headers, $column))
+            throw new \InvalidArgumentException("Specified column does not exist [$column].");
+        
+        [$newCount, $oldCount] = [count($newValues), count($this->values($column, false))];
+        if ($oldCount != $newCount)
+            throw new \LengthException("The amount of items in the new value array must be equal to total amount of corresponding values present in the data frame [$newCount vs $oldCount]");
+        
+        $newValues = array_combine(array_keys($this->data), $newValues);
+        foreach ($this->data as $index => &$row) {
+            $row[$column] = $newValues[$index];
+        }
+        
+        return $this;
+    }
+    
     /**
      * Add a new row to the DataFrame. $row is an associative
      * array where the keys should correspond to one or more
