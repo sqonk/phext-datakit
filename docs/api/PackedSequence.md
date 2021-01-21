@@ -164,7 +164,7 @@ $startingValues is an optional array of starting numbers to add to the array.
 ------
 ##### count
 ```php
-public function count() 
+public function count() : int
 ```
 No documentation available.
 
@@ -172,7 +172,7 @@ No documentation available.
 ------
 ##### print
 ```php
-public function print(string $prependMessage = '') 
+public function print(string $prependMessage = '') : void
 ```
 Print all values to the output buffer.
 
@@ -180,7 +180,7 @@ Print all values to the output buffer.
 ------
 ##### add
 ```php
-public function add(...$values) 
+public function add(...$values) : sqonk\phext\datakit\PackedSequence
 ```
 Add a value to the end of the array. If the value is an array or a traversable object then each element of it will instead be added.
 
@@ -188,7 +188,7 @@ Add a value to the end of the array. If the value is an array or a traversable o
 ------
 ##### insert
 ```php
-public function insert(int $index, $value) 
+public function insert(int $index, $value) : sqonk\phext\datakit\PackedSequence
 ```
 Insert a new item into the array at a given index anywhere up to the end of the array.
 
@@ -196,7 +196,7 @@ Insert a new item into the array at a given index anywhere up to the end of the 
 ------
 ##### set
 ```php
-public function set(int $index, $value) 
+public function set(int $index, $value) : sqonk\phext\datakit\PackedSequence
 ```
 Overwrite an existing value with the one provided. If $index is greater than the current count then the value is appended to the end.
 
@@ -212,7 +212,7 @@ Return an item from the array at the given index.
 ------
 ##### delete
 ```php
-public function delete(int $index) 
+public function delete(int $index) : sqonk\phext\datakit\PackedSequence
 ```
 Remove an item from the array  at the given index.
 
@@ -220,7 +220,7 @@ Remove an item from the array  at the given index.
 ------
 ##### pop
 ```php
-public function pop(&$poppedValue = null) 
+public function pop(&$poppedValue = null) : sqonk\phext\datakit\PackedSequence
 ```
 Pop an item off the end of the array. If $poppedValue is provided then it is filled with the value that was removed.
 
@@ -228,7 +228,7 @@ Pop an item off the end of the array. If $poppedValue is provided then it is fil
 ------
 ##### shift
 ```php
-public function shift(&$shiftedItem = null) 
+public function shift(&$shiftedItem = null) : sqonk\phext\datakit\PackedSequence
 ```
 Shift an item off the start of the array. If $shiftedItem is provided then it is filled with the value that was removed.
 
@@ -236,7 +236,7 @@ Shift an item off the start of the array. If $shiftedItem is provided then it is
 ------
 ##### clear
 ```php
-public function clear() 
+public function clear() : sqonk\phext\datakit\PackedSequence
 ```
 Remove all elements from the array.
 
@@ -244,7 +244,7 @@ Remove all elements from the array.
 ------
 ##### keys
 ```php
-public function keys() 
+public function keys() : sqonk\phext\datakit\Vector
 ```
 Return a new vector containing all indexes.
 
@@ -252,7 +252,7 @@ Return a new vector containing all indexes.
 ------
 ##### empty
 ```php
-public function empty() 
+public function empty() : bool
 ```
 Returns `TRUE` if there are 0 elements in the array, `FALSE` otherwise.
 
@@ -276,7 +276,7 @@ Return the last value in the array.
 ------
 ##### any
 ```php
-public function any($match, bool $strict = false) 
+public function any($match, bool $strict = false) : bool
 ```
 Returns `TRUE` if any of the values within the array are equal to the value provided, `FALSE` otherwise.
 
@@ -290,7 +290,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = false) 
+public function all($match, bool $strict = false) : bool
 ```
 Returns `TRUE` if all of the values within the array are equal to the value provided, `FALSE` otherwise.
 
@@ -304,7 +304,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### contains
 ```php
-public function contains($needle) 
+public function contains($needle) : bool
 ```
 Search the array for the given needle (subject). This function is an alias of any().
 
@@ -312,7 +312,7 @@ Search the array for the given needle (subject). This function is an alias of an
 ------
 ##### ends_with
 ```php
-public function ends_with($needle) 
+public function ends_with($needle) : bool
 ```
 Determines if the array ends with the needle.
 
@@ -320,7 +320,7 @@ Determines if the array ends with the needle.
 ------
 ##### starts_with
 ```php
-public function starts_with($needle) 
+public function starts_with($needle) : bool
 ```
 Determines if the array starts with the needle.
 
@@ -328,7 +328,7 @@ Determines if the array starts with the needle.
 ------
 ##### filter
 ```php
-public function filter(callable $callback) 
+public function filter(callable $callback) : sqonk\phext\datakit\PackedSequence
 ```
 Filter the contents of the array using the provided callback.
 
@@ -338,7 +338,7 @@ Callback format: `myFunc($value, $index) -> bool`
 ------
 ##### map
 ```php
-public function map(callable $callback) 
+public function map(callable $callback) : sqonk\phext\datakit\PackedSequence
 ```
 Apply a callback function to the array.
 
@@ -348,7 +348,7 @@ Callback format: `myFunc($value, $index) -> mixed`
 ------
 ##### pad
 ```php
-public function pad(int $count, $value) 
+public function pad(int $count, $value) : sqonk\phext\datakit\PackedSequence
 ```
 Pad the array to the specified length with a value. If $count is positive then the array is padded on the right, if it's negative then on the left.
 
@@ -356,7 +356,7 @@ Pad the array to the specified length with a value. If $count is positive then t
 ------
 ##### head
 ```php
-public function head(int $count) 
+public function head(int $count) : sqonk\phext\datakit\PackedSequence
 ```
 Return a copy of the array only containing the number of rows from the start as specified by $count.
 
@@ -364,7 +364,7 @@ Return a copy of the array only containing the number of rows from the start as 
 ------
 ##### tail
 ```php
-public function tail(int $count) 
+public function tail(int $count) : sqonk\phext\datakit\PackedSequence
 ```
 Return a copy of the array only containing the number of rows from the end as specified by $count.
 
@@ -372,7 +372,7 @@ Return a copy of the array only containing the number of rows from the end as sp
 ------
 ##### slice
 ```php
-public function slice(int $start, int $length = null) 
+public function slice(int $start, int $length = null) : sqonk\phext\datakit\PackedSequence
 ```
 Return a copy of the array only containing the the rows starting from $start through to the given length.
 
@@ -380,7 +380,7 @@ Return a copy of the array only containing the the rows starting from $start thr
 ------
 ##### sample
 ```php
-public function sample(int $minimum, int $maximum = null) 
+public function sample(int $minimum, int $maximum = null) : sqonk\phext\datakit\PackedSequence
 ```
 Return a copy of the array containing a random subset of the elements. The minimum and maximum values can be supplied to focus the random sample to a more constrained subset.
 
@@ -388,7 +388,7 @@ Return a copy of the array containing a random subset of the elements. The minim
 ------
 ##### clip
 ```php
-public function clip($lower, $upper = null) 
+public function clip($lower, $upper = null) : sqonk\phext\datakit\PackedSequence
 ```
 Provide a maximum or minimum (or both) constraint for the values in the array.
 
@@ -400,7 +400,7 @@ If either the lower or upper constraint is not needed then passing in null will 
 ------
 ##### swap
 ```php
-public function swap(int $index1, int $index2) 
+public function swap(int $index1, int $index2) : sqonk\phext\datakit\PackedSequence
 ```
 Swap the positions of 2 values within the array.
 
@@ -408,7 +408,7 @@ Swap the positions of 2 values within the array.
 ------
 ##### sort
 ```php
-public function sort(bool $dir = ASCENDING) 
+public function sort(bool $dir = ASCENDING) : sqonk\phext\datakit\PackedSequence
 ```
 Sort the array in either `ASCENDING` or `DESCENDING` direction.
 
@@ -416,7 +416,7 @@ Sort the array in either `ASCENDING` or `DESCENDING` direction.
 ------
 ##### reverse
 ```php
-public function reverse() 
+public function reverse() : sqonk\phext\datakit\PackedSequence
 ```
 Reserve the order of the elements.
 
@@ -456,7 +456,7 @@ Return the minimum value present within the array.
 ------
 ##### normalise
 ```php
-public function normalise() 
+public function normalise() : sqonk\phext\datakit\PackedSequence
 ```
 Normalise the array to a range between 0 and 1.
 
@@ -464,7 +464,7 @@ Normalise the array to a range between 0 and 1.
 ------
 ##### normalize
 ```php
-public function normalize() 
+public function normalize() : sqonk\phext\datakit\PackedSequence
 ```
 Alias of self::normalise().
 
@@ -488,7 +488,7 @@ Compute the variance of values within the array. If the array is empty `FALSE` w
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) 
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : sqonk\phext\datakit\PackedSequence
 ```
 Round all values in the array up or down to the given decimal point precesion.
 

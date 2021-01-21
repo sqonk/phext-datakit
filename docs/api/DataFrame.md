@@ -85,6 +85,7 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 [depivot](#depivot)
 [transpose](#transpose)
 [transform](#transform)
+[replace](#replace)
 [add_row](#add_row)
 [add_column](#add_column)
 [apply_display_transformer](#apply_display_transformer)
@@ -210,7 +211,7 @@ Produce a copy of the dataframe consisting of only the supplied data. All other 
 ------
 ##### display_headers
 ```php
-public function display_headers($display = null) : sqonk\phext\datakit\DataFrame
+public function display_headers($display = null) 
 ```
 Whether or not the DataFrame should display the column headers when it is printed. The default is `TRUE`.
 
@@ -218,7 +219,7 @@ Whether or not the DataFrame should display the column headers when it is printe
 ------
 ##### display_generic_indexes
 ```php
-public function display_generic_indexes($display = null) : sqonk\phext\datakit\DataFrame
+public function display_generic_indexes($display = null) 
 ```
 Whether or not the DataFrame should display the row indexes that sequentially numerical when it is printed.
 
@@ -230,7 +231,7 @@ This is automatically disabled for pivoted DataFrames.
 ------
 ##### index
 ```php
-public function index($indexHeader = null) : sqonk\phext\datakit\DataFrame
+public function index($indexHeader = null) 
 ```
 Set or get the column header currently or to be used as the row indexes.
 
@@ -242,7 +243,7 @@ See reindex_rows_with_column() instead.
 ------
 ##### transformers
 ```php
-public function transformers($transformers = null) : sqonk\phext\datakit\DataFrame
+public function transformers($transformers = null) 
 ```
 Used to set or get the full list of display transformers.
 
@@ -909,6 +910,23 @@ public function transform($callback, ...$columns) : sqonk\phext\datakit\DataFram
 Transform the value of one or more columns using the provided callback. If no columns are specified then the operation applies to all.
 
 Callback format: `myFunc($value, $columnName, $rowIndex) -> mixed`
+
+
+------
+##### replace
+```php
+public function replace(string $column, array $newValues) : sqonk\phext\datakit\DataFrame
+```
+Replace all the values for a column with another set of values.
+
+The new value array should hold the exact amount of items as the amount of rows within the DataFrame.
+
+- **$column** The column/header that will have its set of values replaced.
+- **$newValues** An array of replacement values.
+
+
+**Throws:**  InvalidArgumentException If the specified column is not present. 
+**Throws:**  LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
 
 
 ------
