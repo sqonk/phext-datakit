@@ -770,6 +770,37 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 			return new Vector($subarray);
 		}));
 	}
+    
+    /**
+     * Split the vector into a series of vectirs based the varying results returned from a supplied callback.
+     * 
+     * This method differs from `groupby` in that it does not care about the underlying elements
+     * within the vector and relies solely on the callback to determine how the elements are divided up, 
+     * where as `groupby` is explicity designed to work with an array of objects or entities that
+     * respond to key lookups. Further to this, `groupby` can produce a tree structure of nested arrays
+     * where as `splitby` will only ever produce one level of arrays.
+     * 
+     * The values returned from the callback must be capable of being used as an array key
+     * (e.g. strings, numbers). This is done by a `var_is_stringable` check. NULL values are allowed 
+     * but used to omit the associated item from any of the sets.
+     * 
+     * -- parameters:
+     * @param $callback A callback method that will produce the varying results used to sort each element into its own set.
+     * 
+     * Callback format: `myFunc($value, $index) -> mixed`
+     * 
+     * @throws UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
+     * 
+     * @return An vector of vectors, one each for each different result returned from the callback.
+     */
+    public function splitby(callable $callback): Vector
+    {
+        $sets = arrays::splitby($this->_array, $callback);
+        $setv = new Vector;
+        foreach ($sets as $k => $v)
+            $setv[$k] = new Vector($v);
+        return $setv;
+    }
 	
     /**
      * Sort the vector in either `ASCENDING` or `DESCENDING` direction. If the

@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
 		"php": "^7.3 || ^7.4 || ^8.0",
-        "sqonk/phext-core": "^0.3.7 || ^0.4 || ^1",
+        "sqonk/phext-core": "^1.0.4",
         "sqonk/phext-plotlib": "^0.5"
     },
 	"keywords": ["data analysis","matrix","matrices","dataframe", "vector","csv import","packed array","packed sequence"],
