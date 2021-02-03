@@ -55,6 +55,7 @@ In particular it sports a variety of basic mathematical and statistical function
 [shift](#shift)
 [transpose](#transpose)
 [groupby](#groupby)
+[splitby](#splitby)
 [sort](#sort)
 [ksort](#ksort)
 [keyed_sort](#keyed_sort)
@@ -547,6 +548,27 @@ Transfom the vector (assuming it is a flat array of elements) and split them int
 The vector will be re-sorted by the same order as the set of keys being used. If only one key is required to split the array then a singular string may be provided, otherwise pass in an array.
 
 Unless $keepEmptyKeys is set to `TRUE` then any key values that are empty will be omitted.
+
+
+------
+##### splitby
+```php
+public function splitby(callable $callback) : sqonk\phext\datakit\Vector
+```
+Split the vector into a series of vectors based the varying results returned from a supplied callback.
+
+This method differs from `groupby` in that it does not care about the underlying elements within the vector and relies solely on the callback to determine how the elements are divided up, where as `groupby` is explicity designed to work with a vector of objects or entities that respond to key lookups. Further to this, `groupby` can produce a tree structure of nested vectors where as `splitby` will only ever produce one level.
+
+The values returned from the callback must be capable of being used as an array key (e.g. strings, numbers). This is done by a `var_is_stringable` check. `NULL` values are allowed but used to omit the associated item from any of the sets.
+
+- **$callback** A callback method that will produce the varying results used to sort each element into its own set.
+
+Callback format: `myFunc($value, $index) -> mixed`
+
+
+**Throws:**  UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
+
+**Returns:**  A vector of vectors, one each for each different result returned from the callback.
 
 
 ------

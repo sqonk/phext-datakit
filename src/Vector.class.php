@@ -772,13 +772,13 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
     
     /**
-     * Split the vector into a series of vectirs based the varying results returned from a supplied callback.
+     * Split the vector into a series of vectors based the varying results returned from a supplied callback.
      * 
      * This method differs from `groupby` in that it does not care about the underlying elements
      * within the vector and relies solely on the callback to determine how the elements are divided up, 
-     * where as `groupby` is explicity designed to work with an array of objects or entities that
-     * respond to key lookups. Further to this, `groupby` can produce a tree structure of nested arrays
-     * where as `splitby` will only ever produce one level of arrays.
+     * where as `groupby` is explicity designed to work with a vector of objects or entities that
+     * respond to key lookups. Further to this, `groupby` can produce a tree structure of nested vectors
+     * where as `splitby` will only ever produce one level.
      * 
      * The values returned from the callback must be capable of being used as an array key
      * (e.g. strings, numbers). This is done by a `var_is_stringable` check. NULL values are allowed 
@@ -791,7 +791,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @throws UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
      * 
-     * @return An vector of vectors, one each for each different result returned from the callback.
+     * @return A vector of vectors, one each for each different result returned from the callback.
      */
     public function splitby(callable $callback): Vector
     {
