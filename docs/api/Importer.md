@@ -98,7 +98,8 @@ In the cases were the CSV has no column headers then the supplied array will be 
 - **$columns** When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column. Passing `FALSE` or any other value will result in sequential column headers.
 - **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
 
-@see Importer::yield_csv() for possible errors or exceptions that may be raised.
+
+**See:**  Importer::yield_csv() for possible errors or exceptions that may be raised.
 
 **Returns:**  A DataFrame object containing the rows from the CSV, or `NULL` if no rows were retrieved.
 

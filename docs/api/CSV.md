@@ -141,7 +141,8 @@ Add multiple records to the CSV.
 
 **Throws:**  InvalidArgumentException If $records is not of the correct type.
 
-@see add_record() for other possible exceptions that may be thrown.
+
+**See:**  add_record() for other possible exceptions that may be thrown.
 
 **Returns:**  The CSV object.
 
