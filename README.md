@@ -8,6 +8,8 @@ Datakit is a library that assists with data analysis and research. It includes c
 
 It also contains a small set of stand-alone functions and defined constants that import across the global namespace.
 
+You can also combine it with [Visualise](https://github.com/sqonk/phext-visualise) to hook up real-time visual output when working from the command line. 
+
 
 ## About PHEXT
 
