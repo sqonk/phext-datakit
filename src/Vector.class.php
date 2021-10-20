@@ -41,12 +41,12 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		
 	// -------- Class Interfaces
 	
-	public function getIterator()
+	public function getIterator(): \Iterator
 	{
 		return new \ArrayIterator($this->_array);
 	}
 	
-	public function offsetSet($index, $value)
+	public function offsetSet($index, $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -54,22 +54,22 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return array_key_exists($index, $this->_array);
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		$this->remove($index);
 	}
 
-	public function __toString()
+	public function __tostring(): string
 	{
 		return var_export($this->_array, true);
 	}
@@ -109,7 +109,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Return the number of elements in the array.
 	 */
-	public function count()
+	public function count(): int
 	{
 		return count($this->_array);
 	}

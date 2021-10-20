@@ -61,12 +61,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// -------- Class Interfaces
 	
-	public function getIterator()
+	public function getIterator(): \Iterator
 	{
 		return new \ArrayIterator($this->data());
 	}
 	
-	public function offsetSet($index, $row)
+	public function offsetSet($index, $row): void
 	{
 		$keys = array_keys($this->data());
 		if ($index === LAST_ROW) 
@@ -80,12 +80,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 			$this->data[$index] = $row;
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return $this->row($index) !== null;
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		$keys = array_keys($this->data());
 		if ($index === LAST_ROW) 
@@ -97,7 +97,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 		$this->drop_rows($index, null, true);
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->row($index);
 	}
@@ -107,7 +107,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See: report()
      */
-    public function __toString(): string
+    public function __tostring(): string
     {
         return $this->report();
     }

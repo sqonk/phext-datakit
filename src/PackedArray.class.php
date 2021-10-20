@@ -55,7 +55,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         
     protected $_iteratorIndex = 0;
     
-	public function offsetSet($index, $value)
+	public function offsetSet($index, $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -63,43 +63,43 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return $index < $this->count();
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		$this->remove($index);
 	}
 
-    public function __toString()
+    public function __tostring(): string
     {
         return sprintf("PackedArray(%d) %s...%s", $this->indexes->count(), $this->first(), $this->last());
     }
     
-    public function rewind() {
+    public function rewind(): void {
         $this->_iteratorIndex = 0;
     }
 
-    public function current() {
+    public function current(): mixed {
         return $this->get($this->_iteratorIndex);
     }
 
-    public function key() {
+    public function key(): mixed {
         return $this->_iteratorIndex;
     }
 
-    public function next() {
+    public function next(): void {
         ++$this->_iteratorIndex;
     }
 
-    public function valid() {
+    public function valid(): bool {
         return $this->_iteratorIndex < $this->count();
     }
     

@@ -262,7 +262,7 @@ class CSV
     /**
      * Convert the CSV in its current state to a string.
      */
-    public function __toString(): string
+    public function __tostring(): string
     {
         $pos = ftell($this->fh());
         if ($pos == 0)

@@ -48,7 +48,7 @@ class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new \ArrayIterator($array);
 	}
     
-	public function offsetSet($index, $value)
+	public function offsetSet($index, $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -56,7 +56,7 @@ class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
 			throw new \Exception("Existing values of an SMA can not be overwritten.");
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		$value = $this->averages->get($index);
         if (is_int($this->defaultPrecision))
@@ -65,12 +65,12 @@ class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
         return $value;
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return array_key_exists($index, $this->averages->array());
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		throw new \Exception("Existing values can not be removed from an SMA.");
 	}
@@ -154,7 +154,7 @@ class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->averages->array();
     }
 	
-	public function __toString(): string
+	public function __tostring(): string
 	{
 		return "EMA: {$this->latest}";
 	}

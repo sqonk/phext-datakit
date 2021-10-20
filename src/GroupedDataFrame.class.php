@@ -40,12 +40,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	
 	// -------- Class Interfaces
 	
-	public function getIterator()
+	public function getIterator(): \Iterator
 	{
 		return new \ArrayIterator($this->sets);
 	}
 	
-	public function offsetSet($index, $dataFrame)
+	public function offsetSet($index, $dataFrame): void
 	{
 		if (! $dataFrame instanceof DataFrame)
 			throw new \IllegalArguementException('Only DataFrames can be added to the set of a GroupedDataFrame. Null or incorrect object type given.');
@@ -56,12 +56,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 			$this->sets[$index] = $dataFrame;
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return isset($this->sets[$index]);
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		if (isset($this->sets[$index])) {
 			$this->sets[$index] = null;
@@ -69,12 +69,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 		}
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->sets[$index] ?? null;
 	}
 	
-	public function count()
+	public function count(): int
 	{
 		return count($this->sets);
 	}

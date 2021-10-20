@@ -43,7 +43,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
             
     // -------- Class Interfaces
     
-	public function offsetSet($index, $value)
+	public function offsetSet($index, $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -51,44 +51,44 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return $index < $this->count();
 	}
 	
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
 		$this->delete($index);
 	}
 
-    public function __toString()
+    public function __tostring(): string
     {
         $count = $this->count();
         return sprintf("PackedSequence(%d) %s...%s", $count, $this->get(0), $this->get($count-1));
     }
     
-    public function rewind() {
+    public function rewind(): void {
         $this->_iteratorIndex = 0;
     }
 
-    public function current() {
+    public function current(): mixed {
         return $this->get($this->_iteratorIndex);
     }
 
-    public function key() {
+    public function key(): mixed {
         return $this->_iteratorIndex;
     }
 
-    public function next() {
+    public function next(): void {
         ++$this->_iteratorIndex;
     }
 
-    public function valid() {
+    public function valid(): bool {
         return $this->_iteratorIndex < $this->count();
     }
     
