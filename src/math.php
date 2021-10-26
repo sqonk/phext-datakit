@@ -345,7 +345,7 @@ class math
     /**
      * Compute a correlation using the Spearman method with the two given arrays.
      * 
-     * This method are part of the spearman correlation and were originally
+     * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
      * see: http://www.wisetonic.com/
@@ -387,7 +387,7 @@ class math
 	/**
 	 * Compute the coefficient of an array of distances.
 	 * 
-	 * This method are part of the spearman correlation and were originally
+	 * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
      * see: http://www.wisetonic.com/
@@ -411,7 +411,7 @@ class math
      * Return an array of distances computed from the values of the two
      * given arrays.
      * 
-     * This method are part of the spearman correlation and were originally
+     * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
      * see: http://www.wisetonic.com/
@@ -427,7 +427,7 @@ class math
     }
     
     /**
-     * This method are part of the spearman correlation and were originally
+     * This method is part of the spearman correlation and were originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
      * see: http://www.wisetonic.com/
