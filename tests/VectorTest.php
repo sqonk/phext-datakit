@@ -610,7 +610,7 @@ class VectorTest extends TestCase
     public function testOccursIn()
     {
         $ps = vector('day', 'sunny');
-        $this->assertSame('day', $ps->occurs_in('It was a very sunny day'));
+        $this->assertSame(true, $ps->occurs_in('It was a very sunny day'));
         $this->assertSame(false, $ps->occurs_in('The night was long and full of dread'));
     }
     
