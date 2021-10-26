@@ -33,13 +33,13 @@ namespace sqonk\phext\datakit;
  */
 class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 {
-    protected $buffer;
-    protected $size = 0;
+    protected \SplFileObject $buffer;
+    protected int $size = 0;
     
-    protected $itemSize;
-    protected $packCode;
+    protected string|int $itemSize;
+    protected ?string $packCode = null;
     
-    protected $_iteratorIndex = 0;
+    protected int $_iteratorIndex = 0;
             
     // -------- Class Interfaces
     
@@ -110,7 +110,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * $startingValues is an optional array of starting numbers to add
      * to the array.
      */
-    public function __construct($itemSize, ?array $startingValues = null)
+    public function __construct(int|string $itemSize, ?array $startingValues = null)
     {
         if (is_int($itemSize))
             $this->itemSize = $itemSize;
@@ -126,8 +126,10 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
                 $this->add($value);
     }
     
-    public function count(): int
-    {
+    /**
+     * Return the amount of items within the Packed Sequence.
+     */
+    public function count(): int {
         return $this->size / $this->itemSize;
     }
     
@@ -628,7 +630,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Compute a sum of the values within the array.
      */
-    public function sum()
+    public function sum(): int|float
 	{
 		$sum = 0;
         foreach ($this as $value)
@@ -639,7 +641,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Compute the average of the values within the array.
      */
-    public function avg()
+    public function avg(): int|float
     {
         $count = $this->count();
         return ($count > 0) ? $this->sum() / $count : $count;
@@ -648,7 +650,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Return the maximum value present within the array.
      */
-    public function max()
+    public function max(): int|float|null
     {
         $max = null;
         foreach ($this as $value)
@@ -660,7 +662,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Return the minimum value present within the array.
      */
-    public function min()
+    public function min(): int|float|null
     {
         $min = null;
         foreach ($this as $value)
@@ -694,15 +696,14 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Alias of self::normalise().
      */
-    public function normalize(): PackedSequence
-    {
+    public function normalize(): PackedSequence {
         return self::normalise();
     }
     
     /**
      * Compute the product of the values within the array.
      */
-    public function product()
+    public function product(): int|float
 	{
 		$product = null;
         foreach ($this as $value)
@@ -721,7 +722,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Compute the variance of values within the array. If the array is empty
      * FALSE will be returned.
      */
-	public function variance()
+	public function variance(): int|float
 	{
         if ($this->empty())
             return 0.0;

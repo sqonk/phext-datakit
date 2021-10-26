@@ -47,13 +47,13 @@ namespace sqonk\phext\datakit;
  */
 class PackedArray implements \ArrayAccess, \Countable, \Iterator
 {
-    protected $buffer;
-    protected $size;
-    protected $indexes;
-    protected $lengths;
-    protected $types;
+    protected \SplFileObject $buffer;
+    protected int $size;
+    protected PackedSequence $indexes;
+    protected PackedSequence $lengths;
+    protected PackedSequence $types;
         
-    protected $_iteratorIndex = 0;
+    protected int $_iteratorIndex = 0;
     
 	public function offsetSet($index, $value): void
 	{
@@ -63,13 +63,11 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index): mixed
-	{
+	public function offsetGet($index): mixed {
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index): bool
-	{
+	public function offsetExists($index): bool {
 		return $index < $this->count();
 	}
 	
@@ -142,8 +140,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Return the number of elements within the array.
      */
-    public function count(): int
-    {
+    public function count(): int {
         return $this->indexes->count();
     }
     
