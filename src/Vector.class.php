@@ -41,36 +41,30 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		
 	// -------- Class Interfaces
 	
-	public function getIterator(): \Iterator
-	{
+	public function getIterator(): \Iterator {
 		return new \ArrayIterator($this->_array);
 	}
 	
-	public function offsetSet($index, $value): void
-	{
+	public function offsetSet($index, $value): void {
 		if ($index === null)
 			$this->add($value);
 		else
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index): mixed
-	{
+	public function offsetGet($index): mixed {
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index): bool
-	{
+	public function offsetExists($index): bool {
 		return array_key_exists($index, $this->_array);
 	}
 	
-	public function offsetUnset($index): void
-	{
+	public function offsetUnset($index): void {
 		$this->remove($index);
 	}
 
-	public function __tostring(): string
-	{
+	public function __tostring(): string {
 		return var_export($this->_array, true);
 	}
 	
@@ -1060,56 +1054,49 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Find the median value within the vector.
      */
-    public function median(): int|float|null 
-	{
+    public function median(): int|float|null {
 		return math::median($this->_array);
 	}
 	
     /**
      * Compute the product of the values within the vector.
      */
-    public function product(): int|float|null
-	{
+    public function product(): int|float|null {
 		return array_product($this->_array);
 	}
 	
     /**
      * Compute a cumulative sum of the values within the vector.
      */
-    public function cumsum(): Vector
-    {
+    public function cumsum(): Vector {
         return new Vector(math::cumulative_sum($this->_array));
 	}
 	
     /**
      * Compute the cumulative maximum value within the vector.
      */
-    public function cummax(): Vector
-    {
+    public function cummax(): Vector {
         return new Vector(math::cumulative_max($this->_array));
 	}
 	
     /**
      * Compute the cumulative minimum value within the vector.
      */
-    public function cummin(): Vector
-    {
+    public function cummin(): Vector {
         return new Vector(math::cumulative_min($this->_array));
 	}
 	
     /**
      * Compute the cumulative product of the values within the vector.
      */
-	public function cumproduct(): Vector
-	{
+	public function cumproduct(): Vector {
 		return new Vector(math::cumulative_prod($this->_array));
 	}
 	
     /**
      * Compute the variance of values within the vector.
      */
-	public function variance(): int|float|null
-	{
+	public function variance(): int|float|nul {
 		return math::variance($this->_array);
 	}
 	
@@ -1124,8 +1111,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Returns the resulting value.
      */
-	public function reduce(callable $callback, $initial = null)
-	{
+	public function reduce(callable $callback, $initial = null): mixed {
 		return array_reduce($this->_array, $callback, $initial);
 	}
     
