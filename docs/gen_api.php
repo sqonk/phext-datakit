@@ -79,8 +79,15 @@ function generateForClass($cl)
         $params = [];
         foreach ($method->getParameters() as $p) {
             $str = '';
-            if ($type = $p->getType())
-                $str .= $type->getName()." ";
+            if ($type = $p->getType()) {
+                if ($type instanceof ReflectionUnionType) {
+                    $names = implode('|', array_map(fn($t) => $t->getName(), $type->getTypes()));
+                    $str .= "$names ";
+                }
+                else {
+                    $str .= $type->getName()." ";
+                }
+            }
             
             if ($p->isVariadic())
                 $str .= '...';
