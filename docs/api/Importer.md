@@ -43,7 +43,7 @@ static public function csv_file(callable $callback, string $filePath, bool $head
 ```
 Import a CSV from a local file on disk or a URL.
 
-Provides a fast and convienient way of importing data from CSV formats. Each row is returned to your callback method as an array of values, where you may do as you desire with it. Alternatively if you pass in `NULL` as the callback then all the data will be returned as an array.
+Provides a fast and convenient way of importing data from CSV formats. Each row is returned to your callback method as an array of values, where you may do as you desire with it. Alternatively if you pass in `NULL` as the callback then all the data will be returned as an array.
 
 Your callback method should be in the format of:
 
@@ -88,14 +88,14 @@ This method will throw a `RuntimeException` if the file can not be opened for an
 ------
 ##### csv_dataframe
 ```php
-static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0) : ?sqonk\phext\datakit\DataFrame
+static public function csv_dataframe(string $filePath, array|bool $headers = false, int $skipRows = 0) : ?sqonk\phext\datakit\DataFrame
 ```
 Import a CSV directly into a DataFrame object in the most memory efficient way.
 
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
 - **$filePath** Path or URL to the CSV file.
-- **$columns** When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column. Passing `FALSE` or any other value will result in sequential column headers.
+- **$headers** When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing `FALSE` or any other value will result in sequential column headers.
 - **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
 
 
@@ -107,7 +107,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 ------
 ##### delimitered_data
 ```php
-static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '\n', bool $headersAreFirstRow = false, $customHeaders = null) 
+static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '\n', bool $headersAreFirstRow = false, array $customHeaders = null) 
 ```
 Split a string of raw data down into rows and columns.
 
@@ -136,7 +136,7 @@ This method will generate a user level warning if data is empty or can not other
 ```php
 static public function mysql_dataframe(string $database, string $source, string $server = 'localhost', string $username = 'root', string $password = '') : ?sqonk\phext\datakit\DataFrame
 ```
-Loads data out of a MySQL database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data into your script for research or general utility purposes using simplistic queries.
+Loads data out of a MySQL database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convenience for quickly getting data into your script for research or general utility purposes using simplistic queries.
 
 NOTE: Requires the MySQLi extension to be installed and active.
 
@@ -160,7 +160,7 @@ CAUTION: This method is designed for CLI usage only and will trigger a warning i
 ```php
 static public function sqlite_dataframe(string $filepath, string $source) : ?sqonk\phext\datakit\DataFrame
 ```
-Loads data out of a SQLite database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data into your script for research or general utility purposes using simplistic queries.
+Loads data out of a SQLite database into a DataFrame. $source can either be a table name or a fully qualified SELECT statement. It is primarily designed as a convenience for quickly getting data into your script for research or general utility purposes using simplistic queries.
 
 NOTE: Requires the SQLite3 extension to be installed and active.
 
