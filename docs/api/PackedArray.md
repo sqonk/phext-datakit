@@ -19,7 +19,7 @@ In general native arrays offer flexibility and speed over memory consumption, wh
 [offsetGet](#offsetget)
 [offsetExists](#offsetexists)
 [offsetUnset](#offsetunset)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 [rewind](#rewind)
 [current](#current)
 [key](#key)
@@ -70,7 +70,7 @@ In general native arrays offer flexibility and speed over memory consumption, wh
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) 
+public function offsetSet($index, $value) : void
 ```
 No documentation available.
 
@@ -78,7 +78,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) 
+public function offsetGet($index) : mixed
 ```
 No documentation available.
 
@@ -86,7 +86,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) 
+public function offsetExists($index) : bool
 ```
 No documentation available.
 
@@ -94,15 +94,15 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) 
+public function offsetUnset($index) : void
 ```
 No documentation available.
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 No documentation available.
 
@@ -110,7 +110,7 @@ No documentation available.
 ------
 ##### rewind
 ```php
-public function rewind() 
+public function rewind() : void
 ```
 No documentation available.
 
@@ -118,7 +118,7 @@ No documentation available.
 ------
 ##### current
 ```php
-public function current() 
+public function current() : mixed
 ```
 No documentation available.
 
@@ -126,7 +126,7 @@ No documentation available.
 ------
 ##### key
 ```php
-public function key() 
+public function key() : mixed
 ```
 No documentation available.
 
@@ -134,7 +134,7 @@ No documentation available.
 ------
 ##### next
 ```php
-public function next() 
+public function next() : void
 ```
 No documentation available.
 
@@ -142,7 +142,7 @@ No documentation available.
 ------
 ##### valid
 ```php
-public function valid() 
+public function valid() : bool
 ```
 No documentation available.
 

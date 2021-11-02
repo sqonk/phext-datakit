@@ -154,7 +154,7 @@ static public function correlation_spearman(array $data1, array $data2)
 ```
 Compute a correlation using the Spearman method with the two given arrays.
 
-This method are part of the spearman correlation and were originally written by Alejandro Mitrou under the GPL license.
+This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
 see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
 
@@ -166,7 +166,7 @@ static public function coefficient(array $distances)
 ```
 Compute the coefficient of an array of distances.
 
-This method are part of the spearman correlation and were originally written by Alejandro Mitrou under the GPL license.
+This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
 see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
 
@@ -178,7 +178,7 @@ static public function distances(array $ranking1, array $ranking2)
 ```
 Return an array of distances computed from the values of the two given arrays.
 
-This method are part of the spearman correlation and were originally written by Alejandro Mitrou under the GPL license.
+This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
 see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
 

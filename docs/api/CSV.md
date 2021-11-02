@@ -19,7 +19,7 @@ This class works in real-time, meaning that the data is written out to the strea
 [add_raw_row](#add_raw_row)
 [add_record](#add_record)
 [add_records](#add_records)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 
 ------
 ##### __construct
@@ -148,9 +148,9 @@ Add multiple records to the CSV.
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 Convert the CSV in its current state to a string.
 

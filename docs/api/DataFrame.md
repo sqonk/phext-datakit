@@ -14,7 +14,7 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 [offsetExists](#offsetexists)
 [offsetUnset](#offsetunset)
 [offsetGet](#offsetget)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 [__construct](#__construct)
 [copy](#copy)
 [clone](#clone)
@@ -114,7 +114,7 @@ No documentation available.
 ------
 ##### getIterator
 ```php
-public function getIterator() 
+public function getIterator() : Iterator
 ```
 No documentation available.
 
@@ -122,7 +122,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $row) 
+public function offsetSet($index, $row) : void
 ```
 No documentation available.
 
@@ -130,7 +130,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) 
+public function offsetExists($index) : bool
 ```
 No documentation available.
 
@@ -138,7 +138,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) 
+public function offsetUnset($index) : void
 ```
 No documentation available.
 
@@ -146,15 +146,15 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) 
+public function offsetGet($index) : mixed
 ```
 No documentation available.
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 Converting the DataFrame to a string produces the report.
 

@@ -10,7 +10,7 @@ In particular it sports a variety of basic mathematical and statistical function
 [offsetGet](#offsetget)
 [offsetExists](#offsetexists)
 [offsetUnset](#offsetunset)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 [__construct](#__construct)
 [array](#array)
 [count](#count)
@@ -90,7 +90,7 @@ In particular it sports a variety of basic mathematical and statistical function
 ------
 ##### getIterator
 ```php
-public function getIterator() 
+public function getIterator() : Iterator
 ```
 No documentation available.
 
@@ -98,7 +98,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) 
+public function offsetSet($index, $value) : void
 ```
 No documentation available.
 
@@ -106,7 +106,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) 
+public function offsetGet($index) : mixed
 ```
 No documentation available.
 
@@ -114,7 +114,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) 
+public function offsetExists($index) : bool
 ```
 No documentation available.
 
@@ -122,15 +122,15 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) 
+public function offsetUnset($index) : void
 ```
 No documentation available.
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 No documentation available.
 
@@ -140,13 +140,13 @@ No documentation available.
 ```php
 public function __construct(array $startingArray = []) 
 ```
-Contruct a new vector with the provided array.
+Construct a new vector with the provided array.
 
 
 ------
 ##### array
 ```php
-public function array() 
+public function array() : array
 ```
 No documentation available.
 
@@ -154,7 +154,7 @@ No documentation available.
 ------
 ##### count
 ```php
-public function count() 
+public function count() : int
 ```
 Return the number of elements in the array.
 
@@ -166,7 +166,7 @@ public function constrain(int $limit) : sqonk\phext\datakit\Vector
 ```
 Set a rolling capacity limit on the vector. Once set, old values will be shifted off of the beginning to make room for new values once the capacity is reached.
 
-Setting the limit to `NULL` will remove the constraint altogether, which is the default.
+Setting the limit to 0 will remove the constraint altogether, which is the default.
 
 
 ------
@@ -359,7 +359,7 @@ Randomly choose and return an item from the vector.
 ------
 ##### occurs_in
 ```php
-public function occurs_in(string $heystack) 
+public function occurs_in(string $heystack) : bool
 ```
 Returns the first item in the vector found in the heystack or `FALSE` if none are found.
 
@@ -467,7 +467,7 @@ Trim all entries in the array (assumes all entries are strings).
 ```php
 public function implode(string $delimier = '', string $subDelimiter = '') : string
 ```
-Join all elements in the vector into a string using the supplied delimier as the seperator.
+Join all elements in the vector into a string using the supplied delimier as the separator.
 
 This assumes all elements in the vector are capable of being cast to a string.
 
@@ -477,9 +477,9 @@ This assumes all elements in the vector are capable of being cast to a string.
 ```php
 public function implode_only(string $delimier, array $keys, string $subDelimiter = '') : string
 ```
-Implode the vector using the desired delimiter and subdelimiter.
+Implode the vector using the desired delimiter and sub-delimiter.
 
-This method is primarily intended for non-senquential/associative vectors and differs from the standard implode in that it will only implode the values associated with the specified keys/indexes.
+This method is primarily intended for non-sequential/associative vectors and differs from the standard implode in that it will only implode the values associated with the specified keys/indexes.
 
 
 ------
@@ -543,7 +543,7 @@ For example, if you had a result set that contained a 'type' field, a correspond
 ```php
 public function groupby($keys, bool $keepEmptyKeys = false) : sqonk\phext\datakit\Vector
 ```
-Transfom the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in.
+Transform the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in.
 
 The vector will be re-sorted by the same order as the set of keys being used. If only one key is required to split the array then a singular string may be provided, otherwise pass in an array.
 
@@ -557,7 +557,7 @@ public function splitby(callable $callback) : sqonk\phext\datakit\Vector
 ```
 Split the vector into a series of vectors based the varying results returned from a supplied callback.
 
-This method differs from `groupby` in that it does not care about the underlying elements within the vector and relies solely on the callback to determine how the elements are divided up, where as `groupby` is explicity designed to work with a vector of objects or entities that respond to key lookups. Further to this, `groupby` can produce a tree structure of nested vectors where as `splitby` will only ever produce one level.
+This method differs from `groupby` in that it does not care about the underlying elements within the vector and relies solely on the callback to determine how the elements are divided up, where as `groupby` is explicitly designed to work with a vector of objects or entities that respond to key lookups. Further to this, `groupby` can produce a tree structure of nested vectors where as `splitby` will only ever produce one level.
 
 The values returned from the callback must be capable of being used as an array key (e.g. strings, numbers). This is done by a `var_is_stringable` check. `NULL` values are allowed but used to omit the associated item from any of the sets.
 
@@ -716,7 +716,7 @@ Swap the keys and values within the vector. If $inplace is `TRUE` then this meth
 ------
 ##### sum
 ```php
-public function sum() 
+public function sum() : int|float|null
 ```
 Compute a sum of the values within the vector.
 
@@ -724,7 +724,7 @@ Compute a sum of the values within the vector.
 ------
 ##### avg
 ```php
-public function avg() 
+public function avg() : int|float|null
 ```
 Compute the average of the values within the vector.
 
@@ -732,7 +732,7 @@ Compute the average of the values within the vector.
 ------
 ##### max
 ```php
-public function max() 
+public function max() : int|float|null
 ```
 Return the maximum value present within the vector.
 
@@ -740,7 +740,7 @@ Return the maximum value present within the vector.
 ------
 ##### min
 ```php
-public function min() 
+public function min() : int|float|null
 ```
 Return the minimum value present within the vector.
 
@@ -748,7 +748,7 @@ Return the minimum value present within the vector.
 ------
 ##### median
 ```php
-public function median() 
+public function median() : int|float|null
 ```
 Find the median value within the vector.
 
@@ -756,7 +756,7 @@ Find the median value within the vector.
 ------
 ##### product
 ```php
-public function product() 
+public function product() : int|float|null
 ```
 Compute the product of the values within the vector.
 
@@ -796,7 +796,7 @@ Compute the cumulative product of the values within the vector.
 ------
 ##### variance
 ```php
-public function variance() 
+public function variance() : sqonk\phext\datakit\nul|int|float
 ```
 Compute the variance of values within the vector.
 
@@ -804,7 +804,7 @@ Compute the variance of values within the vector.
 ------
 ##### reduce
 ```php
-public function reduce(callable $callback, $initial = null) 
+public function reduce(callable $callback, $initial = null) : mixed
 ```
 Iteratively reduce the vector to a single value using a callback function.
 
@@ -838,7 +838,7 @@ Alias of self::normalise().
 ```php
 public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : sqonk\phext\datakit\Vector
 ```
-Round all values in the vector up or down to the given decimal point precesion.
+Round all values in the vector up or down to the given decimal point precision.
 
 
 ------

@@ -15,7 +15,7 @@ It is particularly useful for large numerical arrays or indexes.
 [offsetGet](#offsetget)
 [offsetExists](#offsetexists)
 [offsetUnset](#offsetunset)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 [rewind](#rewind)
 [current](#current)
 [key](#key)
@@ -66,7 +66,7 @@ It is particularly useful for large numerical arrays or indexes.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) 
+public function offsetSet($index, $value) : void
 ```
 No documentation available.
 
@@ -74,7 +74,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) 
+public function offsetGet($index) : mixed
 ```
 No documentation available.
 
@@ -82,7 +82,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) 
+public function offsetExists($index) : bool
 ```
 No documentation available.
 
@@ -90,15 +90,15 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) 
+public function offsetUnset($index) : void
 ```
 No documentation available.
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 No documentation available.
 
@@ -106,7 +106,7 @@ No documentation available.
 ------
 ##### rewind
 ```php
-public function rewind() 
+public function rewind() : void
 ```
 No documentation available.
 
@@ -114,7 +114,7 @@ No documentation available.
 ------
 ##### current
 ```php
-public function current() 
+public function current() : mixed
 ```
 No documentation available.
 
@@ -122,7 +122,7 @@ No documentation available.
 ------
 ##### key
 ```php
-public function key() 
+public function key() : mixed
 ```
 No documentation available.
 
@@ -130,7 +130,7 @@ No documentation available.
 ------
 ##### next
 ```php
-public function next() 
+public function next() : void
 ```
 No documentation available.
 
@@ -138,7 +138,7 @@ No documentation available.
 ------
 ##### valid
 ```php
-public function valid() 
+public function valid() : bool
 ```
 No documentation available.
 
@@ -154,7 +154,7 @@ No documentation available.
 ------
 ##### __construct
 ```php
-public function __construct($itemSize, array $startingValues = null) 
+public function __construct(string|int $itemSize, array $startingValues = null) 
 ```
 $itemSize should be either a string code accepted by PHP's built-in pack() method, or an integer specifying the raw byte size if no packing is required.
 
@@ -166,7 +166,7 @@ $startingValues is an optional array of starting numbers to add to the array.
 ```php
 public function count() : int
 ```
-No documentation available.
+Return the amount of items within the Packed Sequence.
 
 
 ------
@@ -424,7 +424,7 @@ Reserve the order of the elements.
 ------
 ##### sum
 ```php
-public function sum() 
+public function sum() : int|float
 ```
 Compute a sum of the values within the array.
 
@@ -432,7 +432,7 @@ Compute a sum of the values within the array.
 ------
 ##### avg
 ```php
-public function avg() 
+public function avg() : int|float
 ```
 Compute the average of the values within the array.
 
@@ -440,7 +440,7 @@ Compute the average of the values within the array.
 ------
 ##### max
 ```php
-public function max() 
+public function max() : int|float|null
 ```
 Return the maximum value present within the array.
 
@@ -448,7 +448,7 @@ Return the maximum value present within the array.
 ------
 ##### min
 ```php
-public function min() 
+public function min() : int|float|null
 ```
 Return the minimum value present within the array.
 
@@ -472,7 +472,7 @@ Alias of self::normalise().
 ------
 ##### product
 ```php
-public function product() 
+public function product() : int|float
 ```
 Compute the product of the values within the array.
 
@@ -480,7 +480,7 @@ Compute the product of the values within the array.
 ------
 ##### variance
 ```php
-public function variance() 
+public function variance() : int|float
 ```
 Compute the variance of values within the array. If the array is empty `FALSE` will be returned.
 

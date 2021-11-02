@@ -13,7 +13,7 @@ A simple class for management of a Exponential Moving Average. It works by alter
 [add](#add)
 [result](#result)
 [all](#all)
-[__toString](#__tostring)
+[__tostring](#__tostring)
 
 ------
 ##### count
@@ -34,7 +34,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) 
+public function offsetSet($index, $value) : void
 ```
 No documentation available.
 
@@ -42,7 +42,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) 
+public function offsetGet($index) : mixed
 ```
 No documentation available.
 
@@ -50,7 +50,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) 
+public function offsetExists($index) : bool
 ```
 No documentation available.
 
@@ -58,7 +58,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) 
+public function offsetUnset($index) : void
 ```
 No documentation available.
 
@@ -99,9 +99,9 @@ Return all acquired averages, optionally rounding them to the specified precisio
 
 
 ------
-##### __toString
+##### __tostring
 ```php
-public function __toString() : string
+public function __tostring() : string
 ```
 No documentation available.
 
