@@ -3,9 +3,9 @@
     "description": "Datakit is a library that assists with data analysis and research. It includes classes for working with tables of data and deriving statistical information, importing those tables from file formats such as CSV, a class wrapper with statistical methods for PHP arrays, as well as memory efficient packed arrays.",
     "type": "library",
     "require": {
-		"php": "^7.3 || ^7.4 || ^8.0",
-        "sqonk/phext-core": "^1.0.4",
-        "sqonk/phext-plotlib": "^1"
+		"php": "^8",
+        "sqonk/phext-core": "^1.1",
+        "sqonk/phext-plotlib": "^1.1"
     },
 	"keywords": ["data analysis","matrix","matrices","dataframe", "vector","csv import","packed array","packed sequence"],
     "license": "MIT",
