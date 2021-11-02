@@ -106,14 +106,14 @@ class ImporterTest extends TestCase
         ];
         $headers = ['sepal-length','sepal-width','petal-length','petal-width','class'];
         
-        $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', true);
+        $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', headers:true);
         $this->assertSame($expected, $df->data());
         
-        $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', $headers, 1);
+        $df = Importer::csv_dataframe(__DIR__.'/iris-h.csv', headers:$headers, skipRows:1);
         $this->assertSame($expected, $df->data());
         
         $this->expectException(RuntimeException::class);
-        Importer::csv_dataframe(__DIR__.'/nofilehere.csv', true);
+        Importer::csv_dataframe(__DIR__.'/nofilehere.csv', headers:true);
     }
     
     public function testDelimiteredData()

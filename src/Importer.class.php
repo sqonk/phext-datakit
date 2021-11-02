@@ -116,7 +116,7 @@ class Importer
     /**
      * Import a CSV from a local file on disk or a URL.
      * 
-     * Provides a fast and convienient way of importing data from CSV formats. Each row
+     * Provides a fast and convenient way of importing data from CSV formats. Each row
      * is returned to your callback method as an array of values, where you may do
      * as you desire with it. Alternatively if you pass in NULL as the callback then
      * all the data will be returned as an array.
@@ -272,23 +272,23 @@ class Importer
      * 
      * -- parameters:
      * @param $filePath Path or URL to the CSV file.
-     * @param $columns When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column. Passing FALSE or any other value will result in sequential column headers.
+     * @param $headers When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing FALSE or any other value will result in sequential column headers.
      * @param $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
      * @see Importer::yield_csv() for possible errors or exceptions that may be raised.
      * 
      * @return A DataFrame object containing the rows from the CSV, or NULL if no rows were retrieved.
      */
-    static public function csv_dataframe(string $filePath, $columns = false, int $skipRows = 0): ?DataFrame
+    static public function csv_dataframe(string $filePath, array|bool $headers = false, int $skipRows = 0): ?DataFrame
     {
-        if (is_array($columns)) {
-            $customHeaders = $columns;
+        if (is_array($headers)) {
+            $customHeaders = $headers;
             $headersAreFirstRow = false;
         }
         
         else {
             $customHeaders = null;
-            $headersAreFirstRow = (bool)$columns;
+            $headersAreFirstRow = $headers;
         }
         
         $df = null;
@@ -329,7 +329,7 @@ class Importer
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
      * at least 1 line of applicable data.
      */
-    static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, $customHeaders = null)
+    static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, ?array $customHeaders = null)
     {
         $lines = explode($lineDelimiter, trim($data));
         $count = count($lines);
@@ -362,7 +362,7 @@ class Importer
     
     /**
      * Loads data out of a MySQL database into a DataFrame. $source can either be a table name or 
-     * a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data 
+     * a fully qualified SELECT statement. It is primarily designed as a convenience for quickly getting data 
      * into your script for research or general utility purposes using simplistic queries.
      * 
      * NOTE: Requires the MySQLi extension to be installed and active.
@@ -414,7 +414,7 @@ class Importer
     
     /**
      * Loads data out of a SQLite database into a DataFrame. $source can either be a table name or 
-     * a fully qualified SELECT statement. It is primarily designed as a convienience for quickly getting data 
+     * a fully qualified SELECT statement. It is primarily designed as a convenience for quickly getting data 
      * into your script for research or general utility purposes using simplistic queries.
      * 
      * NOTE: Requires the SQLite3 extension to be installed and active.
