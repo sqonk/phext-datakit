@@ -100,7 +100,7 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 ```php
 static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false) 
 ```
-Static equivilent of `new DataFrame`.
+Static equivalent of `new DataFrame`.
 
 
 ------
@@ -168,9 +168,9 @@ public function __construct(array $data = null, array $headers = null, bool $isV
 ```
 Construct a new dataframe with the provided data. You may optionally provide the set of column headers in the second parameter. If you choose to do this then they should match the keys in the array.
 
-- **$data** The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correpsond to the headers of each column.
+- **$data** The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
 - **$headers** An optional custom set of column headers.
-- **$isVerticalDataSet** When set to `TRUE` the $data array is interpretted as a veritical series of columns instead of rows. Defaults to `FALSE`.
+- **$isVerticalDataSet** When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
 
 Standard data array format:
 
@@ -598,7 +598,7 @@ If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
 
-$sample is passed through to the standard deviation calculation to determine how the result is producted.
+$sample is passed through to the standard deviation calculation to determine how the result is produced.
 
 
 ------

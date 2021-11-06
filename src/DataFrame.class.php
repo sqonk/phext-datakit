@@ -47,7 +47,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     protected $showGenericIndexes = true;
 	
 	/** 
-     *   Static equivilent of `new DataFrame`.
+     *   Static equivalent of `new DataFrame`.
      */
 	static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false)
 	{
@@ -120,9 +120,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * should match the keys in the array.
      * 
      * -- parameters:
-     * @param $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correpsond to the headers of each column. 
+     * @param $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
      * @param $headers An optional custom set of column headers.
-     * @param $isVerticalDataSet When set to TRUE the $data array is interpretted as a veritical series of columns instead of rows. Defaults to FALSE.
+     * @param $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
      * 
      * Standard data array format:
      * 
@@ -1213,7 +1213,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * produced.
      * 
      * $sample is passed through to the standard deviation calculation
-     * to determine how the result is producted.
+     * to determine how the result is produced.
      */
     public function std(bool $sample = false, ...$columns)
     {
