@@ -51,18 +51,15 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index): mixed
-	{
+	public function offsetGet($index): mixed {
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index): bool
-	{
+	public function offsetExists($index): bool {
 		return $index < $this->count();
 	}
 	
-	public function offsetUnset($index): void
-	{
+	public function offsetUnset($index): void {
 		$this->delete($index);
 	}
 

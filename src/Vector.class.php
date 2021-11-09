@@ -715,7 +715,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * where the resulting array contains a column for each different value for the given
      * fields in the merge map (associative array).
      * 
-     * The group key is used to specifiy which field in the array will be used to flatten
+     * The group key is used to specify which field in the array will be used to flatten
      * multiple rows into one.
      * 
      * For example, if you had a result set that contained a 'type' field, a corresponding
@@ -864,8 +864,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of rotate_back()
      */
-    public function rotate_right(): Vector
-    {
+    public function rotate_right(): Vector {
         return $this->rotate_back();
     }
     
@@ -885,8 +884,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of rotate_forward()
      */
-    public function rotate_left(): Vector
-    {
+    public function rotate_left(): Vector {
         return $this->rotate_forward();
     }
 	

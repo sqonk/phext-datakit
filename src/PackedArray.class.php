@@ -76,8 +76,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 		$this->remove($index);
 	}
 
-    public function __tostring(): string
-    {
+    public function __tostring(): string {
         return sprintf("PackedArray(%d) %s...%s", $this->indexes->count(), $this->first(), $this->last());
     }
     
@@ -110,7 +109,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     }
     
     /**
-     * Contruct a new vector with the provided array.
+     * Construct a new vector with the provided array.
      */
     public function __construct(array $startingArray = [])
     {

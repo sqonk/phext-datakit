@@ -96,8 +96,7 @@ class CSV
     /**
      * Return the current header-to-key map.
      */
-    public function map(): array
-    {
+    public function map(): array {
         return $this->field_map;
     }
     
@@ -153,8 +152,7 @@ class CSV
     /**
      * Return the current set of human-readable column headers.
      */
-    public function headers(): array
-    {
+    public function headers(): array {
         return $this->headers;
     }
     
