@@ -53,7 +53,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
 	
 	public function offsetGet($index): mixed {
-		return $this->get($index);
+		return $this->_array[$index] ?? null;
 	}
 	
 	public function offsetExists($index): bool {
@@ -120,6 +120,23 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		$this->constraint = $limit;
 		return $this;
 	}
+    
+	/**
+	 * Add one element to the end of the vector. Slightly faster than using add()
+	 * in a tight loop.
+	 */
+    public function append($value): Vector 
+    {
+        $this->_array[] = $value;
+        
+        if ($this->constraint !== 0) {
+			$diff = $this->count() - $this->constraint;
+			if ($diff > 0)
+				$this->shift($diff);
+        }
+        
+        return $this;
+    }
 	
 	/**
 	 * Add one or more elements to the end of the vector.

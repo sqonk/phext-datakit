@@ -61,6 +61,16 @@ class VectorTest extends TestCase
         $this->assertNull($r);
     }
     
+    public function testAppend()
+    {
+        $ps = vector();
+        $ps->append(1);
+        $this->assertSame(1, $ps->get(0));
+        
+        $ps->append(4);
+        $this->assertSame(4, $ps->get(1));
+    }
+    
     public function testAdd()
     {
         $ps = vector();
