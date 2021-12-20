@@ -974,7 +974,7 @@ public function plot(string $type, array $options = []) : sqonk\phext\plotlib\Bu
 ```
 Produce a plot object (from the plotlib module) auto-configured to create an image-based graph of one or more columns.
 
-- **$options** represent the chart configuation.
+- **$options** represent the chart configuration.
 	- title: 		Filename of the chart. Defaults to the chart type and series being plotted.
 	- columns: 	Array of the column names to produce charts for.
 	- xcolumn: 	A column name to use as the x-axis.
@@ -987,7 +987,7 @@ Produce a plot object (from the plotlib module) auto-configured to create an ima
 		- color:        A colour name (e.g. red, blue etc) for the line colour. Default is red.
 		- width:        The stroke width of the line, default is 1.
 	- labelangle:	  Angular rotation of the x-axis labels, default is 0.
-	- bars:		A liniar array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
+	- bars:		A linear array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
 	- barColor:	The colour of the bars dataset, default is 'lightgray'.
 	- barWidth:	The width of each bar in the bars dataset, default is 7.
 - **$type** represents the type of chart (e.g line, box, bar etc). Possible values:

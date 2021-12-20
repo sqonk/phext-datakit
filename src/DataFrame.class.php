@@ -2268,7 +2268,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * to create an image-based graph of one or more columns.
      * 
      * -- parameters:
-     * @param $options represent the chart configuation.
+     * @param $options represent the chart configuration.
      *  -- title: 		Filename of the chart. Defaults to the chart type and series being plotted.
      *  -- columns: 	Array of the column names to produce charts for.
      *  -- xcolumn: 	A column name to use as the x-axis.
@@ -2281,7 +2281,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *  --- color:        A colour name (e.g. red, blue etc) for the line colour. Default is red.
      *  --- width:        The stroke width of the line, default is 1.
      *  -- labelangle:	  Angular rotation of the x-axis labels, default is 0.
-     *  -- bars:		A liniar array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
+     *  -- bars:		A linear array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
      *  -- barColor:	The colour of the bars dataset, default is 'lightgray'.
      *  -- barWidth:	The width of each bar in the bars dataset, default is 7.
      * @param $type represents the type of chart (e.g line, box, bar etc). Possible values:

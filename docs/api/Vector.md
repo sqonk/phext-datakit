@@ -15,6 +15,7 @@ In particular it sports a variety of basic mathematical and statistical function
 [array](#array)
 [count](#count)
 [constrain](#constrain)
+[append](#append)
 [add](#add)
 [set](#set)
 [prepend](#prepend)
@@ -167,6 +168,14 @@ public function constrain(int $limit) : sqonk\phext\datakit\Vector
 Set a rolling capacity limit on the vector. Once set, old values will be shifted off of the beginning to make room for new values once the capacity is reached.
 
 Setting the limit to 0 will remove the constraint altogether, which is the default.
+
+
+------
+##### append
+```php
+public function append($value) : sqonk\phext\datakit\Vector
+```
+Add one element to the end of the vector. Slightly faster than using add() in a tight loop.
 
 
 ------
@@ -533,7 +542,7 @@ public function transpose(string $groupKey, array $mergeMap) : sqonk\phext\datak
 ```
 Transform a set of rows and columns with vertical data into a horizontal configuration where the resulting array contains a column for each different value for the given fields in the merge map (associative array).
 
-The group key is used to specifiy which field in the array will be used to flatten multiple rows into one.
+The group key is used to specify which field in the array will be used to flatten multiple rows into one.
 
 For example, if you had a result set that contained a 'type' field, a corresponding 'reading' field and a 'time' field (used as the group key) then this method would merge all rows containing the same time value into a matrix containing as many columns as there are differing values for the type field, with each column containing the corresponding value from the 'reading' field.
 

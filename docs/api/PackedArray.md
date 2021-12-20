@@ -160,7 +160,7 @@ No documentation available.
 ```php
 public function __construct(array $startingArray = []) 
 ```
-Contruct a new vector with the provided array.
+Construct a new vector with the provided array.
 
 
 ------
