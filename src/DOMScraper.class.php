@@ -24,7 +24,7 @@ namespace sqonk\phext\datakit;
  * 
  * It works by providing it the HTML/XML content and then calling traverse().
  * The method will sequentially transcend each element provided, eventually
- * dispaching the nodes to your callback when the last item type in the
+ * dispatching the nodes to your callback when the last item type in the
  * element array has been reached.
  */
 

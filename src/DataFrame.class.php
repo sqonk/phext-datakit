@@ -1698,7 +1698,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Run a correlation over one or more columns to find similarities in values.
      * 
      * The resulting DataFrame is a matrix of values representing the closeness
-     * of the ajoining values.
+     * of the adjoining values.
      * 
      * -- parameters:
      * @param $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
