@@ -16,7 +16,14 @@ function formatComment($comment)
         
         $comment = str_replace(['NULL', 'TRUE', 'FALSE'], ["`NULL`", "`TRUE`", "`FALSE`"], $comment);
         $comment = implode("\n\n", array_map(function($para) {
-            if (! contains($para, '-- parameters:'))
+            if (contains($para, '[md-block]')) {
+                $pos = strpos($para, '[md-block]');
+                $nl = strpos($para, "\n", $pos+1);
+    
+                $start = $pos > 0 ? substr($para, 0, $pos) : '';
+                $para = $start.substr($para, $nl);
+            }
+            else if (! contains($para, '-- parameters:'))
             {
                 // standard paragraph
                 if (! starts_with(trim($para), '```') and ! starts_with(trim($para), '>'))
