@@ -5,18 +5,18 @@ The GroupedDataFrame is a special class that manages a group of normal DataFrame
 
 This class is used internally by DataFrame and you should not need to instanciate it yourself under most conditions.
 #### Methods
-[getIterator](#getiterator)
-[offsetSet](#offsetset)
-[offsetExists](#offsetexists)
-[offsetUnset](#offsetunset)
-[offsetGet](#offsetget)
-[count](#count)
-[__construct](#__construct)
-[__call](#__call)
-[__get](#__get)
-[__toString](#__tostring)
-[combine](#combine)
-[export](#export)
+- [getIterator](#getiterator)
+- [offsetSet](#offsetset)
+- [offsetExists](#offsetexists)
+- [offsetUnset](#offsetunset)
+- [offsetGet](#offsetget)
+- [count](#count)
+- [__construct](#__construct)
+- [__call](#__call)
+- [__get](#__get)
+- [__toString](#__tostring)
+- [combine](#combine)
+- [export](#export)
 
 ------
 ##### getIterator

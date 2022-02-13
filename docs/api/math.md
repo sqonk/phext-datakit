@@ -5,27 +5,27 @@ A broad collection of general mathematical functions. This class acts as a suppo
 
 Many of these methods are ported from open source code, freely available on the internet. Credits and links are listed where applicable.
 #### Methods
-[standard_deviation](#standard_deviation)
-[variance](#variance)
-[avg](#avg)
-[min](#min)
-[max](#max)
-[median](#median)
-[quantile](#quantile)
-[normalise](#normalise)
-[correlation_pearson](#correlation_pearson)
-[cumulative_min](#cumulative_min)
-[cumulative_max](#cumulative_max)
-[cumulative_sum](#cumulative_sum)
-[cumulative_prod](#cumulative_prod)
-[correlation_spearman](#correlation_spearman)
-[coefficient](#coefficient)
-[distances](#distances)
+- [standard_deviation](#standard_deviation)
+- [variance](#variance)
+- [avg](#avg)
+- [min](#min)
+- [max](#max)
+- [median](#median)
+- [quantile](#quantile)
+- [normalise](#normalise)
+- [correlation_pearson](#correlation_pearson)
+- [cumulative_min](#cumulative_min)
+- [cumulative_max](#cumulative_max)
+- [cumulative_sum](#cumulative_sum)
+- [cumulative_prod](#cumulative_prod)
+- [correlation_spearman](#correlation_spearman)
+- [coefficient](#coefficient)
+- [distances](#distances)
 
 ------
 ##### standard_deviation
 ```php
-static public function standard_deviation(array $a, $sample = false) 
+static public function standard_deviation(array $a, bool $sample = false) : float|bool
 ```
 Compute the standard deviation of the values in an array.
 
@@ -48,7 +48,7 @@ the extension does (although as an E_USER_WARNING, not E_WARNING).
 ------
 ##### variance
 ```php
-static public function variance(array $arr) 
+static public function variance(array $array) : float
 ```
 Compute the variance of an array of values.
 
@@ -56,7 +56,7 @@ Compute the variance of an array of values.
 ------
 ##### avg
 ```php
-static public function avg(array $array) 
+static public function avg(array $array) : int|float
 ```
 Produce the average of an array of numbers.
 
@@ -64,7 +64,7 @@ Produce the average of an array of numbers.
 ------
 ##### min
 ```php
-static public function min(array $array) 
+static public function min(array $array) : ?float
 ```
 Find the minimum floating point number present in an array. This method works correctly when comparing negative floating point units.
 
@@ -74,7 +74,7 @@ Returns the lowest value in the array or null if the array is empty.
 ------
 ##### max
 ```php
-static public function max(array $array) 
+static public function max(array $array) : ?float
 ```
 Find the maximum floating point number present in an array. This method works correctly when comparing negative floating point units.
 
@@ -84,7 +84,7 @@ Returns the highest value in the array or null if the array is empty.
 ------
 ##### median
 ```php
-static public function median(array $arr) 
+static public function median(array $array) : int|float|bool
 ```
 Return the middle number within an array.
 
@@ -92,7 +92,7 @@ Return the middle number within an array.
 ------
 ##### quantile
 ```php
-static public function quantile(array $array, $quantile) 
+static public function quantile(array $array, float $quantile) : int|float
 ```
 Compute the quantile from the given percentile of the given array.
 
@@ -100,7 +100,7 @@ Compute the quantile from the given percentile of the given array.
 ------
 ##### normalise
 ```php
-static public function normalise(array $array) 
+static public function normalise(array $array) : array
 ```
 Normalise a series of numbers to a range between 0 and 1.
 
@@ -108,7 +108,7 @@ Normalise a series of numbers to a range between 0 and 1.
 ------
 ##### correlation_pearson
 ```php
-static public function correlation_pearson(array $x, array $y) 
+static public function correlation_pearson(array $x, array $y) : int|float
 ```
 Compute a correlation using the Pearson method with the two given arrays.
 
@@ -118,7 +118,7 @@ This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039
 ------
 ##### cumulative_min
 ```php
-static public function cumulative_min(array $array) 
+static public function cumulative_min(array $array) : array
 ```
 Accumulative minimum of the values within an array.
 
@@ -126,7 +126,7 @@ Accumulative minimum of the values within an array.
 ------
 ##### cumulative_max
 ```php
-static public function cumulative_max(array $array) 
+static public function cumulative_max(array $array) : array
 ```
 Accumulative maximum of the values within an array.
 
@@ -134,7 +134,7 @@ Accumulative maximum of the values within an array.
 ------
 ##### cumulative_sum
 ```php
-static public function cumulative_sum(array $array) 
+static public function cumulative_sum(array $array) : array
 ```
 Accumulative sum of the values within an array.
 
@@ -142,7 +142,7 @@ Accumulative sum of the values within an array.
 ------
 ##### cumulative_prod
 ```php
-static public function cumulative_prod(array $array) 
+static public function cumulative_prod(array $array) : array
 ```
 Accumulative product of the values within an array.
 
@@ -150,7 +150,7 @@ Accumulative product of the values within an array.
 ------
 ##### correlation_spearman
 ```php
-static public function correlation_spearman(array $data1, array $data2) 
+static public function correlation_spearman(array $data1, array $data2) : int|float|bool
 ```
 Compute a correlation using the Spearman method with the two given arrays.
 
@@ -162,7 +162,7 @@ see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlat
 ------
 ##### coefficient
 ```php
-static public function coefficient(array $distances) 
+static public function coefficient(array $distances) : int|float|bool
 ```
 Compute the coefficient of an array of distances.
 
@@ -174,7 +174,7 @@ see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlat
 ------
 ##### distances
 ```php
-static public function distances(array $ranking1, array $ranking2) 
+static public function distances(array $ranking1, array $ranking2) : array
 ```
 Return an array of distances computed from the values of the two given arrays.
 

@@ -66,7 +66,7 @@ function generateForClass($cl)
     $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
     $out->fwrite("#### Methods\n");
     foreach ($methods as $m) {
-        $out->fwrite(sprintf("[%s](#%s)\n", $m->getName(), str_replace(' ', '-', strtolower($m->getName()))));
+        $out->fwrite(sprintf("- [%s](#%s)\n", $m->getName(), str_replace(' ', '-', strtolower($m->getName()))));
     }
     $out->fwrite("\n------\n");
     

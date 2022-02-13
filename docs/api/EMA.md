@@ -3,17 +3,17 @@
 ### EMA
 A simple class for management of a Exponential Moving Average. It works by alternating between adding new values to the array and calculating the current average.
 #### Methods
-[count](#count)
-[getIterator](#getiterator)
-[offsetSet](#offsetset)
-[offsetGet](#offsetget)
-[offsetExists](#offsetexists)
-[offsetUnset](#offsetunset)
-[__construct](#__construct)
-[add](#add)
-[result](#result)
-[all](#all)
-[__tostring](#__tostring)
+- [count](#count)
+- [getIterator](#getiterator)
+- [offsetSet](#offsetset)
+- [offsetGet](#offsetget)
+- [offsetExists](#offsetexists)
+- [offsetUnset](#offsetunset)
+- [__construct](#__construct)
+- [add](#add)
+- [result](#result)
+- [all](#all)
+- [__tostring](#__tostring)
 
 ------
 ##### count

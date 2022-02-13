@@ -3,12 +3,12 @@
 ### DOMScraper
 A class for automatically navigating and extracting information out of a DOMDocument.
 
-It works by providing it the HTML/XML content and then calling traverse(). The method will sequentially transcend each element provided, eventually dispaching the nodes to your callback when the last item type in the element array has been reached.
+It works by providing it the HTML/XML content and then calling traverse(). The method will sequentially transcend each element provided, eventually dispatching the nodes to your callback when the last item type in the element array has been reached.
 #### Methods
-[__construct](#__construct)
-[dom](#dom)
-[traverse](#traverse)
-[yield](#yield)
+- [__construct](#__construct)
+- [dom](#dom)
+- [traverse](#traverse)
+- [yield](#yield)
 
 ------
 ##### __construct

@@ -5,17 +5,17 @@ A simple class for management of a Simple Moving Average. It works by alternatin
 
 SMA adheres to various array-like behaviour protocols. You should keep in mind that whenever you access values from the class you will be receiving the relevant average, not the original raw value you placed in previously.
 #### Methods
-[count](#count)
-[getIterator](#getiterator)
-[offsetSet](#offsetset)
-[offsetGet](#offsetget)
-[offsetExists](#offsetexists)
-[offsetUnset](#offsetunset)
-[__construct](#__construct)
-[add](#add)
-[result](#result)
-[all](#all)
-[__tostring](#__tostring)
+- [count](#count)
+- [getIterator](#getiterator)
+- [offsetSet](#offsetset)
+- [offsetGet](#offsetget)
+- [offsetExists](#offsetexists)
+- [offsetUnset](#offsetunset)
+- [__construct](#__construct)
+- [add](#add)
+- [result](#result)
+- [all](#all)
+- [__tostring](#__tostring)
 
 ------
 ##### count

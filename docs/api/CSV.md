@@ -9,17 +9,17 @@ It is designed for exporting data as productively as possible, the system for wh
 
 This class works in real-time, meaning that the data is written out to the stream as you pass it in. It is also stringable, allowing it to be used in many standard forms of output that can work with strings.
 #### Methods
-[__construct](#__construct)
-[__destruct](#__destruct)
-[map](#map)
-[set_map](#set_map)
-[add_map_pair](#add_map_pair)
-[headers](#headers)
-[set_headers](#set_headers)
-[add_raw_row](#add_raw_row)
-[add_record](#add_record)
-[add_records](#add_records)
-[__tostring](#__tostring)
+- [__construct](#__construct)
+- [__destruct](#__destruct)
+- [map](#map)
+- [set_map](#set_map)
+- [add_map_pair](#add_map_pair)
+- [headers](#headers)
+- [set_headers](#set_headers)
+- [add_raw_row](#add_raw_row)
+- [add_record](#add_record)
+- [add_records](#add_records)
+- [__tostring](#__tostring)
 
 ------
 ##### __construct

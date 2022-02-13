@@ -3,13 +3,13 @@
 ### Importer
 A selection of routines for importing data from various static sources such as files.
 #### Methods
-[csv_data](#csv_data)
-[csv_file](#csv_file)
-[yield_csv](#yield_csv)
-[csv_dataframe](#csv_dataframe)
-[delimitered_data](#delimitered_data)
-[mysql_dataframe](#mysql_dataframe)
-[sqlite_dataframe](#sqlite_dataframe)
+- [csv_data](#csv_data)
+- [csv_file](#csv_file)
+- [yield_csv](#yield_csv)
+- [csv_dataframe](#csv_dataframe)
+- [delimitered_data](#delimitered_data)
+- [mysql_dataframe](#mysql_dataframe)
+- [sqlite_dataframe](#sqlite_dataframe)
 
 ------
 ##### csv_data
