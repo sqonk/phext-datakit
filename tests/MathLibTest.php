@@ -172,6 +172,6 @@ class MathLibTest extends TestCase
         $this->assertSame(-1, math::correlation_spearman([1,2,3,4], [4,3,2,1]));
         $this->assertSame(0, math::correlation_spearman([1,2,3,4], [6,2,8,5]));
         $this->assertSame(1, math::correlation_spearman([], []));
-        $this->assertSame(null, math::correlation_spearman([1,2,3,4], [6,2,8]));
+        $this->assertSame(false, math::correlation_spearman([1,2,3,4], [6,2,8]));
     }
 }

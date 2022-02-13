@@ -54,7 +54,8 @@ class math
      * 
      * @return float|bool The standard deviation or FALSE on error.
      */
-    static public function standard_deviation(array $a, $sample = false) {
+    static public function standard_deviation(array $a, bool $sample = false): float|bool 
+    {
         $n = count($a);
         if ($n === 0) {
             trigger_error("The array has zero elements.", E_USER_WARNING);
@@ -79,14 +80,15 @@ class math
 	/**
 	 * Compute the variance of an array of values.
 	 */
-    static public function variance(array $arr)
+    static public function variance(array $array): float
     {
-        if (count($arr) == 0)
+        if (count($array) == 0)
             return 0.0;
+        
         $variance = 0.0;
-        $average = self::avg($arr);
+        $average = self::avg($array);
 
-        foreach ($arr as $i)
+        foreach ($array as $i)
         {
             // sum of squares of differences between 
             // all numbers and means.
@@ -94,13 +96,13 @@ class math
                 $variance += pow(($i - $average), 2);
         }
 
-        return $variance / count($arr);
+        return $variance / count($array);
     }
 
     /**
      * Produce the average of an array of numbers.
      */
-    static public function avg(array $array)
+    static public function avg(array $array): float|int
     {
 		$count = count($array);
         return $count ? array_sum($array) / $count : 0;
@@ -112,7 +114,7 @@ class math
      * 
      * Returns the lowest value in the array or null if the array is empty.
      */
-    static public function min(array $array)
+    static public function min(array $array): ?float
     {
         $current = null;
         foreach ($array as $value)
@@ -128,7 +130,7 @@ class math
      * 
      * Returns the highest value in the array or null if the array is empty.
      */
-    static public function max(array $array)
+    static public function max(array $array): ?float
     {
         $current = null;
         foreach ($array as $value)
@@ -141,25 +143,25 @@ class math
 	/**
 	 * Return the middle number within an array.
 	 */
-    static public function median(array $arr) 
+    static public function median(array $array): float|int|bool
     {
-        $count = count($arr); // total numbers in array
+        $count = count($array); // total numbers in array
         if ($count < 1) {
             trigger_error("The array has zero elements", E_USER_WARNING);
             return false;
         }
-        sort($arr, SORT_NUMERIC);
+        sort($array, SORT_NUMERIC);
         $middleval = floor(($count-1) / 2); // find the middle value, or the lowest middle value
         if ($count % 2) 
         { 
             // odd number, middle is the median
-            $median = $arr[$middleval];
+            $median = $array[$middleval];
         } 
         else 
         { 
             // even number, calculate avg of 2 medians
-            $low = $arr[$middleval];
-            $high = $arr[$middleval+1];
+            $low = $array[$middleval];
+            $high = $array[$middleval+1];
             if (! is_numeric($low) || ! is_numeric($high))
                 return 0;
             $median = (($low+$high)/2);
@@ -170,9 +172,9 @@ class math
 	/**
 	 * Compute the quantile from the given percentile of the given array.
 	 */
-    static public function quantile(array $array, $quantile) 
+    static public function quantile(array $array, float $quantile): float|int
     {
-		if (! is_numeric($quantile) or numbers::is_within(0, 1, $quantile))
+		if (numbers::is_within(0, 1, $quantile))
 			throw new \InvalidArgumentException("The quantile must be a decimal value between 0 and 1. [$quantile] was provided.");
         
         if (count($array) < 1) {
@@ -202,7 +204,7 @@ class math
     /**
      * Normalise a series of numbers to a range between 0 and 1.
      */
-    static public function normalise(array $array)
+    static public function normalise(array $array): array
     {
         $length = count($array); 
         if ($length < 1) {
@@ -229,7 +231,7 @@ class math
      * 
      * This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
      */
-    static public function correlation_pearson(array $x, array $y)
+    static public function correlation_pearson(array $x, array $y): float|int
     {   
         if (count($x) == 0 && count($y) == 0) {
             return 1.0;
@@ -262,7 +264,7 @@ class math
 	/**
 	 * Accumulative minimum of the values within an array.
 	 */
-    static public function cumulative_min(array $array)
+    static public function cumulative_min(array $array): array
     {
         $out = [];
         foreach ($array as $value) {
@@ -274,7 +276,7 @@ class math
 	/**
 	 * Accumulative maximum of the values within an array.
 	 */
-    static public function cumulative_max(array $array)
+    static public function cumulative_max(array $array): array
     {
         $out = [];
         foreach ($array as $value) {
@@ -286,7 +288,7 @@ class math
 	/**
 	 * Accumulative sum of the values within an array.
 	 */
-    static public function cumulative_sum(array $array)
+    static public function cumulative_sum(array $array): array
     {
         $out = [];
         
@@ -315,7 +317,7 @@ class math
 	/**
 	 * Accumulative product of the values within an array.
 	 */
-    static public function cumulative_prod(array $array)
+    static public function cumulative_prod(array $array): array
     {
         $out = [];
         
@@ -351,14 +353,14 @@ class math
      * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
      */
-    static public function correlation_spearman(array $data1, array $data2)
+    static public function correlation_spearman(array $data1, array $data2): float|int|bool
     {
         if (count($data1) == 0 && count($data2) == 0) {
             return 1;
         }
         
         if (count($data1) != count($data2))
-            return null; 
+            return false; 
         
         $relation1 = [];
         for ($i = 0; $i < count($data1); $i++) { 
@@ -393,7 +395,7 @@ class math
      * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
 	 */
-    static public function coefficient(array $distances)
+    static public function coefficient(array $distances): float|int|bool
     {
         if (count($distances) < 1) {
             trigger_error("The array has zero elements", E_USER_WARNING);
@@ -417,7 +419,7 @@ class math
      * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
      */
-    static public function distances(array $ranking1, array $ranking2)
+    static public function distances(array $ranking1, array $ranking2): array
     {
         $distances = [];
         foreach (arrays::zip($ranking1, $ranking2) as [$r1, $r2]) {
@@ -433,9 +435,9 @@ class math
      * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
      */
-    static protected function ranking(array $data)
+    static protected function ranking(array $data): array
     {
-        $ranking    = array();
+        $ranking    = [];
         $prevValue  = '';
         $eqCount    = 0;
         $eqSum      = 0;
