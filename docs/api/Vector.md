@@ -370,7 +370,7 @@ Randomly choose and return an item from the vector.
 ```php
 public function occurs_in(string $heystack) : bool
 ```
-Returns the first item in the vector found in the haystack or `FALSE` if none are found.
+Returns the first item in the vector found in the heystack or `FALSE` if none are found.
 
 
 ------

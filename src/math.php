@@ -229,6 +229,8 @@ class math
     /**
      * Compute a correlation using the Pearson method with the two given arrays.
      * 
+     * @return 1.0 if both arrays are empty, -1.0 if both arrays do not match in size, otherwise a float or int representing the result of the correlation.
+     * 
      * This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
      */
     static public function correlation_pearson(array $x, array $y): float|int
@@ -346,6 +348,8 @@ class math
 	
     /**
      * Compute a correlation using the Spearman method with the two given arrays.
+     * 
+     * @return 1 if both arrays are empty, FALSE if both arrays are not the same size, otherwise a float or int representing the result of the correlation.
      * 
      * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 

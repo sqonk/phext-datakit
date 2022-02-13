@@ -112,6 +112,8 @@ static public function correlation_pearson(array $x, array $y) : int|float
 ```
 Compute a correlation using the Pearson method with the two given arrays.
 
+**Returns:**  1.0 if both arrays are empty, -1.0 if both arrays do not match in size, otherwise a float or int representing the result of the correlation.
+
 This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
 
 
@@ -153,6 +155,8 @@ Accumulative product of the values within an array.
 static public function correlation_spearman(array $data1, array $data2) : int|float|bool
 ```
 Compute a correlation using the Spearman method with the two given arrays.
+
+**Returns:**  1 if both arrays are empty, `FALSE` if both arrays are not the same size, otherwise a float or int representing the result of the correlation.
 
 This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
