@@ -459,7 +459,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Returns the first item in the vector found in the heystack or FALSE if none are found.
      */
-	public function occurs_in(string $heystack): bool
+	public function occurs_in(string $heystack): bool|string
 	{
 		foreach ($this->_array as $value)
 			if (strings::contains($heystack, $value))

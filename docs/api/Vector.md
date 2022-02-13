@@ -368,7 +368,7 @@ Randomly choose and return an item from the vector.
 ------
 ##### occurs_in
 ```php
-public function occurs_in(string $heystack) : bool
+public function occurs_in(string $heystack) : string|bool
 ```
 Returns the first item in the vector found in the heystack or `FALSE` if none are found.
 
