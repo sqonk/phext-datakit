@@ -50,7 +50,7 @@ class Importer
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
      * at least 1 line of applicable data.
      */
-    static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow = false, ?array $customHeaders = null)
+    static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow = false, ?array $customHeaders = null): bool|array
     {
         $lines = explode("\n", trim($data));
         $count = count($lines);
@@ -143,7 +143,7 @@ class Importer
      * 
      * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
-    static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
+    static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0): bool|array
     {
         $data = ($callback) ? null : [];
         
@@ -218,7 +218,7 @@ class Importer
      * 
      * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
-    static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0)
+    static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0): \Generator
     {
         try
         {
@@ -329,7 +329,7 @@ class Importer
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
      * at least 1 line of applicable data.
      */
-    static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, ?array $customHeaders = null)
+    static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, ?array $customHeaders = null): bool|array
     {
         $lines = explode($lineDelimiter, trim($data));
         $count = count($lines);
