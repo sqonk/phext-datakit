@@ -21,8 +21,9 @@ namespace sqonk\phext\datakit;
 
 use sqonk\phext\core\{arrays,strings};
 
+
 /**
- * The CSV class can be used for producing CSV documents. It abstracts the mechanics of
+ * The CSVExporter class can be used for producing CSV documents. It abstracts the mechanics of
  * producing the file format, allowing your code to focus on its own logic.
  * 
  * Under the hood it relies on `fputcsv` for outputting rows.
@@ -36,7 +37,7 @@ use sqonk\phext\core\{arrays,strings};
  * you pass it in. It is also stringable, allowing it to be used in many standard forms
  * of output that can work with strings.
  */
-class CSV
+class CSVExporter
 {
     protected $headers = [];
     protected $field_map = [];
@@ -53,9 +54,10 @@ class CSV
      * -- parameters:
      * @param $path A path to the output file that will be used to generate the CSV. If set to `NULL` the CSV will be produced directly in memory. Defaults to `NULL`.
      */
-    public function __construct(?string $path = null)
+    public function __construct(string $path = null)
     {
-        $this->path = $path ?? 'php://memory';
+        if (! $path)
+            $this->path = 'php://memory';
     }
     
     public function __destruct()
@@ -268,5 +270,15 @@ class CSV
         
         rewind($this->fh());
         return trim(fread($this->fh(), $pos));
+    }
+}
+
+/**
+ * @deprecated The CSV class has been renamed to CSVExporter, please update your code accordingly.
+ */
+class CSV extends CSVExporter {
+    public function __construct(?string $path = null) {
+        parent::__construct($path);
+        trigger_error('The CSV class has been renamed to CSVExporter, please update your code accordingly.', E_USER_NOTICE);
     }
 }
