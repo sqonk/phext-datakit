@@ -38,10 +38,11 @@ class ImporterTest extends TestCase
         $this->assertSame($expected, $loaded);
         
         $loaded = [];
-        Importer::csv_data(function($row) use (&$loaded) {
+        $r = Importer::csv_data(function($row) use (&$loaded) {
             $loaded[] = $row;
         }, $data, true);
         $this->assertSame($expected, $loaded);
+        $this->assertSame(true, $r);
         
         $loaded = Importer::csv_data(null, $dataNoHead, false, ['Name', 'Age', 'Height']);
         $this->assertSame($expected, $loaded);
@@ -61,10 +62,11 @@ class ImporterTest extends TestCase
         $this->assertSame($expected, $loaded);
         
         $loaded = [];
-        Importer::csv_file(function($row) use (&$loaded) {
+        $r = Importer::csv_file(function($row) use (&$loaded) {
             $loaded[] = $row;
         }, __DIR__.'/iris-h.csv', true);
         $this->assertSame($expected, $loaded);
+        $this->assertSame(true, $r);
         
         $headers = ['sepal-length','sepal-width','petal-length','petal-width','class'];
         $loaded = Importer::csv_file(null, __DIR__.'/iris-h.csv', false, $headers, 1);
@@ -127,10 +129,11 @@ class ImporterTest extends TestCase
             ['Name' => 'Jose', 'Age' => '23', 'Height' => '189']
         ];
         $loaded = [];
-        Importer::delimitered_data(function($row) use (&$loaded) {
+        $r = Importer::delimitered_data(function($row) use (&$loaded) {
             $loaded[] = $row;
         }, $data, ',', "\n", true);
         $this->assertSame($expected, $loaded);
+        $this->assertSame(true, $r);
         
         $loaded = [];
         $headers = ['Name', 'Age', 'Height'];
