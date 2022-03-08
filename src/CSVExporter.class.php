@@ -196,7 +196,7 @@ class CSVExporter
      *   
      * @return The CSV object.
      */
-    public function add_raw_row(array $row): CSV
+    public function add_raw_row(array $row): CSVExporter
     {
         fputcsv($this->fh(), $row);
         
@@ -215,7 +215,7 @@ class CSVExporter
      * 
      * @return The CSV object.
      */
-    public function add_record($record): CSV
+    public function add_record($record): CSVExporter
     {
         if (! is_array($record) and ! $record instanceof \ArrayAccess) {
             throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');
@@ -246,7 +246,7 @@ class CSVExporter
      * 
      * @return The CSV object.
      */
-    public function add_records($records): CSV
+    public function add_records($records): CSVExporter
     {
         if (! is_array($records) and ! $records instanceof \ArrayAccess) {
             throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');
