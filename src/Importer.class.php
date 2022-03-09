@@ -52,62 +52,21 @@ class Importer
      */
     static public function csv_data(?callable $callback, string $data, bool $headersAreFirstRow = false, ?array $customHeaders = null): bool|array
     {
-        $lines = explode("\n", trim($data));
-        $count = count($lines);
-        
-        if ($count == 0 or ($count == 1 && $lines[0] === '')) {
-            trigger_error('Provided CSV data is empty.', E_USER_NOTICE);
-            return $callback ? false : [];
-        }
+        $importer = new CSVImporter(
+            input:$data, 
+            inputIsRawData:true,
+            headersAreFirstRow:$headersAreFirstRow,
+            customHeaders:$customHeaders
+        );
+        if (! $importer->validate())
+            return false;
         
         $imported = ($callback) ? null : [];
-        
-        if ($headersAreFirstRow || is_array($customHeaders))
-        {
-            $headers = null;
-            if ($headersAreFirstRow) {
-                $headers = str_getcsv($lines[0]);
-                $start = 1;
-            }
-            else {
-                $start = 0;
-            }
-            if (is_array($customHeaders))
-                $headers = $customHeaders;
-        
-            for ($i = $start; $i < count($lines); $i++)
-            {
-                $row = str_getcsv($lines[$i]);
-                
-                if (count($row) == 0 or $row[0] === null)
-                    continue; // ignore blank lines.
-                
-                $out = [];
-                for ($j = 0; $j < count($row); $j++) {
-                    $h = ($j < count($headers)) ? $headers[$j] : $j;
-                    $out[$h] = $row[$j];
-                }
-            
-                if ($callback)
-                    $callback($out);
-                else
-                    $imported[] = $out;
-            }    
-        }
-        else
-        {
-            for ($i = 0; $i < count($lines); $i++) 
-            {
-                $row = str_getcsv($lines[$i]);
-                
-                if (count($row) == 0 or $row[0] === null)
-                    continue; // ignore blank lines.   
-                
-                if ($callback)         
-                    $callback($row);
-                else
-                    $imported[] = $row;
-            }
+        while ($row = $importer->next_row()) {
+            if ($callback)
+                $callback($row);
+            else
+                $imported[] = $row;
         }
         
         return is_array($imported) ? $imported : true;
@@ -145,56 +104,22 @@ class Importer
      */
     static public function csv_file(?callable $callback, string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0): bool|array
     {
-        $data = ($callback) ? null : [];
+        $importer = new CSVImporter(
+            input:$filePath, 
+            headersAreFirstRow:$headersAreFirstRow,
+            customHeaders:$customHeaders,
+            skipRows:$skipRows
+        );
         
-        try
-        {
-    		if (! $fh = @fopen($filePath, 'r'))
-    			throw new \RuntimeException("[{$filePath}] could not be opened, empty handle returned.");
-		
-    		@flock($fh, LOCK_SH);
-            
-    		// Skip over a specified number of rows at the start. Defaults to 0.
-    		if ($skipRows > 0) {
-    			foreach (sequence(0, $skipRows-1) as $i)
-    				fgets($fh); 
-    		}
-		
-            $headers = null;
-            if ($headersAreFirstRow)
-                $headers = fgetcsv($fh);
-            if (is_array($customHeaders))
-                $headers = $customHeaders; // custom header override.
+        $imported = ($callback) ? null : [];
+        while ($row = $importer->next_row()) {
+            if ($callback)
+                $callback($row);
+            else
+                $imported[] = $row;
+        }
         
-            while (($row = fgetcsv($fh)) !== false)
-            {
-                if (count($row) == 0 or $row[0] === null)
-                    continue; // ignore blank lines.
-            
-    			if ($headers)
-    			{
-    	            $out = [];
-    	            for ($i = 0; $i < count($row); $i++) {
-    	                $h = ($i < count($headers)) ? $headers[$i] : $i;
-    	                $out[$h] = $row[$i];
-    	            }
-    				$row = $out;
-    			}
-            
-                if ($callback)
-                    $callback($row);
-                else
-                    $data[] = $row;
-            }    
-        }
-        finally {
-            if (isset($fh) && is_resource($fh)) {
-    			@flock($fh, LOCK_UN);
-    			@fclose($fh);
-            }
-        }
-
-        return is_array($data) ? $data : true;
+        return is_array($imported) ? $imported : true;
     }
     
     /**
@@ -220,47 +145,15 @@ class Importer
      */
     static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0): \Generator
     {
-        try
-        {
-    		if (! $fh = @fopen($filePath, 'r'))
-    			throw new \RuntimeException("[{$filePath}] could not be opened, empty handle returned.");
-            @flock($fh, LOCK_SH);
-            
-            // Skip over a specified number of rows at the start. Defaults to 0.
-    		if ($skipRows > 0) 
-    			foreach (sequence(0, $skipRows-1) as $i)
-    				fgets($fh); 
-		
-            $headers = null;
-            if ($headersAreFirstRow)
-                $headers = fgetcsv($fh);
-            if (is_array($customHeaders))
-                $headers = $customHeaders; // custom header override.
+        $importer = new CSVImporter(
+            input:$filePath, 
+            headersAreFirstRow:$headersAreFirstRow,
+            customHeaders:$customHeaders,
+            skipRows:$skipRows
+        );
         
-            while (($row = fgetcsv($fh)) !== false)
-            {
-                if (count($row) == 0 or $row[0] === null)
-                    continue; // ignore blank lines.
-            
-    			if ($headers)
-    			{
-    	            $out = [];
-    	            foreach (range(0, count($row)-1) as $i) {
-    	                $h = ($i < count($headers)) ? $headers[$i] : $i;
-    	                $out[$h] = $row[$i];
-    	            }
-    				$row = $out;
-    				unset($out);
-    			}
-            
-                yield $row;
-            }
-        }
-        finally {
-            if (isset($fh) && is_resource($fh)) {
-    			@flock($fh, LOCK_UN);
-    			@fclose($fh);
-            }
+        foreach ($importer as $i => $row) {
+            yield $i => $row;
         }
     }
     
