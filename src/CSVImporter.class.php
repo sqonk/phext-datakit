@@ -33,6 +33,7 @@ class CSVImporter implements \Iterator
     protected int $skipRows = 0;
     protected int $rowCount = 0;
     protected array|bool|null $current = null;
+    protected bool $skipRowsHeaderAdjustmentMade = false;
     
     static public function init(string $input, bool $inputIsRawData = false, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0, string $delimiter = ",", string $enclosedBy = "\"", string $lineEnding = "\n"): CSVImporter {
         return new CSVImporter(
@@ -123,8 +124,10 @@ class CSVImporter implements \Iterator
     protected function initSource(): bool 
     {
         // If headers are in first row but custom header have been set, then simply skip.
-        if ($this->headersAreFirstRow && $this->headers)
+        if (! $this->skipRowsHeaderAdjustmentMade && $this->headersAreFirstRow && $this->headers) {
             $this->skipRows++;
+            $this->skipRowsHeaderAdjustmentMade = true;
+        }
         
         if ($this->inputIsRawData) {
             $this->handle = explode($this->lineEnding, trim($this->input));
