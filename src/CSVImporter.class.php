@@ -199,14 +199,33 @@ class CSVImporter implements \Iterator
     
     public function reset(): void 
     {
-        if (is_resource($this->handle)) {
+        if (! $this->inputIsRawData && is_resource($this->handle)) {
             rewind($this->handle);
         }
         $this->initialised = false;
         $this->arrayIndex = 0;
         $this->rowCount = 0;
+        $this->current = null;
     }
     
+    public function all_remaining(): array 
+    {
+        $out = [];
+        while ($row = $this->next_row())
+            $out[] = $row;
+        return $out;
+    }
+    
+    public function all(): array 
+    {
+        $this->reset();
+        return $this->all_remaining();
+    }
+    
+    public function row_index(): int {
+        return $this->rowCount;
+    }
+        
     // ----- Iterator
     
     public function next(): void
@@ -232,9 +251,6 @@ class CSVImporter implements \Iterator
             }
 			$row = $out;
         }
-        else if ($row === false) {
-            $this->close();
-        }
         
         $this->current = $row;
     }
@@ -254,6 +270,6 @@ class CSVImporter implements \Iterator
     }
     
     public function valid(): bool {
-        return (bool)($this->current());
+        return $this->rowCount == 0 || $this->current;
     }
 }
