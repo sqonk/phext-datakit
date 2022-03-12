@@ -21,7 +21,7 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use sqonk\phext\datakit\CSVExporter;
 
-class CSVTest extends TestCase
+class CSVExporterTest extends TestCase
 {
     public function testHeaders()
     {
