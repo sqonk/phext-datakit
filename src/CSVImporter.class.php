@@ -219,7 +219,8 @@ class CSVImporter implements \Iterator
     
     public function all(): array 
     {
-        $this->reset();
+        if ($this->rowCount > 0)
+            $this->reset();
         return $this->all_remaining();
     }
     
