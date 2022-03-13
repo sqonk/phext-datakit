@@ -129,30 +129,17 @@ class CSVImporter implements \Iterator
             $this->skipRowsHeaderAdjustmentMade = true;
         }
         
-        if ($this->inputIsRawData) {
+        if ($this->inputIsRawData) 
+        {
             $this->handle = explode($this->lineEnding, trim($this->input));
             $count = count($this->handle);
             if ($count == 0 || ($count == 1 && $this->handle[0] === '')) {
                 trigger_error('Provided CSV data is empty.', E_USER_NOTICE);
                 return false;
             }
-            else if ($this->skipRows > 0) {
-                if ($this->skipRows > $count-1) {
-                    trigger_error('Attempt to skip past beyond the last row of the CSV.', E_USER_WARNING);
-                    return false;
-                }
-                $this->arrayIndex = $this->skipRows;
-            }
-        }
-        else {
-            if ($this->skipRows > 0) {
-    			foreach (sequence(0, $this->skipRows-1) as $i) {
-    			    $r = fgets($this->handle);
-                    if ($r === false) {
-                        trigger_error('Attempt to skip past beyond the last row of the CSV.', E_USER_WARNING);
-                        return false;
-                    }
-    			}
+            else if ($this->skipRows > $count-1) {
+                trigger_error('Attempt to skip past beyond the last row of the CSV.', E_USER_WARNING);
+                return false;
             }
         }
         
@@ -161,6 +148,20 @@ class CSVImporter implements \Iterator
             if ($r === false)
                 return false;
             $this->headers = $r;
+        }
+        
+        if ($this->inputIsRawData) {
+            $this->arrayIndex += $this->skipRows;
+        }
+        else if ($this->skipRows > 0) 
+        {
+			foreach (sequence(0, $this->skipRows-1) as $i) {
+			    $r = fgets($this->handle);
+                if ($r === false) {
+                    trigger_error('Attempt to skip past beyond the last row of the CSV.', E_USER_WARNING);
+                    return false;
+                }
+			}
         }
 
         $this->initialised = true;
