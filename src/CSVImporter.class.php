@@ -209,6 +209,10 @@ class CSVImporter implements \Iterator
         $this->current = null;
     }
     
+    public function headers(): ?array {
+        return $this->validate() ? $this->headers : null;
+    }
+    
     public function all_remaining(): array 
     {
         $out = [];
