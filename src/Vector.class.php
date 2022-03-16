@@ -81,17 +81,10 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
 	// Internal.
 	// Test whether the array is sequential or associative.
-	protected function testKeys()
+	protected function testKeys(): bool
 	{
-		$this->isSequential = true;
-        $keys = array_keys($this->_array);
-		foreach ($keys as $i => $key)
-		{
-			if ($i != $key) {
-				$this->isSequential = false;
-				break;
-			}
-		}
+        $this->isSequential = array_is_list($this->_array);
+
 		return $this->isSequential;
 	}
 	
@@ -154,6 +147,39 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		
 		return $this;
 	}
+    
+    /**
+     * Append another array, vector or collection to the end of the vector.
+     * 
+     * @param $collection The set of items to add to the end of the vector.
+     * @param $maintainKeyAssociation When `TRUE`, both the keys and the values from the given collection will be merged into the vector. When `FALSE`, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge. 
+     */
+    public function merge(iterable $collection, bool $maintainKeyAssociation = false): Vector 
+    {
+        if (is_array($collection)) {
+            if (! $maintainKeyAssociation)
+                $collection = array_values($collection);
+            $this->_array = array_merge($this->_array, $collection);
+        }
+        else if (is_object($collection) && $collection instanceof Vector) {
+            $collection = $collection->array();
+            if (! $maintainKeyAssociation)
+                $collection = array_values($collection);
+            
+            $this->_array = array_merge($this->_array, $collection);
+        }
+        else {
+            foreach ($collection as $k => $v) {
+                if ($maintainKeyAssociation)
+                    $this->set($k, $v);
+                else
+                    $this->append($v);
+            }
+        }
+        $this->testKeys();
+        
+        return $this;
+    }
 	
     /**
      * Set an element in the array to the provided key/index.
