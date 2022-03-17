@@ -28,6 +28,8 @@ define('OOB_UPPER', 1);
 define('OOB_LOWER', 0);
 define('LAST_ROW', '__LASTROW__');
 define('FIRST_ROW', '__FIRSTROW__');
+define('COR_SPEARMAN', 'spearman');
+define('COR_PEARSON', 'pearson');
 
 /**
  * Create a new vector.
