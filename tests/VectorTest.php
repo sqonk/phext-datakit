@@ -71,6 +71,79 @@ class VectorTest extends TestCase
         $this->assertSame(4, $ps->get(1));
     }
     
+    public function testMerge(): void 
+    {
+        $iter = new class() implements \ArrayAccess, \Countable, \IteratorAggregate{
+            protected $values = ['a' => 4, 'b' => 5, 'c' => 6];
+            
+        	public function getIterator(): \Iterator {
+        		return new \ArrayIterator($this->values);
+        	}
+	
+        	public function offsetSet($index, $value): void {
+        		
+        	}
+	
+        	public function offsetGet($index): mixed {
+        		return $this->values[$index] ?? null;
+        	}
+	
+        	public function offsetExists($index): bool {
+        		return array_key_exists($index, $this->values);
+        	}
+	
+        	public function offsetUnset($index): void {
+        		
+        	}
+            
+            public function count(): int {
+                return count($this->values);
+            }
+        };
+        # sequential merging
+        $exp = vector(1,2,3,4,5,6);
+        
+        // add array
+        $this->assertEquals($exp, vector(1,2,3)->merge([4,5,6]));
+        
+        // add vector
+        $this->assertEquals($exp, vector(1,2,3)->merge(vector(4,5,6)));
+        
+        // add some other array-like object
+        $fixed = new SplFixedArray(3);
+        $fixed[0] = 4;
+        $fixed[1] = 5;
+        $fixed[2] = 6;
+        $this->assertEquals($exp, vector(1,2,3)->merge($fixed));
+        
+        // add associative array but discard keys
+        $this->assertEquals($exp, vector(1,2,3)->merge(['a' => 4, 'b' => 5, 'c' => 6]));
+        
+        // add associative vector but discard keys
+        $this->assertEquals($exp, vector(1,2,3)->merge(vector(['a' => 4 , 'b' => 5, 'c' => 6])));
+        
+        // add associative object but discard keys
+        $this->assertEquals($exp, vector(1,2,3)->merge($iter));
+        
+        # associative merging 
+        $exp = vector(['d' => 1, 'e' => 2, 'f' => 3, 'a' => 4, 'b' => 5, 'c' => 6]);
+        
+        // add array
+        $this->assertEquals($exp, vector(['d' => 1, 'e' => 2, 'f' => 3])->merge(['a' => 4, 'b' => 5, 'c' => 6], maintainKeyAssociation:true));
+        
+        // add vector
+        $this->assertEquals($exp, vector(['d' => 1, 'e' => 2, 'f' => 3])->merge(vector(['a' => 4, 'b' => 5, 'c' => 6]), maintainKeyAssociation:true));
+        
+        // add associative object
+        $this->assertEquals($exp, vector(['d' => 1, 'e' => 2, 'f' => 3])->merge($iter, maintainKeyAssociation:true));
+        
+        # combined sequential and associative
+        $this->assertEquals(
+            vector([0 => 1, 1 => 2, 2 => 3, 'a' => 4, 'b' => 5, 'c' => 6]), 
+            vector(1,2,3)->merge(['a' => 4, 'b' => 5, 'c' => 6], maintainKeyAssociation:true)
+        );
+    }
+    
     public function testAdd()
     {
         $ps = vector();
