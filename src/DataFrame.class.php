@@ -1732,7 +1732,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Column and row structure must inversed for this to work.
+     * Column and row structure must be inverted for this to work.
      */
     protected function correlation_matrix(array $matrix, string $method)
     {
