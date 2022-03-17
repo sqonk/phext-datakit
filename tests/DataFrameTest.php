@@ -457,7 +457,7 @@ class DataFrameTest extends TestCase
             [0.5, -0.5, 1, 1]
         ];
         
-        $corr = $df->corr('spearman', ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'])->data();
+        $corr = $df->corr(COR_SPEARMAN, ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'])->data();
         $i = 0;
         foreach ($corr as $row) {
             $this->assertSame($exp[$i], array_values($row));
@@ -477,7 +477,7 @@ class DataFrameTest extends TestCase
             [0.64, -0.67, 0.98, 1.0]
         ];
         
-        $corr = $df->corr('pearson', ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'])->round(2);
+        $corr = $df->corr(COR_PEARSON, ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'])->round(2);
         $i = 0;
         foreach ($corr as $row) {
             $this->assertSame($exp[$i], array_values($row));
