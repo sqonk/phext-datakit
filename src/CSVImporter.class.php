@@ -41,6 +41,7 @@ class CSVImporter implements \Iterator
     /**
      * Initialise a new CSVImporter. Use this static method if you wish to chain a sequence of calls in one line.
      * 
+     * -- parameters:
      * @param $input Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
      * @param $inputIsRawData When `TRUE`, the `$input` parameter is interpreted as containing the CSV data. When FALSE it is assumed to be the file path to the relevant CSV document.
      * @param $headersAreFirstRow When TRUE the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to `FALSE`.
@@ -66,6 +67,7 @@ class CSVImporter implements \Iterator
     /**
      * Initialise a new CSVImporter.
      * 
+     * -- parameters:
      * @param $input Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
      * @param $inputIsRawData When `TRUE`, the `$input` parameter is interpreted as containing the CSV data. When FALSE it is assumed to be the file path to the relevant CSV document.
      * @param $headersAreFirstRow When TRUE the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to `FALSE`.

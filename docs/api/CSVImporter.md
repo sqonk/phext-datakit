@@ -33,8 +33,14 @@ static public function init(string $input, bool $inputIsRawData = false, bool $h
 ```
 Initialise a new CSVImporter. Use this static method if you wish to chain a sequence of calls in one line.
 
-@param $input Either the file path of the CSV Document or the raw CSV text. 
-**See:**  $inputIsRawData. @param $inputIsRawData When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document. @param $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``. @param $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over. @param $skipRows Additionally skip over the given number or rows before reading begins. @param $delimiter Set the field delimiter (one single-byte character only). @param $enclosedBy Set the field enclosure character (one single-byte character only). @param $lineEnding Set character sequence that denotes the end of a line (row).
+- **$input** Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
+- **$inputIsRawData** When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
+- **$headersAreFirstRow** When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
+- **$customHeaders** Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
+- **$skipRows** Additionally skip over the given number or rows before reading begins.
+- **$delimiter** Set the field delimiter (one single-byte character only).
+- **$enclosedBy** Set the field enclosure character (one single-byte character only).
+- **$lineEnding** Set character sequence that denotes the end of a line (row).
 
 
 ------
@@ -44,8 +50,14 @@ public function __construct(string $input, bool $inputIsRawData = false, bool $h
 ```
 Initialise a new CSVImporter.
 
-@param $input Either the file path of the CSV Document or the raw CSV text. 
-**See:**  $inputIsRawData. @param $inputIsRawData When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document. @param $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``. @param $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over. @param $skipRows Additionally skip over the given number or rows before reading begins. @param $delimiter Set the field delimiter (one single-byte character only). @param $enclosedBy Set the field enclosure character (one single-byte character only). @param $lineEnding Set character sequence that denotes the end of a line (row).
+- **$input** Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
+- **$inputIsRawData** When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
+- **$headersAreFirstRow** When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
+- **$customHeaders** Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
+- **$skipRows** Additionally skip over the given number or rows before reading begins.
+- **$delimiter** Set the field delimiter (one single-byte character only).
+- **$enclosedBy** Set the field enclosure character (one single-byte character only).
+- **$lineEnding** Set character sequence that denotes the end of a line (row).
 
 
 ------
