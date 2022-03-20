@@ -1,15 +1,15 @@
 Datakit Features by Example
 ================
-
-* [Importer](#importer) for working with CSV, delimited files and other data sources.
+* [SMA](#sma) Simple Moving Average calculator
+* [EMA](#ema): Exponential Moving Average calculator
+* [DOMScraper](#domscaper): A light weight and unsophisticated web scraper
+* [Importer](#importer) Utility fascade working with CSV, delimited files and other data sources.
   - [CSV Files](#importer---csv---files)
   - [CSV In Memory](#importer---csv---data)
   - [CSV Automated Processing](#importer---csv---data)
   - [Generic Delimitered import](#importer---generic)
-* [SMA](#sma) Simple Moving Average calculator
-* [EMA](#ema): Exponential Moving Average calculator
-* [DOMScraper](#domscaper): A light weight and unsophisticated web scraper
-* [CSV](#csv): A class for producing CSV documents.
+* [CSVImporter](#csvimporter): Underlying class for loading CSV documents.
+* [CSVExporter](#csvexporter): A class for producing CSV documents.
 * [PackedSequence and PackedArray](#packedsequence-and-packedarray)
   * [Adding and Removing](#packed-structures---adding-and-removing)
   * [Head, Tail and Slice](#packed-structures---head-tail-and-slice)
@@ -68,99 +68,6 @@ Datakit Features by Example
     * [General chart generation](#dataframe---charting---general)
   - [Export to CSV](#dataframe---export)
 * [Defined Constants](#defined-constants)
-
-
-
-### Importer
-
-The Importer class allows easy importing of both small and large CSV files.
-
-#### Importer - CSV - Files
-
-Import a CSV direct from file and print out some of the columns.
-
-``` php
-use sqonk\phext\datakit\Importer as import;
-
-$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-import::csv_file(function($row) {
-	println($row['class'], $row['sepal-length']);
-}, 
-'docs/iris.data', false, $iris_columns);
-```
-
-Using a foreach loop with a generator, instead of a callback.
-
-```php
-use sqonk\phext\datakit\Importer as import;
-
-$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-foreach (import::yield_csv('docs/iris.data', false, $iris_columns) as $row)
-    println($row['class'], $row['sepal-length']);
-```
-
-Import a CSV from file directly into a DataFrame.
-
-```php
-use sqonk\phext\datakit\Importer as import;
-
-$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-$df = import::csv_dataframe('docs/iris.data', $iris_columns);
-```
-
-
-
-#### Importer - CSV - Data
-
-Import a CSV already loaded into memory and print out some of the columns.
-
-``` php
-use sqonk\phext\datakit\Importer as import;
-
-$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-$data = file_get_contents('docs/iris.data');
-
-import::csv_data(function($row) {
-	println($row['class'], $row['sepal-length']);
-}, 
-$data, false, $iris_columns);
-```
-
-#### Importer - CSV - Automated processing
-
-For CSV files that can be loaded into memory in entirety, if you have no special processing to do of each row then you may omit the callback and simply receive the data at the end of the call.
-
-``` php
-use sqonk\phext\datakit\Importer as import;
-
-$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
-
-$rows = import::csv_file(null, 'docs/iris.data', false, $iris_columns);
-```
-
-#### Importer - Generic
-
-Import a tab delimitered dataset already loaded into memory and print out the columns.
-
-``` php
-use sqonk\phext\datakit\Importer as import;
-
-$data = <<<EOT
-Name\tAge\tOccupation
-Dave\t43\tDriver
-Alex\t26\tMarketing
-Grace\t54\tDesign	
-EOT;
-
-import::delimitered_data(function($row) {
-	println($row['Name'], $row['Age'], $row['Occupation']);
-}, 
-$data, "\t", "\n", true);
-```
 
 ### SMA
 
@@ -340,14 +247,163 @@ foreach ($scraper->yield($chain, $result) as $tr)
 
 ```
 
+### Importer
+
+The Importer class allows easy importing of both small and large CSV files.
+
+#### Importer - CSV - Files
+
+Import a CSV direct from file and print out some of the columns.
+
+``` php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+import::csv_file(function($row) {
+	println($row['class'], $row['sepal-length']);
+}, 
+'docs/iris.data', false, $iris_columns);
+```
+
+Using a foreach loop with a generator, instead of a callback.
+
+```php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+foreach (import::yield_csv('docs/iris.data', false, $iris_columns) as $row)
+    println($row['class'], $row['sepal-length']);
+```
+
+Import a CSV from file directly into a DataFrame.
+
+```php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+$df = import::csv_dataframe('docs/iris.data', $iris_columns);
+```
 
 
-### CSV
+
+#### Importer - CSV - Data
+
+Import a CSV already loaded into memory and print out some of the columns.
+
+``` php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+$data = file_get_contents('docs/iris.data');
+
+import::csv_data(function($row) {
+	println($row['class'], $row['sepal-length']);
+}, 
+$data, false, $iris_columns);
+```
+
+#### Importer - CSV - Automated processing
+
+For CSV files that can be loaded into memory in entirety, if you have no special processing to do of each row then you may omit the callback and simply receive the data at the end of the call.
+
+``` php
+use sqonk\phext\datakit\Importer as import;
+
+$iris_columns = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class'];
+
+$rows = import::csv_file(null, 'docs/iris.data', false, $iris_columns);
+```
+
+#### Importer - Generic
+
+Import a tab delimitered dataset already loaded into memory and print out the columns.
+
+``` php
+use sqonk\phext\datakit\Importer as import;
+
+$data = <<<EOT
+Name\tAge\tOccupation
+Dave\t43\tDriver
+Alex\t26\tMarketing
+Grace\t54\tDesign	
+EOT;
+
+import::delimitered_data(function($row) {
+	println($row['Name'], $row['Age'], $row['Occupation']);
+}, 
+$data, "\t", "\n", true);
+```
+
+### CSVImporter
+
+The CSVImporter is designed to efficiently load or parse CSV documents. It is the underlying engine used by the static methods in the Importer class.
+
+All configuration options can be set either via the constructor or later on via setter methods.
+
+```php
+use sqonk\phext\datakit\CSVImporter;
+
+$headers = ['sepal-length','sepal-width','petal-length','petal-width','class'];
+$importer = new CSVImporter(input:'docs/iris.data', customHeaders:$headers);
+
+foreach ($importer as $index => $row) {
+    println($row);
+}
+/*
+Will print:
+array (
+  'sepal-length' => '5.1',
+  'sepal-width' => '3.5',
+  'petal-length' => '1.4',
+  'petal-width' => '0.2',
+  'class' => 'Iris-setosa',
+)
+array (
+  'sepal-length' => '4.9',
+  'sepal-width' => '3.0',
+  'petal-length' => '1.4',
+  'petal-width' => '0.2',
+  'class' => 'Iris-setosa',
+)
+...
+*/
+```
+
+Chaining configuration commands and loading in one line can be done by initialising an importer with the static method `init`
+
+```php
+use sqonk\phext\datakit\CSVImporter;
+
+// Skip the first two rows and get the third.
+$headers = ['sepal-length','sepal-width','petal-length','petal-width','class'];
+$row = CSVImporter::init(input:'docs/iris.data', customHeaders:$headers)
+	->skip(2)
+      ->next_row();
+
+println($row);
+/*
+Will print:
+array (
+  'sepal-length' => '4.7',
+  'sepal-width' => '3.2',
+  'petal-length' => '1.3',
+  'petal-width' => '0.2',
+  'class' => 'Iris-setosa',
+)
+*/
+```
+
+
+### CSVExporter
 
 The CSV class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
 
 ```php
-$csv = new CSV;
+$csv = new CSVExporter;
 
 # set a mapping between the desired column headers and the array keys.
 $csv->set_map(['Name' => 'a', 'Age' => 'b', 'Number' => 'c']);

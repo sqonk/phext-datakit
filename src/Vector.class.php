@@ -83,21 +83,8 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	// Test whether the array is sequential or associative.
 	protected function testKeys(): bool
 	{
-        if (function_exists('array_is_list')) {
-            $this->isSequential = array_is_list($this->_array);
-        }
-        else {
-            $this->isSequential = true;
-            $keys = array_keys($this->_array);
-    		foreach ($keys as $i => $key)
-    		{
-    			if ($i != $key) {
-    				$this->isSequential = false;
-    				break;
-    			}
-    		}
-        }
-        
+        $this->isSequential = array_is_list($this->_array);
+
 		return $this->isSequential;
 	}
 	

@@ -14,7 +14,7 @@ A selection of routines for importing data from various static sources such as f
 ------
 ##### csv_data
 ```php
-static public function csv_data(callable $callback, string $data, bool $headersAreFirstRow = false, array $customHeaders = null) 
+static public function csv_data(callable $callback, string $data, bool $headersAreFirstRow = false, array $customHeaders = null) : array|bool
 ```
 Import a CSV from a string containing the data.
 
@@ -39,7 +39,7 @@ This method will generate a user level warning if data is empty or can not other
 ------
 ##### csv_file
 ```php
-static public function csv_file(callable $callback, string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) 
+static public function csv_file(callable $callback, string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) : array|bool
 ```
 Import a CSV from a local file on disk or a URL.
 
@@ -67,7 +67,7 @@ This method will throw a `RuntimeException` if the file can not be opened for an
 ------
 ##### yield_csv
 ```php
-static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) 
+static public function yield_csv(string $filePath, bool $headersAreFirstRow = false, array $customHeaders = null, int $skipRows = 0) : Generator
 ```
 Import a CSV from a local file on disk or a URL and yield one row at a time as a generator to an outer loop.
 
@@ -107,7 +107,7 @@ In the cases were the CSV has no column headers then the supplied array will be 
 ------
 ##### delimitered_data
 ```php
-static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '\n', bool $headersAreFirstRow = false, array $customHeaders = null) 
+static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = '\n', bool $headersAreFirstRow = false, array $customHeaders = null) : array|bool
 ```
 Split a string of raw data down into rows and columns.
 

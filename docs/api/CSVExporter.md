@@ -1,7 +1,7 @@
-###### PHEXT > [DataKit](../README.md) > [API Reference](index.md) > CSV
+###### PHEXT > [DataKit](../README.md) > [API Reference](index.md) > CSVExporter
 ------
-### CSV
-The CSV class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
+### CSVExporter
+The CSVExporter class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
 
 Under the hood it relies on `fputcsv` for outputting rows.
 
@@ -104,7 +104,7 @@ Will trigger a warning if called after the headers have already been output. Wil
 ------
 ##### add_raw_row
 ```php
-public function add_raw_row(array $row) : sqonk\phext\datakit\CSV
+public function add_raw_row(array $row) : sqonk\phext\datakit\CSVExporter
 ```
 Add a series of values as the next row in the CSV.
 
@@ -116,7 +116,7 @@ Add a series of values as the next row in the CSV.
 ------
 ##### add_record
 ```php
-public function add_record($record) : sqonk\phext\datakit\CSV
+public function add_record($record) : sqonk\phext\datakit\CSVExporter
 ```
 Add a single record to the CSV. This method differs from `add_raw_row()` in that the provided array or object should be associative where the keys correspond to the column headers.
 
@@ -132,7 +132,7 @@ Add a single record to the CSV. This method differs from `add_raw_row()` in that
 ------
 ##### add_records
 ```php
-public function add_records($records) : sqonk\phext\datakit\CSV
+public function add_records($records) : sqonk\phext\datakit\CSVExporter
 ```
 Add multiple records to the CSV.
 

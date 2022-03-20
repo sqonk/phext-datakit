@@ -2524,15 +2524,15 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Export the Dataframe to a delimetered text file (CSV).
+     * Export the Dataframe to a delimited text file (CSV).
      * 
      * -- parameters:
      * @param $filePath: The destination file.
      * @param $columns: The columns to export, or all if null is supplied.
-     * @param $delimeter: The character that seperates each column.
-     * @param $includeIndex: When TRUE, adds the dataframe row index as the first column.
+     * @param $delimiter: The character that separates each column.
+     * @param $includeIndex: When TRUE, adds the data frame row index as the first column.
      */
-    public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true): void
+    public function export(string $filePath, array $columns = null, string $delimiter = ',', bool $includeIndex = true): void
     {
         $columns = $this->determineColumns($columns);
 		
@@ -2544,7 +2544,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 if ($includeIndex)
                     $start[] = 'index';
                 $headers = array_merge($start, $columns);
-                fputcsv($fh, $headers, $delimeter);
+                fputcsv($fh, $headers, $delimiter);
             }
 
             foreach ($this->data as $index => $row)
@@ -2566,7 +2566,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                     $out[] = $value;
                 }
                 
-                fputcsv($fh, $out, $delimeter);
+                fputcsv($fh, $out, $delimiter);
             }
         }
         finally {

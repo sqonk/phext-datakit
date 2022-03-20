@@ -19,14 +19,14 @@ declare(strict_types=1);
 */
 
 use PHPUnit\Framework\TestCase;
-use sqonk\phext\datakit\CSV;
+use sqonk\phext\datakit\CSVExporter;
 
-class CSVTest extends TestCase
+class CSVExporterTest extends TestCase
 {
     public function testHeaders()
     {
         $h = ['Name', 'Age', 'Num'];
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $this->assertSame(true, $csv->set_headers($h));
         $this->assertSame($h, $csv->headers());
         
@@ -38,7 +38,7 @@ class CSVTest extends TestCase
     public function testMap()
     {
         $m = ['Name' => 'a', 'Age' => 'b', 'Num' => 'c'];
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $this->assertSame(true, $csv->set_map($m));
         $this->assertSame($m, $csv->map());
         $this->assertSame(array_keys($m), $csv->headers());
@@ -50,7 +50,7 @@ class CSVTest extends TestCase
     
     public function testAddMapPair()
     {
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $this->assertSame(true, $csv->add_map_pair('Name', 'a'));
         $this->assertSame(['Name' => 'a'], $csv->map());
         
@@ -61,7 +61,7 @@ class CSVTest extends TestCase
     
     public function testAddRawRow()
     {
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $csv->set_headers(['Name', 'Age', 'Num']);
         $csv->add_raw_row(['Doug', 32, 20]);
         
@@ -71,7 +71,7 @@ class CSVTest extends TestCase
     
     public function testAddRecord()
     {
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $csv->set_map(['Name' => 'a', 'Age' => 'b', 'Num' => 'c']);
         $csv->add_record(vector(['a' => 'Doug', 'b' => 32, 'c' => 20]));
         $csv->add_record(['a' => 'Jane', 'b' => 25, 'c' => 21]);
@@ -82,7 +82,7 @@ class CSVTest extends TestCase
     
     public function testAddRecords()
     {
-        $csv = new CSV;
+        $csv = new CSVExporter;
         $csv->set_map(['Name' => 'a', 'Age' => 'b', 'Num' => 'c']);
         $csv->add_records([
             vector(['a' => 'Doug', 'b' => 32, 'c' => 20]),
