@@ -47,9 +47,13 @@ These classes should not be considered a blanket replacement for native arrays, 
 
 In general native arrays offer flexibility and speed over memory consumption, where as packed arrays/sequences prioritise memory usage for a little less flexibility. They are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
 
-[CSV](CSV.md)
+[CSVExporter](CSVExporter.md)
 
 The CSV class can be used for producing CSV documents. It abstracts the mechanics of producing the file format, allowing your code to focus on its own logic.
+
+[CSVImporter](CSVImporter.md)
+
+The CSVImporter is designed to efficiently load or parse CSV documents. It is the underlying engine used by the static methods in the Importer class.
 
 [math](math.md)
 

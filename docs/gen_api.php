@@ -1,7 +1,7 @@
 <?php
 require '../vendor/autoload.php';
 
-use sqonk\phext\datakit\{PackedSequence,PackedArray,DataFrame,Vector,Importer,SMA,EMA,GroupedDataFrame,DOMScraper,math,CSVExporter};
+use sqonk\phext\datakit\{PackedSequence,PackedArray,DataFrame,Vector,Importer,SMA,EMA,GroupedDataFrame,DOMScraper,math,CSVExporter,CSVImporter};
 use sqonk\phext\core\{strings,arrays};
 
 
@@ -148,6 +148,7 @@ function main()
     generateForClass(DOMScraper::class);
     generateForClass(math::class);
     generateForClass(CSVExporter::class);
+    generateForClass(CSVImporter::class);
 }
 
 main();

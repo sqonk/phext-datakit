@@ -1048,14 +1048,14 @@ Create a bar chart styled in the fashion of a histogram.
 ------
 ##### export
 ```php
-public function export(string $filePath, array $columns = null, string $delimeter = ',', bool $includeIndex = true) : void
+public function export(string $filePath, array $columns = null, string $delimiter = ',', bool $includeIndex = true) : void
 ```
-Export the Dataframe to a delimetered text file (CSV).
+Export the Dataframe to a delimited text file (CSV).
 
 - **$filePath:** The destination file.
 - **$columns:** The columns to export, or all if null is supplied.
-- **$delimeter:** The character that seperates each column.
-- **$includeIndex:** When `TRUE`, adds the dataframe row index as the first column.
+- **$delimiter:** The character that separates each column.
+- **$includeIndex:** When `TRUE`, adds the data frame row index as the first column.
 
 
 ------
