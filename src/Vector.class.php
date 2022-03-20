@@ -151,6 +151,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Append another array, vector or collection to the end of the vector.
      * 
+     * -- parameters:
      * @param $collection The set of items to add to the end of the vector.
      * @param $maintainKeyAssociation When `TRUE`, both the keys and the values from the given collection will be merged into the vector. When `FALSE`, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge. 
      */
