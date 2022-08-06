@@ -1003,6 +1003,45 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
         $length = rand($minimum, $count-$start);
         return $this->slice($start, $length);
     }
+    
+    public function rolling(int $window, callable $callback, int $minObservations = 0, string $exclude = ''): Vector 
+    {
+        if ($window < 1) {
+            throw new \InvalidArgumentException("window must be a number greater than 0 ($window given)");
+        }
+        if ($minObservations > $window) {
+            trigger_error("minObservations ($minObservations) is greater than given window ($window). It will be capped to the window size.", E_USER_WARNING);
+        }
+        if ($exclude && ! in_array(haystack:['right', 'left', 'both', 'neither'], needle:$exclude)) {
+            throw new \InvalidArgumentException("'exclude' parameter must be one of: right/left/both/neither. ([$exclude] given)");
+        }
+        $out = new Vector;
+        $roller = new Vector;
+        $roller->constrain($window);
+        
+        if ($minObservations < 1 || $minObservations > $window)
+            $minObservations = $window;
+        
+        $masterArray = $this->_array;
+        if ($exclude == 'left' || $exclude == 'both')
+            array_shift($masterArray);
+        if ($exclude == 'right' || $exclude == 'both')
+            array_pop($masterArray);
+        
+        foreach ($masterArray as $k => $v)
+        {
+            $roller->add($v);
+            
+            $r = null;
+            if ($roller->count() >= $minObservations) {
+                $r = $callback(clone $roller);
+            }
+            
+            $out->add($r);
+        }
+        
+        return $out;
+    }
 	
     /**
      * Provide a maximum or minimum (or both) constraint for the values in the vector.
