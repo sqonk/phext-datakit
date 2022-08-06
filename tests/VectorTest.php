@@ -437,6 +437,24 @@ class VectorTest extends TestCase
         $expected = [1.33, 2.36, 3.99, 4.36];
         foreach ($ps->round(2) as $i => $v)
             $this->assertSame($v, $expected[$i]);
+        
+        foreach ($ps->round(2) as $i => $v)
+            $this->assertSame($v, $expected[$i]);
+        
+        foreach ($ps->round(2, stringify:true) as $i => $v) {
+            $this->assertEquals($v, $expected[$i]);
+            $this->assertTrue(is_string($v));
+        }
+        
+        # round mode + that we always return a copy by default.    
+        $v = vector(1.555);
+        $this->assertSame([1.56], $v->round(2, mode:PHP_ROUND_HALF_UP)->array());
+        $this->assertSame([1.55], $v->round(2, mode:PHP_ROUND_HALF_DOWN)->array());
+        $this->assertSame([1.555], $v->array());
+        
+        # test in place modification
+        $v->round(2, mode:PHP_ROUND_HALF_UP, inplace:true);
+        $this->assertSame([1.56], $v->array());
     }
     
     public function testClear()

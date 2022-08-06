@@ -1192,14 +1192,19 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Round all values in the vector up or down to the given decimal point precision.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): Vector
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, bool $stringify = false, bool $inplace = false): Vector
     {
-        foreach ($this->_array as $key => $value)
+        $out = $inplace ? $this : clone $this;
+        foreach ($out->_array as $key => $value)
         {
-            if (is_numeric($value)) {
-                $this->_array[$key] = round($value, $precision, $mode);
+            if (is_numeric($value)) 
+            {
+                $r = round($value, precision:$precision, mode:$mode);
+                if ($stringify)
+                    $r = number_format($r, decimals:$precision, thousands_separator:'');
+                $out->_array[$key] = $r;
             }
         }
-        return $this;
+        return $out;
     }
 }
