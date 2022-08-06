@@ -1671,7 +1671,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Round all values in one or more columns up or down to the given decimal point 
-     * precesion.
+     * precision.
      * 
      * -- parameters:
      * @param $precision the number of decimal points values should be rounded to.
