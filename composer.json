@@ -5,7 +5,7 @@
     "require": {
 		"php": "^8",
         "sqonk/phext-core": "^1.1",
-        "sqonk/phext-plotlib": "^1.1"
+        "sqonk/phext-plotlib": "^1.1.1"
     },
 	"keywords": ["data analysis","matrix","matrices","dataframe", "vector","csv import","packed array","packed sequence"],
     "license": "MIT",
