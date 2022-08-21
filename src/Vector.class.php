@@ -1026,7 +1026,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
             
             $r = null;
             if ($roller->count() >= $minObservations) {
-                $r = $callback(clone $roller);
+                $r = $callback(clone $roller, $k);
             }
             
             $out->add($r);
