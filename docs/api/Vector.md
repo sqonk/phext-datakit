@@ -857,7 +857,7 @@ Alias of self::normalise().
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : sqonk\phext\datakit\Vector
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, bool $stringify = false, bool $inplace = false) : sqonk\phext\datakit\Vector
 ```
 Round all values in the vector up or down to the given decimal point precision.
 
