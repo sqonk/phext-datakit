@@ -1004,6 +1004,18 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->slice($start, $length);
     }
     
+    /**
+     * Continually apply a callback to a moving fixed window on the vector. 
+     * 
+     * -- parameters:
+     * @param $window The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
+     * @param $callback The callback method that produces a result based on the provided subset of data.
+     * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+     * 
+     * Callback format: `myFunc(mixed $value, int $index) : mixed`
+     * 
+     * @return A vector containing the series of results produced by the callback method.
+     */
     public function rolling(int $window, callable $callback, int $minObservations = 0): Vector 
     {
         if ($window < 1) {
