@@ -176,7 +176,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Produce an exact replica of the dataframe.
      */
-	public function copy()
+	public function copy(): DataFRame
 	{
 		return $this->clone($this->data());
 	}
