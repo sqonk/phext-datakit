@@ -21,6 +21,7 @@ Many of these methods are ported from open source code, freely available on the 
 - [correlation_spearman](#correlation_spearman)
 - [coefficient](#coefficient)
 - [distances](#distances)
+- [nf_round](#nf_round)
 
 ------
 ##### standard_deviation
@@ -160,7 +161,9 @@ Compute a correlation using the Spearman method with the two given arrays.
 
 This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
-see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
+
+**See:** : http://www.wisetonic.com/ 
+**See:** : https://github.com/amitrou/Spearman-Correlation
 
 
 ------
@@ -172,7 +175,9 @@ Compute the coefficient of an array of distances.
 
 This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
-see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
+
+**See:** : http://www.wisetonic.com/ 
+**See:** : https://github.com/amitrou/Spearman-Correlation
 
 
 ------
@@ -184,7 +189,26 @@ Return an array of distances computed from the values of the two given arrays.
 
 This method is part of the spearman correlation and was originally written by Alejandro Mitrou under the GPL license.
 
-see: http://www.wisetonic.com/ see: https://github.com/amitrou/Spearman-Correlation
+
+**See:** : http://www.wisetonic.com/ 
+**See:** : https://github.com/amitrou/Spearman-Correlation
+
+
+------
+##### nf_round
+```php
+static public function nf_round(array|string|int|float $value, int $precision = 2, int $mode = PHP_ROUND_HALF_UP) : array|string
+```
+Round the given value(s) to the desired precision. This method performs a double round, first rounding the float using the preferred mode of rounding, then converting the result to a string with number_format in order to hold the precision.
+
+- **$value** The value to be rounded. If an array is passed in then each element within is rounded.
+- **$precision** The number of decimal digits to round to. Defaults to 2.
+- **$mode** The rounding mode used.
+
+**Returns:**  The rounded value, or array of rounded values (depending on the input).
+
+
+**See:**  Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information rounding modes and how the rounding engine works.
 
 
 ------

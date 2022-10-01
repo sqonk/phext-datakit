@@ -34,7 +34,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) : void
+public function offsetSet(mixed $index, mixed $value) : void
 ```
 No documentation available.
 
@@ -42,7 +42,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) : mixed
+public function offsetGet(mixed $index) : mixed
 ```
 No documentation available.
 
@@ -50,7 +50,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) : bool
+public function offsetExists(mixed $index) : bool
 ```
 No documentation available.
 
@@ -58,7 +58,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) : void
+public function offsetUnset(mixed $index) : void
 ```
 No documentation available.
 
@@ -77,7 +77,7 @@ Construct a new EMA with the specified maximum number of values.
 ------
 ##### add
 ```php
-public function add(...$values) : sqonk\phext\datakit\EMA
+public function add(mixed ...$values) : sqonk\phext\datakit\EMA
 ```
 Add one or more new values to the EMA. The value must be numerical in nature.
 
