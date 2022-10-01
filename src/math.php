@@ -480,5 +480,21 @@ class math
         
         return $ranking;
     }
+    
+    static function nf_round_down(float|array|int|string $value, int $precision = 2): string|array {
+        return self::nf_round($value, $precision, PHP_ROUND_HALF_DOWN);
+    }
+
+    static function nf_round_up(float|array|int|string $value, int $precision = 2): string|array {
+        return self::nf_round($value, $precision, PHP_ROUND_HALF_UP);
+    }
+
+    static function nf_round(float|array|int|string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_UP): string|array 
+    {
+        if (is_array($value)) {
+            return array_map(fn($v) => self::nf_round($v, $precision, $mode), $value);
+        }
+        return number_format(num:round((float)$value, $precision, $mode), decimals:$precision, thousands_separator:'');
+    }
 }
 

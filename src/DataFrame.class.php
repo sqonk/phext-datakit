@@ -1662,27 +1662,36 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Round all values in one or more columns up or down to the given decimal point 
-     * precision.
+     * precision. Because of the imprecise nature of floats, the rounding will convert all
+     * data points it touches to string format in order to maintain the precision.
      * 
      * -- parameters:
      * @param $precision the number of decimal points values should be rounded to.
      * @param $mode rounding mode, either PHP_ROUND_HALF_UP, PHP_ROUND_HALF_DOWN, PHP_ROUND_HALF_EVEN or PHP_ROUND_HALF_ODD. See the PHP documentation for information on how each option behaves. Defaults to PHP_ROUND_HALF_UP.
      * @param $columns The columns to round. If no column is specified then the operation runs over all columns.
+     * @param $inPlace If TRUE then this operation modifies the receiver, otherwise a copy is returned.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array $columns = null): DataFrame
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|string $columns = null, bool $inPlace = false): DataFrame
     {
         $columns = $this->determineColumns($columns); 
         
-        foreach ($this->data as &$row)
+        if ($inPlace)
+            $data = &$this->data;
+        else
+            $data = $this->data;
+        
+        foreach ($data as &$row)
         {
-            foreach ($row as $key => $value) {
+            foreach ($columns as $col) 
+            {
+                $value = $row[$col] ?? null;
                 if (is_numeric($value)) {
-                    $row[$key] = round($value, $precision, $mode);
+                    $row[$col] = math::nf_round(value:(float)$value, precision:$precision, mode:$mode);
                 }
-                    
             }
         }
-        return $this;
+
+        return $inPlace ? $this : $this->clone($data);
     }
     
     /**
