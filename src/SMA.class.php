@@ -39,8 +39,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Returns the total number of averages calculated so far.
      */
-    public function count(): int
-    {
+    public function count(): int {
         return $this->averages->count();
     }
     
@@ -51,7 +50,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new \ArrayIterator($array);
 	}
     
-	public function offsetSet($index, $value): void
+	public function offsetSet(mixed $index, mixed $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -59,7 +58,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
 			throw new \Exception("Existing values of an SMA can not be overwritten.");
 	}
 	
-	public function offsetGet($index): mixed
+	public function offsetGet(mixed $index): mixed
 	{
 		$value = $this->averages->get($index);
         if (is_int($this->defaultPrecision))
@@ -68,13 +67,11 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
         return $value;
 	}
 	
-	public function offsetExists($index): bool
-	{
+	public function offsetExists(mixed $index): bool {
 		return array_key_exists($index, $this->averages->array());
 	}
 	
-	public function offsetUnset($index): void
-	{
+	public function offsetUnset(mixed $index): void {
 		throw new \Exception("Existing values can not be removed from an SMA.");
 	}
     
@@ -104,7 +101,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Add one or more new values to the SMA. The value must be numerical in nature.
      */
-	public function add(...$values): SMA
+	public function add(mixed ...$values): SMA
 	{
         foreach ($values as $value)
         {
@@ -149,8 +146,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->averages->array();
     }
 	
-	public function __tostring(): string
-	{
+	public function __tostring(): string {
 		return "SMA: ".$this->result();
 	}
 }
