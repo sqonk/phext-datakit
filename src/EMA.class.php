@@ -24,10 +24,11 @@ namespace sqonk\phext\datakit;
  */
 class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-	protected $limit;
-	protected $values;
-    protected $averages;
-	protected $previous = 0;
+	protected int $limit;
+	protected Vector $values;
+    protected Vector $averages;
+	protected int|float $previous = 0;
+    protected ?int $defaultPrecision = null;
     
     // =====================
     // = Interface methods =

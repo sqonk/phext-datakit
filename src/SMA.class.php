@@ -28,8 +28,9 @@ namespace sqonk\phext\datakit;
  */
 class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-	protected $values;
-    protected $averages;
+	protected Vector $values;
+    protected Vector $averages;
+    protected ?int $defaultPrecision = null;
     
     // =====================
     // = Interface methods =
