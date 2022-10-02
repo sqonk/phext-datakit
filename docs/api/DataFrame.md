@@ -781,9 +781,14 @@ public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|strin
 Round all values in one or more columns up or down to the given decimal point precision. Because of the imprecise nature of floats, the rounding will convert all data points it touches to string format in order to maintain the precision.
 
 - **$precision** the number of decimal points values should be rounded to.
-- **$mode** rounding mode, either PHP_ROUND_HALF_UP, PHP_ROUND_HALF_DOWN, PHP_ROUND_HALF_EVEN or PHP_ROUND_HALF_ODD. See the PHP documentation for information on how each option behaves. Defaults to PHP_ROUND_HALF_UP.
+- **$mode** rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
 - **$columns** The columns to round. If no column is specified then the operation runs over all columns.
 - **$inPlace** If `TRUE` then this operation modifies the receiver, otherwise a copy is returned.
+
+**Returns:**  If $inPlace is `FALSE` then a copy of the Dataframe is rounded and returned. If `TRUE` then the DataFrame is directly modified and returns itself.
+
+
+**See:**  [math::nf_round()](math.md#nf_round) for more information on how the rounding is performed.
 
 
 ------

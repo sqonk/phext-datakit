@@ -208,7 +208,7 @@ Round the given value(s) to the desired precision. This method performs a double
 **Returns:**  The rounded value, or array of rounded values (depending on the input).
 
 
-**See:**  Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information rounding modes and how the rounding engine works.
+**See:**  Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information on rounding modes and how the rounding engine works.
 
 
 ------
