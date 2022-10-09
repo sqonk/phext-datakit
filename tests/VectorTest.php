@@ -457,6 +457,42 @@ class VectorTest extends TestCase
         $this->assertSame([1.56], $v->array());
     }
     
+    public function testRolling(): void 
+    {
+        $vec = vector(1,2,3,4,5,6);
+        
+        $exp = [
+            [1,2], [2,3], [3,4], [4,5], [5,6]
+        ];
+        $vec->rolling(window:2, callback:function($v, $i) use ($exp) {
+            $this->assertEquals($v->array(), $exp[$i-1], "index $i");
+        });
+        
+        $exp = [
+            [1], [1,2], [2,3], [3,4], [4,5], [5,6], [6]
+        ];
+        $vec->rolling(window:2, minObservations:1, callback:function($v, $i) use ($exp) {
+            $this->assertEquals($v->array(), $exp[$i], "index $i");
+        });
+        
+        $exp = [
+            [1,2,3], [2,3,4], [3,4,5], [4,5,6]
+        ];
+        $vec->rolling(window:3, callback:function($v, $i) use ($exp) {
+            $this->assertEquals($v->array(), $exp[$i-2], "index $i");
+        });
+        
+        $windowSize = 2;
+        $min = 3;
+        $this->expectWarning();
+        $this->expectWarningMessage("minObservations ($min) is greater than given window ($windowSize). It will be capped to the window size.");
+        $vec->rolling($windowSize, fn($v) => $v, $min);
+        
+        $windowSize = 0;
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("window must be a number greater than 0 ($windowSize given)");
+    }
+    
     public function testClear()
     {
         $input = [1,2,3,4];
