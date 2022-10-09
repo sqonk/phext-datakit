@@ -354,8 +354,8 @@ class math
      * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
-     * see: http://www.wisetonic.com/
-     * see: https://github.com/amitrou/Spearman-Correlation
+     * @see: http://www.wisetonic.com/
+     * @see: https://github.com/amitrou/Spearman-Correlation
      */
     static public function correlation_spearman(array $data1, array $data2): float|int|bool
     {
@@ -396,8 +396,8 @@ class math
 	 * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
-     * see: http://www.wisetonic.com/
-     * see: https://github.com/amitrou/Spearman-Correlation
+     * @see: http://www.wisetonic.com/
+     * @see: https://github.com/amitrou/Spearman-Correlation
 	 */
     static public function coefficient(array $distances): float|int|bool
     {
@@ -420,8 +420,8 @@ class math
      * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
-     * see: http://www.wisetonic.com/
-     * see: https://github.com/amitrou/Spearman-Correlation
+     * @see: http://www.wisetonic.com/
+     * @see: https://github.com/amitrou/Spearman-Correlation
      */
     static public function distances(array $ranking1, array $ranking2): array
     {
@@ -479,6 +479,28 @@ class math
             $ranking[$rankingPos - 2 - $j] = $eqSum / ($eqCount+1);
         
         return $ranking;
+    }
+    
+    /**
+     * Round the given value(s) to the desired precision. This method performs a double round, first rounding
+     * the float using the preferred mode of rounding, then converting the result to a string with number_format
+     * in order to hold the precision.
+     * 
+     * -- parameters:
+     * @param $value The value to be rounded. If an array is passed in then each element within is rounded.
+     * @param $precision The number of decimal digits to round to. Defaults to 2.
+     * @param $mode The rounding mode used.
+     * 
+     * @return The rounded value, or array of rounded values (depending on the input).
+     * 
+     * @see Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information on rounding modes and how the rounding engine works.
+     */
+    static function nf_round(float|array|int|string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_UP): string|array 
+    {
+        if (is_array($value)) {
+            return array_map(fn($v) => self::nf_round($v, $precision, $mode), $value);
+        }
+        return number_format(num:round((float)$value, $precision, $mode), decimals:$precision, thousands_separator:'');
     }
 }
 

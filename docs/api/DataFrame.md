@@ -98,7 +98,7 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 ------
 ##### make
 ```php
-static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false) 
+static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false) : static
 ```
 Static equivalent of `new DataFrame`.
 
@@ -122,7 +122,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $row) : void
+public function offsetSet(mixed $index, mixed $row) : void
 ```
 No documentation available.
 
@@ -130,7 +130,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) : bool
+public function offsetExists(mixed $index) : bool
 ```
 No documentation available.
 
@@ -138,7 +138,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) : void
+public function offsetUnset(mixed $index) : void
 ```
 No documentation available.
 
@@ -146,7 +146,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) : mixed
+public function offsetGet(mixed $index) : mixed
 ```
 No documentation available.
 
@@ -195,7 +195,7 @@ Data Array format for vertical data sets:
 ------
 ##### copy
 ```php
-public function copy() 
+public function copy() : static
 ```
 Produce an exact replica of the dataframe.
 
@@ -203,7 +203,7 @@ Produce an exact replica of the dataframe.
 ------
 ##### clone
 ```php
-public function clone($data, $headers = null) : sqonk\phext\datakit\DataFrame
+public function clone(array $data, array $headers = null) : sqonk\phext\datakit\DataFrame
 ```
 Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
 
@@ -211,7 +211,7 @@ Produce a copy of the dataframe consisting of only the supplied data. All other 
 ------
 ##### display_headers
 ```php
-public function display_headers($display = null) 
+public function display_headers(bool $display = null) : static|bool
 ```
 Whether or not the DataFrame should display the column headers when it is printed. The default is `TRUE`.
 
@@ -219,7 +219,7 @@ Whether or not the DataFrame should display the column headers when it is printe
 ------
 ##### display_generic_indexes
 ```php
-public function display_generic_indexes($display = null) 
+public function display_generic_indexes(bool $display = null) : static|bool
 ```
 Whether or not the DataFrame should display the row indexes that sequentially numerical when it is printed.
 
@@ -231,7 +231,7 @@ This is automatically disabled for pivoted DataFrames.
 ------
 ##### index
 ```php
-public function index($indexHeader = null) 
+public function index(string $indexHeader = null) : static|string
 ```
 Set or get the column header currently or to be used as the row indexes.
 
@@ -243,7 +243,7 @@ See reindex_rows_with_column() instead.
 ------
 ##### transformers
 ```php
-public function transformers($transformers = null) 
+public function transformers(array $transformers = null) : static|array
 ```
 Used to set or get the full list of display transformers.
 
@@ -255,7 +255,7 @@ See apply_display_transformer() instead.
 ------
 ##### column_is_numeric
 ```php
-public function column_is_numeric($column) : bool
+public function column_is_numeric(string $column) : bool
 ```
 Returns `TRUE` if and only if all values within the given column ontain a valid number.
 
@@ -271,7 +271,7 @@ Return the associative array containing all the data within the DataFrame.
 ------
 ##### flattened
 ```php
-public function flattened(bool $includeIndex = true, ...$columns) : array
+public function flattened(bool $includeIndex = true, string ...$columns) : array
 ```
 Flatten the DataFrame into a native array.
 
@@ -284,7 +284,7 @@ The columns can be supplied as a set of variable arguments or an array as the se
 ------
 ##### row
 ```php
-public function row($index) : array
+public function row(mixed $index) : array
 ```
 Return the row at $index.
 
@@ -364,7 +364,7 @@ Push one of the columns out to become the row index. If $inPlace is `TRUE` then 
 ------
 ##### filter
 ```php
-public function filter(callable $callback, ...$columns) : ?sqonk\phext\datakit\DataFrame
+public function filter(callable $callback, string ...$columns) : ?sqonk\phext\datakit\DataFrame
 ```
 Filter the DataFrame using the provided callback and one or more columns. If no columns are specified then the operation applies to all.
 
@@ -376,7 +376,7 @@ For a row to make it into the filtered set then only ONE of the columns need to 
 ------
 ##### unanfilter
 ```php
-public function unanfilter(callable $callback, ...$columns) : ?sqonk\phext\datakit\DataFrame
+public function unanfilter(callable $callback, string ...$columns) : ?sqonk\phext\datakit\DataFrame
 ```
 Filter the DataFrame using the provided callback and one or more columns. If no columns are specified then the operation applies to all.
 
@@ -410,7 +410,7 @@ If the last parameter passed in is either `ASCENDING` or `DESCENDING` then it wi
 ------
 ##### usort
 ```php
-public function usort(callable $callback, ...$columns) : sqonk\phext\datakit\DataFrame
+public function usort(callable $callback, string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 Sort the DataFrame using a callback and one or more columns.
 
@@ -428,7 +428,7 @@ Return an array containing both the number of rows and columns.
 ------
 ##### size
 ```php
-public function size($column = null) 
+public function size(string $column = null) 
 ```
 If a column is specified then return the number of rows containing a value for it.
 
@@ -446,7 +446,7 @@ Return the number of rows.
 ------
 ##### values
 ```php
-public function values($columns = null, bool $filterNAN = true) : array
+public function values(array|string|null $columns = null, bool $filterNAN = true) : array
 ```
 Return all values for the given column. If $filterNAN is `TRUE` then omit values that are `NULL`.
 
@@ -454,7 +454,7 @@ Return all values for the given column. If $filterNAN is `TRUE` then omit values
 ------
 ##### report_data
 ```php
-public function report_data(...$columns) : array
+public function report_data(string ...$columns) : array
 ```
 Return the data array with all values parsed by any registered transformers.
 
@@ -464,15 +464,15 @@ If you wish to output a report to something else other than the command line the
 ------
 ##### report
 ```php
-public function report(...$columns) : string
+public function report(string ...$columns) : string
 ```
-Produce a formatted string, suitable for outputing to the commandline or browser, detailing all rows and the desired columns. If no columns are specified then all columns are used.
+Produce a formatted string, suitable for outputting to the command line or browser, detailing all rows and the desired columns. If no columns are specified then all columns are used.
 
 
 ------
 ##### print
 ```php
-public function print(...$columns) : void
+public function print(string ...$columns) : void
 ```
 Print to stdout the report for this DataFrame.
 
@@ -482,7 +482,7 @@ See: report()
 ------
 ##### clip
 ```php
-public function clip($lower, $upper, string $column = null, bool $inplace = false) : sqonk\phext\datakit\DataFrame
+public function clip(int|float|null $lower, int|float|null $upper, string $column = null, bool $inplace = false) : sqonk\phext\datakit\DataFrame
 ```
 Provide a maximum or minimum (or both) constraint for the values on column.
 
@@ -498,7 +498,7 @@ If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy
 ------
 ##### prune
 ```php
-public function prune($lower, $upper, $column = null, $inplace = false) : ?sqonk\phext\datakit\DataFrame
+public function prune(int|float|null $lower, int|float|null $upper, string $column = null, bool $inplace = false) : ?sqonk\phext\datakit\DataFrame
 ```
 Remove any rows where the value of the provided column exeeds the provided lower or upper boundary, for a given column.
 
@@ -512,7 +512,7 @@ If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy
 ------
 ##### oob
 ```php
-public function oob($lower, $upper, $column = null) : ?sqonk\phext\datakit\DataFrame
+public function oob(int|float|null $lower, int|float|null $upper, string $column = null) : ?sqonk\phext\datakit\DataFrame
 ```
 Return a new DataFrame containing the rows where the values of the given column exceed a lower and/or upper boundary.
 
@@ -524,11 +524,11 @@ If no column is specified then the filter applies to all columns.
 ------
 ##### oob_region
 ```php
-public function oob_region($theshhold, $direction, string $column) : ?sqonk\phext\datakit\DataFrame
+public function oob_region(int|float $theshhold, int $direction, string $column) : ?sqonk\phext\datakit\DataFrame
 ```
 Return a new 2-column DataFrame containing both the start and end points where values for a specific column exceed a given threshold.
 
-$direction can be `OOB_LOWER`, `OOB_UPPER` or `OOB_ALL` to dertermining if the threshhold is calculated as a minimum boundary, maximum boundary or either.
+$direction can be `OOB_LOWER`, `OOB_UPPER` or `OOB_ALL` to determining if the threshold is calculated as a minimum boundary, maximum boundary or either.
 
 Where `oob()` simply returns all the rows that exceed the threshold, this method will return a DataFrame of regions, where the start and end values refer to the row indexes of the current DataFrame.
 
@@ -536,7 +536,7 @@ Where `oob()` simply returns all the rows that exceed the threshold, this method
 ------
 ##### gaps
 ```php
-public function gaps($amount, string $usingColumn, string $resultColumn = '') : ?sqonk\phext\datakit\DataFrame
+public function gaps(int|float $amount, string $usingColumn, string $resultColumn = '') : ?sqonk\phext\datakit\DataFrame
 ```
 Return a new 3-column DataFrame containing areas in the current where running values in a column exceed the given amount.
 
@@ -558,7 +558,7 @@ Produces a new DataFrame containing counts for the number of times each value oc
 ------
 ##### any
 ```php
-public function any($value, string $column = null) : bool
+public function any(mixed $value, string $column = null) : bool
 ```
 Returns `TRUE` if ANY of the rows for a given column match the given value.
 
@@ -568,7 +568,7 @@ If no column is specified then the check runs over all columns.
 ------
 ##### all
 ```php
-public function all($value, $column = null) : bool
+public function all(mixed $value, string $column = null) : bool
 ```
 Returns `TRUE` if ALL of the rows for a given column match the given value.
 
@@ -578,7 +578,7 @@ If no column is specified then the check runs over all columns.
 ------
 ##### abs
 ```php
-public function abs($column = null, $inplace = false) : sqonk\phext\datakit\DataFrame
+public function abs(string $column = null, bool $inplace = false) : sqonk\phext\datakit\DataFrame
 ```
 Convert all values in a given column to their absolute value.
 
@@ -590,7 +590,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### std
 ```php
-public function std(bool $sample = false, ...$columns) 
+public function std(bool $sample = false, string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Compute a standard deviation of one or more columns.
 
@@ -604,7 +604,7 @@ $sample is passed through to the standard deviation calculation to determine how
 ------
 ##### sum
 ```php
-public function sum(...$columns) 
+public function sum(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Compute a sum of one or more columns.
 
@@ -616,7 +616,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### avg
 ```php
-public function avg(...$columns) 
+public function avg(string ...$columns) : sqonk\phext\datakit\DataFrame|string|int|float
 ```
 Compute the average of one or more columns.
 
@@ -628,7 +628,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### max
 ```php
-public function max(...$columns) 
+public function max(string ...$columns) : sqonk\phext\datakit\DataFrame|string|int|float
 ```
 Return the maximum value present for one or more columns.
 
@@ -640,7 +640,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### min
 ```php
-public function min(...$columns) 
+public function min(string ...$columns) : sqonk\phext\datakit\DataFrame|string|int|float
 ```
 Return the minimum value present for one or more columns.
 
@@ -652,7 +652,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cumsum
 ```php
-public function cumsum(...$columns) 
+public function cumsum(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Compute a cumulative sum of one or more columns.
 
@@ -664,7 +664,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cummax
 ```php
-public function cummax(...$columns) 
+public function cummax(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Compute the cumulative maximum value for one or more columns.
 
@@ -676,7 +676,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cummin
 ```php
-public function cummin(...$columns) 
+public function cummin(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Compute the cumulative minimum value for one or more columns.
 
@@ -688,7 +688,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### cumproduct
 ```php
-public function cumproduct(...$columns) 
+public function cumproduct(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Compute the cumulative product for one or more columns.
 
@@ -700,7 +700,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### median
 ```php
-public function median(...$columns) 
+public function median(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Find the median value for one or more columns.
 
@@ -712,7 +712,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### product
 ```php
-public function product(...$columns) 
+public function product(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Compute the product for one or more columns.
 
@@ -724,7 +724,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### variance
 ```php
-public function variance(...$columns) 
+public function variance(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Compute the variance for one or more columns.
 
@@ -736,7 +736,7 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### normalise
 ```php
-public function normalise(...$columns) 
+public function normalise(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Normalise one or more columns to a range between 0 and 1.
 
@@ -748,7 +748,7 @@ If exactly one column is supplied then a single array is returned, otherwise a D
 ------
 ##### normalize
 ```php
-public function normalize(...$columns) 
+public function normalize(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Alias of self::normalise().
 
@@ -764,9 +764,9 @@ Alias of self::quantile().
 ------
 ##### quantile
 ```php
-public function quantile($q, $column = null) 
+public function quantile(float $q, string $column = null) : sqonk\phext\datakit\DataFrame|int|float
 ```
-Compute the value for a given quantile for one or more columns.
+Compute the value for a given quantile for one or all columns.
 
 If no column is specified then the operation runs over all columns.
 
@@ -776,13 +776,19 @@ If exactly one column is supplied then a single value is returned, otherwise a D
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array $columns = null) : sqonk\phext\datakit\DataFrame
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|string|null $columns = null, bool $inPlace = false) : sqonk\phext\datakit\DataFrame
 ```
-Round all values in one or more columns up or down to the given decimal point precesion.
+Round all values in one or more columns up or down to the given decimal point precision. Because of the imprecise nature of floats, the rounding will convert all data points it touches to string format in order to maintain the precision.
 
 - **$precision** the number of decimal points values should be rounded to.
-- **$mode** rounding mode, either PHP_ROUND_HALF_UP, PHP_ROUND_HALF_DOWN, PHP_ROUND_HALF_EVEN or PHP_ROUND_HALF_ODD. See the PHP documentation for information on how each option behaves. Defaults to PHP_ROUND_HALF_UP.
+- **$mode** rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
 - **$columns** The columns to round. If no column is specified then the operation runs over all columns.
+- **$inPlace** If `TRUE` then this operation modifies the receiver, otherwise a copy is returned.
+
+**Returns:**  If $inPlace is `FALSE` then a copy of the Dataframe is rounded and returned. If `TRUE` then the DataFrame is directly modified and returns itself.
+
+
+**See:**  [math::nf_round()](math.md#nf_round) for more information on how the rounding is performed.
 
 
 ------
@@ -801,7 +807,7 @@ The resulting DataFrame is a matrix of values representing the closeness of the 
 ------
 ##### corr
 ```php
-public function corr(string $method, array $columns = null) 
+public function corr(string $method, array $columns = null) : sqonk\phext\datakit\DataFrame
 ```
 Alias of correlation().
 
@@ -827,7 +833,7 @@ The result is a GroupedDataFrame, containing all resulting DataFrames within.
 ------
 ##### drop_columns
 ```php
-public function drop_columns($columns, $inplace = false) : sqonk\phext\datakit\DataFrame
+public function drop_columns(array|string|null $columns, bool $inplace = false) : sqonk\phext\datakit\DataFrame
 ```
 Remove the specified columns from the DataFrame.
 
@@ -837,7 +843,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### drop_rows
 ```php
-public function drop_rows($start, $end = null, $inplace = false) : sqonk\phext\datakit\DataFrame
+public function drop_rows(mixed $start, mixed $end = null, bool $inplace = false) : sqonk\phext\datakit\DataFrame
 ```
 Remove the rows starting at $start and ending at $end from the DataFrame, where $start and $end represent the relevant row indexes.
 
@@ -847,7 +853,7 @@ If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherw
 ------
 ##### duplicated
 ```php
-public function duplicated(...$columns) : array
+public function duplicated(string ...$columns) : array
 ```
 Find all duplicate values for a given set of columns, or every column if none are supplied.
 
@@ -857,7 +863,7 @@ This method only compares corresponding values between rows of each column. That
 ------
 ##### drop_duplicates
 ```php
-public function drop_duplicates($inplace = false, ...$columns) : sqonk\phext\datakit\DataFrame
+public function drop_duplicates(bool $inplace = false, string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 No documentation available.
 
@@ -865,7 +871,7 @@ No documentation available.
 ------
 ##### pivot
 ```php
-public function pivot(...$columns) : sqonk\phext\datakit\DataFrame
+public function pivot(string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 Generate a copy of the DataFrame with the columns and row indexes rotated to become the other.
 
@@ -879,7 +885,7 @@ If a set of columns are provided then all other columns are stripped out of the 
 ------
 ##### depivot
 ```php
-public function depivot(...$columns) : sqonk\phext\datakit\DataFrame
+public function depivot(string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 The reverse operation of pivot(). Rotate the row indexes and columns back in the other direction.
 
@@ -905,7 +911,7 @@ The $mergeMap is an associative array where by each column name specified as a k
 ------
 ##### transform
 ```php
-public function transform($callback, ...$columns) : sqonk\phext\datakit\DataFrame
+public function transform(callable $callback, string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 Transform the value of one or more columns using the provided callback. If no columns are specified then the operation applies to all.
 
@@ -932,7 +938,7 @@ The new value array should hold the exact amount of items as the amount of rows 
 ------
 ##### add_row
 ```php
-public function add_row(array $row = [], $index = '') : sqonk\phext\datakit\DataFrame
+public function add_row(array $row = [], mixed $index = '') : sqonk\phext\datakit\DataFrame
 ```
 Add a new row to the DataFrame. $row is an associative array where the keys should correspond to one or more of the column headers in the DataFrame.
 
@@ -954,9 +960,9 @@ Callback format: `myFunc($row, $rowIndex)` - $row: associative array containing 
 ------
 ##### apply_display_transformer
 ```php
-public function apply_display_transformer($callback, ...$columns) : sqonk\phext\datakit\DataFrame
+public function apply_display_transformer(callable $callback, string ...$columns) : sqonk\phext\datakit\DataFrame
 ```
-Apply a transformation callback for one or more columns when outputing the DataFrame. If no columns are specified then the operation applies to all.
+Apply a transformation callback for one or more columns when outputting the DataFrame. If no columns are specified then the operation applies to all.
 
 You might use this to format timestamps into dates or to unify the display of currency.
 

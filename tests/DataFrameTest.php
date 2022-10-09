@@ -22,6 +22,7 @@ require __DIR__.'/TCFuncs.php';
 
 use PHPUnit\Framework\TestCase;
 use sqonk\phext\datakit\Importer as import;
+use sqonk\phext\datakit\math;
 
 class DataFrameTest extends TestCase
 {
@@ -65,6 +66,22 @@ class DataFrameTest extends TestCase
         [$df] = $this->_loadFrame();
         
         $this->assertSame(3, $df->count());
+    }
+    
+    public function testRound(): void 
+    {
+        $data = [
+            ['a' => 1.2573, 'b' => 4.331]
+        ];
+        
+        $df = dataframe($data);
+        
+        # test round copy (original unmodified)
+        $this->assertEquals([['a' => '1.3', 'b' => '4.3']], $df->round(1)->data());
+        
+        # test in-place rounding
+        $df->round(1, inPlace:true);
+        $this->assertEquals([['a' => '1.3', 'b' => '4.3']], $df->data());
     }
     
     public function testSize()
@@ -368,7 +385,7 @@ class DataFrameTest extends TestCase
     {
         [$df] = $this->_loadFrame();
         
-        $this->assertEquals(7.0, $df->max('sepal-length'));
+        $this->assertEquals(7.0, math::nf_round($df->max('sepal-length'), 1));
         
         $exp = [
             ['sepal-length' => 7.0, 'sepal-width' => 3.5, 'petal-length' => 6.0, 'petal-width' =>  2.5]
@@ -379,8 +396,9 @@ class DataFrameTest extends TestCase
     public function testMin()
     {
         [$df] = $this->_loadFrame();
+        $df->round(1, inPlace:true);
         
-        $this->assertEquals(5.1, $df->min('sepal-length'));
+        $this->assertEquals(5.1, math::nf_round($df->min('sepal-length'), 1));
         
         $exp = [
             ['sepal-length' => 5.1, 'sepal-width' => 3.2, 'petal-length' => 1.4, 'petal-width' =>  0.2]
@@ -391,13 +409,14 @@ class DataFrameTest extends TestCase
     public function testProduct()
     {
         [$df] = $this->_loadFrame();
+        $df->round(1, inPlace:true);
         
-        $this->assertEquals(224.91, $df->product('sepal-length'));
+        $this->assertEquals('224.91', round($df->product('sepal-length'), 2));
         
         $exp = [
-            ['sepal-length' => 224.91, 'sepal-width' => 36.96, 'petal-length' => 39.48, 'petal-width' =>  0.7]
+            ['sepal-length' => '224.91', 'sepal-width' => '36.96', 'petal-length' => '39.48', 'petal-width' =>  '0.70']
         ];
-        $this->assertEquals($exp, $df->product()->data());
+        $this->assertEquals($exp, $df->product()->round(2)->data());
     }
     
    public function testVariance()
@@ -415,11 +434,12 @@ class DataFrameTest extends TestCase
     public function testMedian()
     {
         [$df] = $this->_loadFrame();
+        $df->round(2, inPlace:true);
         
-        $this->assertEquals(224.91, $df->product('sepal-length'));
+        $this->assertEquals(224.91, round($df->product('sepal-length'), 2));
         
         $exp = [
-            ['sepal-length' => 6.3, 'sepal-width' => 3.3, 'petal-length' => 4.7, 'petal-width' =>  1.4]
+            ['sepal-length' => 6.30, 'sepal-width' => 3.30, 'petal-length' => 4.70, 'petal-width' =>  1.40]
         ];
         $this->assertEquals($exp, $df->median()->data());
     }
@@ -427,23 +447,24 @@ class DataFrameTest extends TestCase
     public function testQuantile()
     {
         [$df] = $this->_loadFrame();
+        $df->round(2, inPlace:true);
         
-        $this->assertEquals(5.7, $df->quantile(0.25, 'sepal-length'));
-        
-        $exp = [
-            ['sepal-length' => 5.7, 'sepal-width' => 3.25, 'petal-length' => 3.05, 'petal-width' =>  0.8]
-        ];
-        $this->assertEquals($exp, $df->quantile(0.25)->data());
+        $this->assertEquals(5.70, round($df->quantile(0.25, 'sepal-length'), 2));
         
         $exp = [
-            ['sepal-length' => 6.3, 'sepal-width' => 3.3, 'petal-length' => 4.7, 'petal-width' =>  1.4]
+            ['sepal-length' => 5.70, 'sepal-width' => 3.25, 'petal-length' => 3.05, 'petal-width' =>  0.80]
         ];
-        $this->assertEquals($exp, $df->quantile(0.5)->data());
+        $this->assertEquals($exp, $df->quantile(0.25)->round(2)->data());
         
         $exp = [
-            ['sepal-length' => 6.65, 'sepal-width' => 3.4, 'petal-length' => 5.35, 'petal-width' =>  1.95]
+            ['sepal-length' => 6.30, 'sepal-width' => 3.30, 'petal-length' => 4.70, 'petal-width' =>  1.40]
         ];
-        $this->assertEquals($exp, $df->quantile(0.75)->data());
+        $this->assertEquals($exp, $df->quantile(0.5)->round(2)->data());
+        
+        $exp = [
+            ['sepal-length' => 6.65, 'sepal-width' => 3.40, 'petal-length' => 5.35, 'petal-width' =>  1.95]
+        ];
+        $this->assertEquals($exp, $df->quantile(0.75)->round(2)->data());
     }
     
     public function testSpearmanCorrelation()
@@ -480,7 +501,7 @@ class DataFrameTest extends TestCase
         $corr = $df->corr(COR_PEARSON, ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'])->round(2);
         $i = 0;
         foreach ($corr as $row) {
-            $this->assertSame($exp[$i], array_values($row));
+            $this->assertEquals($exp[$i], array_values($row));
             $i++;
         }
     }
@@ -602,59 +623,63 @@ class DataFrameTest extends TestCase
     {
         [$df] = $this->_loadFrame();
         
-        $this->assertEquals([5.1,12.1,18.4], $df->cumsum('sepal-length'));
+        $this->assertEquals([5.1,12.1,18.4], math::nf_round($df->cumsum('sepal-length'), 1));
         
         $exp = [
             [5.1,3.5,1.4,0.2,'Iris-setosa'],
             [12.1,6.7,6.1,1.6,'Iris-versicolor'],
             [18.4,10,12.1,4.1,'Iris-virginica']
         ];
-        foreach ($df->cumsum() as $i => $row)
+        foreach ($df->cumsum()->round(1) as $i => $row)
             $this->assertEquals($exp[$i], array_values($row));
     }
     
     public function testCumulativeProduct()
     {
         [$df] = $this->_loadFrame();
+        $df->round(2, inPlace:true);
         
-        $this->assertEquals([5.1,35.7,224.91], $df->cumproduct('sepal-length'));
+        $this->assertEquals([5.10,35.70,224.91], math::nf_round($df->cumproduct('sepal-length'), 2));
         
         $exp = [
-            [5.1,3.5,1.4,0.2,'Iris-setosa'],
-            [35.7,11.2,6.58,0.28,'Iris-versicolor'],
-            [224.91,36.96,39.48,0.7,'Iris-virginica']
+            [5.10,3.50,1.40,0.20,'Iris-setosa'],
+            ['35.70',11.20,6.58,0.28,'Iris-versicolor'],
+            ['224.91',36.96,39.48,0.70,'Iris-virginica']
         ];
-        foreach ($df->cumproduct() as $i => $row)
+        foreach ($df->cumproduct()->round(2) as $i => $row) {
             $this->assertEquals($exp[$i], array_values($row));
+        }
     }
     
     public function testCumulativeMax()
     {
         [$df] = $this->_loadFrame();
+        $df->round(1, inPlace:true);
         
-        $this->assertEquals([5.1,7.0,7.0], $df->cummax('sepal-length'));
+        $this->assertEquals([5.1,7.0,7.0], math::nf_round($df->cummax('sepal-length'), 1));
         
         $exp = [
             [5.1,3.5,1.4,0.2,'Iris-setosa'],
             [7.0,3.5,4.7,1.4,'Iris-versicolor'],
             [7.0,3.5,6.0,2.5,'Iris-virginica']
         ];
-        foreach ($df->cummax() as $i => $row)
+        foreach ($df->cummax()->round(1) as $i => $row)
             $this->assertEquals($exp[$i], array_values($row));
     }
     
     public function testCumulativeMin()
     {
         [$df] = $this->_loadFrame();
+        $df->round(1, inPlace:true);
         
-        $this->assertEquals([5.1,5.1,5.1], $df->cummin('sepal-length'));
+        $this->assertEquals([5.1,5.1,5.1], math::nf_round($df->cummin('sepal-length'), 1));
         
         $exp = [
             [5.1,3.5,1.4,0.2,'Iris-setosa'],
             [5.1,3.2,1.4,0.2,'Iris-versicolor'],
             [5.1,3.2,1.4,0.2,'Iris-virginica']
         ];
-        foreach ($df->cummin() as $i => $row)
+        foreach ($df->cummin()->round(1) as $i => $row)
             $this->assertEquals($exp[$i], array_values($row));
     }
     
