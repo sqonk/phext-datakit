@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace sqonk\phext\datakit;
 
+use sqonk\phext\core\numbers;
+
 /**
 *
 * Data Kit
@@ -175,7 +177,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
     
     /**
-     * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
+     * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
      */
     public function clone(array $data, ?array $headers = null): DataFrame
     {
@@ -662,7 +664,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Internal function.
      */
-    protected function determineColumns(array|string|null $columns)
+    protected function determineColumns(array|string|null $columns): array
     {
         if ($columns === null || $columns === '' || (is_array($columns) && count($columns) == 0))
             $columns = $this->headers;
@@ -1696,6 +1698,90 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         }
 
         return $inPlace ? $this : $this->clone($data);
+    }
+    
+    /**
+     * Continually apply a callback to a moving fixed window on the data frame. 
+     * 
+     * -- parameters:
+     * @param $window The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
+     * @param $callback The callback method that produces a result based on the provided subset of data.
+     * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+     * @param $columns The set of columns to work with. If not provided (or an empty value) then all columns are included.
+     * @param $indexes When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is `FALSE` then this parameter has no effect.
+     * @param $runHorizontal When `TRUE` the rolling set will run across columns of the frame. When `FALSE` (the default) the rolling dataset is the series of values across each desired column.
+     * 
+     * Callback format: `myFunc(Vector $rollingSet, mixed $index, string $column) : mixed`
+     * 
+     * @return A DataFrame containing the series of results produced by the callback method.
+     */
+    public function rolling(
+        int $window, 
+        callable $callback, 
+        int $minObservation = 0, 
+        string|array $columns = '',
+        string|int|array $indexes = '',
+        bool $runHorizontal = false
+    ): static 
+    {
+        if ($window < 1) {
+            throw new \InvalidArgumentException("window must be a number greater than 0 ($window given)");
+        }
+        if ($minObservations > $window) {
+            trigger_error("minObservations ($minObservations) is greater than given window ($window). It will be capped to the window size.", E_USER_WARNING);
+        }
+        
+        $columns = $this->determineColumns($columns);
+        $out = [];
+        $roller = new Vector;
+        $roller->constrain($window);
+        
+        $minObservations = numbers::constrain(value:$minObservations, min:1, max:$window);
+        
+        if ($runHorizontal)
+        {
+            // run across the columns along a singular row.
+            if (! $indexes)
+                $indexes = $this->indexes();
+            else if (! is_array($indexes))
+                $indexes = [$indexes];
+            
+            foreach ($indexes as $i)
+            {
+                $row = $this->row($i);
+                foreach ($columns as $i => $col)
+                {
+                    $roller->add($row[$col]);
+                    
+                    if ($roller->count() >= $minObservations) {
+                        $r = $callback(clone $roller, $index, $col);
+                    }
+                    
+                    $out[$index][$col] = $r;
+                } 
+            }
+        }
+        else
+        {
+            // run down the rows along one or more columns.
+
+            foreach ($columns as $col) 
+            {
+                foreach ($this->data as $index => $row)
+                {
+                    $roller->add($row[$col]);
+                    
+                    $r = null;
+                    if ($roller->count() >= $minObservations) {
+                        $r = $callback(clone $roller, $index, $col);
+                    }
+                    
+                    $out[$index][$col] = $r;
+                }
+            }
+        }
+        
+        return $this->clone(data:$out, headers:$columns);
     }
     
     /**
