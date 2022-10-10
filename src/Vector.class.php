@@ -1012,7 +1012,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param $callback The callback method that produces a result based on the provided subset of data.
      * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
      * 
-     * Callback format: `myFunc(mixed $value, int $index) : mixed`
+     * Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
      * 
      * @return A vector containing the series of results produced by the callback method.
      */
