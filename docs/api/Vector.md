@@ -70,6 +70,7 @@ In particular it sports a variety of basic mathematical and statistical function
 - [tail](#tail)
 - [slice](#slice)
 - [sample](#sample)
+- [rolling](#rolling)
 - [clip](#clip)
 - [reverse](#reverse)
 - [flip](#flip)
@@ -702,6 +703,22 @@ Return a copy of the vector only containing the the rows starting from $start th
 public function sample(int $minimum, int $maximum = null) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector containing a random subset of the elements. The minimum and maximum values can be supplied to focus the random sample to a more constrained subset.
+
+
+------
+##### rolling
+```php
+public function rolling(int $window, callable $callback, int $minObservations = 0) : sqonk\phext\datakit\Vector
+```
+Continually apply a callback to a moving fixed window on the vector.
+
+- **$window** The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
+- **$callback** The callback method that produces a result based on the provided subset of data.
+- **$minObservations** The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+
+Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
+
+**Returns:**  A vector containing the series of results produced by the callback method.
 
 
 ------

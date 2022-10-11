@@ -1709,7 +1709,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
      * @param $columns The set of columns to work with. If not provided (or an empty value) then all columns are included.
      * @param $indexes When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is `FALSE` then this parameter has no effect.
-     * @param $runHorizontal When `TRUE` the rolling set will run across columns of the frame. When `FALSE` (the default) the rolling dataset is the series of values across each desired column.
+     * @param $runHorizontal When `TRUE` the rolling set will run across columns of the frame. When `FALSE` (the default) the rolling dataset is the series of values down each desired column.
      * 
      * Callback format: `myFunc(Vector $rollingSet, mixed $index, string $column) : mixed`
      * 

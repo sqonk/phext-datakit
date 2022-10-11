@@ -73,6 +73,7 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 - [quartile](#quartile)
 - [quantile](#quantile)
 - [round](#round)
+- [rolling](#rolling)
 - [correlation](#correlation)
 - [corr](#corr)
 - [summary](#summary)
@@ -205,7 +206,7 @@ Produce an exact replica of the dataframe.
 ```php
 public function clone(array $data, array $headers = null) : sqonk\phext\datakit\DataFrame
 ```
-Produce a copy of the dataframe consisting of only the supplied data. All other information such as transfomers and header settings remain the same.
+Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
 
 
 ------
@@ -789,6 +790,25 @@ Round all values in one or more columns up or down to the given decimal point pr
 
 
 **See:**  [math::nf_round()](math.md#nf_round) for more information on how the rounding is performed.
+
+
+------
+##### rolling
+```php
+public function rolling(int $window, callable $callback, int $minObservation = 0, array|string $columns = '', array|string|int $indexes = '', bool $runHorizontal = false) : static
+```
+Continually apply a callback to a moving fixed window on the data frame.
+
+- **$window** The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
+- **$callback** The callback method that produces a result based on the provided subset of data.
+- **$minObservations** The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+- **$columns** The set of columns to work with. If not provided (or an empty value) then all columns are included.
+- **$indexes** When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is ``FALSE`` then this parameter has no effect.
+- **$runHorizontal** When ``TRUE`` the rolling set will run across columns of the frame. When ``FALSE`` (the default) the rolling dataset is the series of values down each desired column.
+
+Callback format: `myFunc(Vector $rollingSet, mixed $index, string $column) : mixed`
+
+**Returns:**  A DataFrame containing the series of results produced by the callback method.
 
 
 ------
