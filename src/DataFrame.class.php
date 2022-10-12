@@ -1749,6 +1749,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             {
                 $row = $this->row($i);
                 foreach ($columns as $i => $col)
+                $roller->clear();
                 {
                     $roller->add($row[$col]);
                     
@@ -1766,6 +1767,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 
             foreach ($columns as $col) 
             {
+                $roller->clear();
+                
                 foreach ($this->data as $index => $row)
                 {
                     $roller->add($row[$col]);
