@@ -22,7 +22,7 @@ require __DIR__.'/TCFuncs.php';
 
 use PHPUnit\Framework\TestCase;
 use sqonk\phext\datakit\Importer as import;
-use sqonk\phext\datakit\math;
+use sqonk\phext\datakit\{math,DataFrame};
 
 class DataFrameTest extends TestCase
 {
@@ -82,6 +82,103 @@ class DataFrameTest extends TestCase
         # test in-place rounding
         $df->round(1, inPlace:true);
         $this->assertEquals([['a' => '1.3', 'b' => '4.3']], $df->data());
+    }
+    
+    public function testRolling(): void 
+    {
+        $data = [
+            'a' => [1,2,3,4,5,6],
+            'b' => [6,5,4,3,2,1]
+        ];
+        $df = new DataFrame($data, isVerticalDataSet:true);
+        
+        # test rolling across a singular column, akin to the Vector implementation of the same method.
+        $exp = [
+            [1,2], [2,3], [3,4], [4,5], [5,6]
+        ];
+        $result = $df->rolling(window:2, columns:'a', callback:function($set, $i, $col) use ($exp) {
+            $this->assertEquals($set->array(), $exp[$i-1], "index $i");
+            return $set->sum();
+        });
+        $exp = [3,5,7,9,11];
+        $this->assertEquals($result->values(columns:'a'), $exp);
+        
+        # test same as above but with a minimum observation of 1.
+        $exp = [
+            [1], [1,2], [2,3], [3,4], [4,5], [5,6]
+        ];
+        $result = $df->rolling(window:2, columns:'a', minObservations:1, callback:function($set, $i, $col) use ($exp) {
+            $this->assertEquals($set->array(), $exp[$i], "index $i");
+            return $set->sum();
+        });
+        $exp = [1,3,5,7,9,11];
+        $this->assertEquals($result->values(columns:'a'), $exp);
+        
+        # test specific indexes with both columns
+        $exp = [
+            ['a' => [1,2], 'b' => [6,5]],
+            ['a' => [2,3], 'b' => [5,4]],
+            ['a' => [3,4], 'b' => [4,3]],
+            ['a' => [4,5], 'b' => [3,2]],
+            ['a' => [5,6], 'b' => [2,1]]
+        ];
+        $result = $df->rolling(window:2, callback:function($set, $i, $col) use ($exp) {
+            $this->assertEquals($exp[$i-1][$col], $set->array(), "index $i,$col");
+            return $set->sum();
+        });
+        $this->assertEquals([3,5,7,9,11], $result->values(columns:'a'), 'rolling sums for column A');
+        $this->assertEquals([11,9,7,5,3], $result->values(columns:'b'), 'rolling sums for column B');
+        
+        $data = [
+            'a' => [1,2,3,4,5,6],
+            'b' => [6,5,4,3,2,1],
+            'c' => [2,2,2,2,2,2]
+        ];
+        $df = new DataFrame($data, isVerticalDataSet:true);
+        $exp = [
+            ['b' => [1,6], 'c' => [6,2]],
+            ['b' => [2,5], 'c' => [5,2]],
+            ['b' => [3,4], 'c' => [4,2]],
+            ['b' => [4,3], 'c' => [3,2]],
+            ['b' => [5,2], 'c' => [2,2]],
+            ['b' => [6,1], 'c' => [1,2]]
+        ];
+        
+        # running horizontal
+        $result = $df->rolling(window:2, runHorizontal:true, callback:function($set, $i, $col) use ($exp) {
+            $this->assertEquals($exp[$i][$col], $set->array(), "index $i,$col");
+            return $set->sum();
+        });
+        // Column A will be all null, which default a call to values will return an empty array.
+        $this->assertEquals([], $result->values(columns:'a'), 'rolling H sums for column A'); 
+        $this->assertEquals([7,7,7,7,7,7], $result->values(columns:'b'), 'rolling H sums for column B');
+        $this->assertEquals([8,7,6,5,4,3], $result->values(columns:'c'), 'rolling H sums for column C');
+        
+        # horizontal with specific indexes
+        $result = $df->rolling(
+            window:2, 
+            runHorizontal:true, 
+            indexes:[0,3,5], 
+            callback:function($set, $i, $col) use ($exp) {
+                $this->assertEquals($exp[$i][$col], $set->array(), "index $i,$col");
+                return $set->sum();
+            }
+        );
+        $this->assertEquals([], $result->values(columns:'a'), 'rolling HI sums for column A'); 
+        $this->assertEquals([7,7,7], $result->values(columns:'b'), 'rolling HI sums for column B');
+        $this->assertEquals([8,5,3], $result->values(columns:'c'), 'rolling HI sums for column C');
+        
+        # validation errors and exceptions.
+        $windowSize = 2;
+        $min = 3;
+        $this->expectWarning();
+        $this->expectWarningMessage("minObservations ($min) is greater than given window ($windowSize). It will be capped to the window size.");
+        $df->rolling($windowSize, fn($v) => $v, $min);
+
+        $windowSize = 0;
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("window must be a number greater than 0 ($windowSize given)");
+        $df->rolling($windowSize, fn($v) => $v);
     }
     
     public function testSize()
