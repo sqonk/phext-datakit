@@ -491,6 +491,7 @@ class VectorTest extends TestCase
         $windowSize = 0;
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("window must be a number greater than 0 ($windowSize given)");
+        $vec->rolling($windowSize, fn($v) => $v);
     }
     
     public function testClear()
