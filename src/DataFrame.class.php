@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace sqonk\phext\datakit;
 
-use sqonk\phext\core\numbers;
-
 /**
 *
 * Data Kit
@@ -1718,7 +1716,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     public function rolling(
         int $window, 
         callable $callback, 
-        int $minObservation = 0, 
+        int $minObservations = 0, 
         string|array $columns = '',
         string|int|array $indexes = '',
         bool $runHorizontal = false
@@ -1736,7 +1734,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $roller = new Vector;
         $roller->constrain($window);
         
-        $minObservations = numbers::constrain(value:$minObservations, min:1, max:$window);
+        if ($minObservations < 1 || $minObservations > $window)
+            $minObservations = $window;
         
         if ($runHorizontal)
         {
