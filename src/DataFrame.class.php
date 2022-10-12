@@ -1745,14 +1745,15 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             else if (! is_array($indexes))
                 $indexes = [$indexes];
             
-            foreach ($indexes as $i)
+            foreach ($indexes as $index)
             {
-                $row = $this->row($i);
-                foreach ($columns as $i => $col)
+                $row = $this->row($index);
                 $roller->clear();
+                foreach ($columns as $col)
                 {
                     $roller->add($row[$col]);
                     
+                    $r = null;
                     if ($roller->count() >= $minObservations) {
                         $r = $callback(clone $roller, $index, $col);
                     }
