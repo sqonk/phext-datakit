@@ -43,7 +43,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
             
     // -------- Class Interfaces
     
-	public function offsetSet($index, $value): void
+	public function offsetSet(mixed $index, mixed $value): void
 	{
 		if ($index === null)
 			$this->add($value);
@@ -51,15 +51,15 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index): mixed {
+	public function offsetGet(mixed $index): mixed {
 		return $this->get($index);
 	}
 	
-	public function offsetExists($index): bool {
+	public function offsetExists(mixed $index): bool {
 		return $index < $this->count();
 	}
 	
-	public function offsetUnset($index): void {
+	public function offsetUnset(mixed $index): void {
 		$this->delete($index);
 	}
 
@@ -546,6 +546,49 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
         
         $length = rand($minimum, $count-$start);
         return $this->slice($start, $length);
+    }
+    
+    /**
+     * Continually apply a callback to a moving fixed window on the sequence. 
+     * 
+     * -- parameters:
+     * @param $window The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
+     * @param $callback The callback method that produces a result based on the provided subset of data.
+     * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+     * 
+     * Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
+     * 
+     * @return PackedSequence A PackedSequence of the same item size as the receiver, containing the series of results produced by the callback method.
+     */
+    public function rolling(int $window, callable $callback, int $minObservations = 0): static 
+    {
+        if ($window < 1) {
+            throw new \InvalidArgumentException("window must be a number greater than 0 ($window given)");
+        }
+        if ($minObservations > $window) {
+            trigger_error("minObservations ($minObservations) is greater than given window ($window). It will be capped to the window size.", E_USER_WARNING);
+        }
+
+        $out = new PackedSequence($this->itemSize);
+        $roller = new Vector;
+        $roller->constrain($window);
+        
+        if ($minObservations < 1 || $minObservations > $window)
+            $minObservations = $window;
+        
+        foreach ($this as $k => $v)
+        {
+            $roller->add($v);
+            
+            $r = null;
+            if ($roller->count() >= $minObservations) {
+                $r = $callback(clone $roller, $k);
+            }
+            if ($r !== null)
+                $out->add($r);
+        }
+        
+        return $out;
     }
     
     /**
