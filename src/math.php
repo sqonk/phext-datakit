@@ -499,12 +499,12 @@ class math
      * @internal
      * 
      * -- parameters:
-	 * @param list<int|float> $array The input array of values.
+	 * @param list<int|float> $data The input array of values.
 	 * 
 	 * @return list<int|float>
      * 
-     * see: http://www.wisetonic.com/
-     * see: https://github.com/amitrou/Spearman-Correlation
+     * @see http://www.wisetonic.com/
+     * @see https://github.com/amitrou/Spearman-Correlation
      */
     static protected function ranking(array $data): array
     {

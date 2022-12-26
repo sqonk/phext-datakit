@@ -37,8 +37,8 @@ use sqonk\phext\core\{arrays,strings};
  * 
  * Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
  * 
- * @implements \IteratorAggregate<list<array<string, string>>>
- * @implements \ArrayAccess<list<array<string, string>>>
+ * @implements \IteratorAggregate<mixed, array<string, string>>
+ * @implements \ArrayAccess<mixed, array<string, string>>
  */
 final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -110,7 +110,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Converting the DataFrame to a string produces the report.
      * 
-     * See: report()
+     * @see report()
      */
     public function __tostring(): string {
         return $this->report();
@@ -292,7 +292,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *
 	 * -- parameters:
 	 * @param bool $includeIndex If TRUE then use the DataFrame indexes as the keys in the array.
-	 * @param bool $columns One or more columns that should be used in the resulting array, all columns if null is supplied.
+	 * @param string|list<string> ...$columns One or more columns that should be used in the resulting array, all columns if null is supplied.
      *   
      *  The columns can be supplied as a set of variable arguments or an array as the second argument.
      * 
@@ -2209,7 +2209,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If a set of columns are provided then all other
      * columns are stripped out of the result.
      * 
-     * @return A new DataFrame with the modified data.
+     * @return DataFrame A new DataFrame with the modified data.
      */
     public function pivot(string ...$columns): DataFrame
     {
@@ -2246,7 +2246,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If no columns are supplied then all indexes are used.
      * 
-     * @return A new DataFrame with the modified data.
+     * @return DataFrame A new DataFrame with the modified data.
      */
     public function depivot(string ...$columns): DataFrame
     {
@@ -2293,7 +2293,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * DataFrame and each column name specified as a value in the
      * array becomes the corresponding value of that column.
      * 
-     * @return A new DataFrame with the transposed data.
+     * @return DataFrame A new DataFrame with the transposed data.
      */
     public function transpose(string $groupColumn, array $mergeMap): DataFrame
     {
@@ -2306,7 +2306,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * callback. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: `myFunc($value, $columnName, $rowIndex) -> mixed`
+     * Callback format: `myFunc($value, $columnName, $rowIndex): mixed`
      */
     public function transform(callable $callback, string ...$columns): DataFrame
     {
@@ -2333,10 +2333,10 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param string $column The column/header that will have its set of values replaced.
      * @param list<string|int|float> $newValues An array of replacement values.
      * 
-     * @throws InvalidArgumentException If the specified column is not present.
-     * @throws LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
+     * @throws \InvalidArgumentException If the specified column is not present.
+     * @throws \LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
      */
-    public function replace(string $column, array $newValues): DataFrame
+    public function replace(string $column, array $newValues): self
     {
         if (! arrays::contains($this->headers, $column))
             throw new \InvalidArgumentException("Specified column does not exist [$column].");
@@ -2529,7 +2529,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param string $highP The column used for the high price values.
      * @param array<string, mixed> $options
      * 
-     * @return A BulkPlot object containing the plots to be rendered.
+     * @return BulkPlot The set of plots to be rendered.
      */
 	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = []): BulkPlot
 	{
@@ -2592,7 +2592,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * appearance that illustrates the place of the 25%, 50% and 75% quantiles
      * as well as the outer whiskers.
      * 
-     * @return A BulkPlot object containing the plots to be rendered.
+     * @return BulkPlot An object containing the plots to be rendered.
      */
     public function box(string ...$columns): BulkPlot
     {
@@ -2629,7 +2629,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *  -- low: Low range bins filter. Defaults to NULL.
      *  -- high: High range bins filter. Defaults to NULL.  
      * 
-     * @return A BulkPlot object containing the plots to be rendered.
+     * @return BulkPlot An object containing the plots to be rendered.
      */
     public function hist(array $options = []): BulkPlot
     {
@@ -2713,7 +2713,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Export the Dataframe to a delimited text file (CSV).
+     * Export the DataFrame to a delimited text file (CSV).
      * 
      * -- parameters:
      * @param string $filePath: The destination file.

@@ -22,8 +22,8 @@ namespace sqonk\phext\datakit;
  * A simple class for management of a Exponential Moving Average. It works by alternating between
  * adding new values to the array and calculating the current average.
  * 
- * @implements \IteratorAggregate<int|float>
- * @implements \ArrayAccess<int|float>
+ * @implements \IteratorAggregate<int, int|float>
+ * @implements \ArrayAccess<int, int|float>
  */
 class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -132,7 +132,7 @@ class EMA implements \ArrayAccess, \Countable, \IteratorAggregate
      * -- parameters:
      * @param ?int $precision The amount of decimal points to round to. If NULL then the default precision of the EMA object is used.
      * 
-     * @return The most recent calculated moving average.
+     * @return float The most recent calculated moving average.
      */
 	public function result(?int $precision = null): float
 	{

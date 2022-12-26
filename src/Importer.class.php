@@ -165,7 +165,7 @@ class Importer
      * 
      * -- parameters:
      * @param string $filePath Path or URL to the CSV file.
-     * @param ?list<string> $headers When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing FALSE or any other value will result in sequential column headers.
+     * @param list<string>|bool $headers When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing FALSE or any other value will result in sequential column headers.
      * @param int $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
      * @see Importer::yield_csv() for possible errors or exceptions that may be raised.
@@ -272,8 +272,8 @@ class Importer
      * @param string $username Username used to log into the database. Defaults to 'root'.
      * @param string $password Matching password for the username. Defaults to ''.
      * 
-     * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
-     * @throws `RuntimeException` If the MySQL library generates an error from executing the query.
+     * @throws \InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws \RuntimeException If the MySQL library generates an error from executing the query.
      * 
      * @return ?DataFrame A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */
@@ -312,11 +312,11 @@ class Importer
      * NOTE: Requires the SQLite3 extension to be installed and active.
      * 
      * -- parameters:
-     * @param string $database Name of the MySQL database to query.
+     * @param string $filepath Name of the MySQL database to query.
      * @param string $source Either the name of table within the database or a full SELECT statement. 
      * 
-     * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
-     * @throws `RuntimeException` If the SQLite library generates an error from executing the query.
+     * @throws \InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT.
+     * @throws \RuntimeException If the SQLite library generates an error from executing the query.
      * 
      * @return ?DataFrame A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */

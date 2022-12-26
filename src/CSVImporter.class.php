@@ -255,7 +255,7 @@ class CSVImporter implements \Iterator
     /**
      * Advance the importer by one line and return the resulting row of fields.
      * 
-     * @return @return array<string, string>|bool An associative array containing the decoded fields that were read in or FALSE if the end of the CSV was reached.
+     * @return array<string, string>|bool An associative array containing the decoded fields that were read in or FALSE if the end of the CSV was reached.
      */
     public function next_row(): array|bool {
         $this->next();

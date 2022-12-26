@@ -67,7 +67,7 @@ class DOMScraper
      * -- parameters:
      * @param list<array<string, string>> $elements The configuration array of elements to traverse (see below examples).
      * @param callable $callback A callback method that will repeatably receive each element at the end of the traversal chain.
-     * @param ?DOMNode $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as NULL.
+     * @param DOMElement|DOMDocument|null $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as NULL.
      * 
      * Elements array should be in format of:
      * 
@@ -90,6 +90,9 @@ class DOMScraper
      * 
      * In this example the table rows found from the last definition in the elements array would
      * be passed to your callback, which takes one parameter only.
+     * 
+     * @throws \InvalidArgumentException If $elements is an empty array.
+     * @throws \UnexpectedValueException If a given type for an element is not id, tag or class.
      * 
      * @return array{bool, string} A two-member array. The first element contains TRUE or FALSE on whether the traversal was successful. If FALSE, the second element contains the error message.
      * 

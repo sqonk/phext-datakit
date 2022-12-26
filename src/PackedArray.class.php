@@ -45,8 +45,8 @@ namespace sqonk\phext\datakit;
  * the available RAM on the running machine can not be practically solved by other
  * means.
  * 
- * @implements \IteratorAggregate<mixed>
- * @implements \ArrayAccess<mixed>
+ * @implements \Iterator<int, mixed>
+ * @implements \ArrayAccess<int, mixed>
  */
 class PackedArray implements \ArrayAccess, \Countable, \Iterator
 {

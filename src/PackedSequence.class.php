@@ -31,8 +31,8 @@ namespace sqonk\phext\datakit;
  * 
  * It is particularly useful for large numerical arrays or indexes.
  * 
- * @implements \IteratorAggregate<int|float>
- * @implements \ArrayAccess<int|float>
+ * @implements \Iterator<int, int|float>
+ * @implements \ArrayAccess<int, int|float>
  */
 class PackedSequence implements \ArrayAccess, \Countable, \Iterator
 {

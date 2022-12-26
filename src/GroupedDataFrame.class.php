@@ -29,15 +29,15 @@ use sqonk\phext\core\arrays;
  * This class is used internally by DataFrame and you should not
  * need to instantiate it yourself under most conditions.
  * 
- * @implements \IteratorAggregate<list<array<string, string>>>
- * @implements \ArrayAccess<list<array<string, string>>>
+ * @implements \IteratorAggregate<mixed, list<array<string, string>>>
+ * @implements \ArrayAccess<mixed, list<array<string, string>>>
  */
 final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 {
 	/**
 	 * The collection of DataFrames.
 	 * 
-	 * @var list<array<string, string>>
+	 * @var array<string|int, DataFrame>
 	 */
     protected array $sets;
 	
@@ -185,7 +185,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	 * 
 	 * @return ?list<array<string, string>> 
 	 */
-    public function export(string $dir = '.', array $columns = null, string $delimeter = ','): ?array   
+    public function export(string $dir = '.', array $columns = null, string $delimiter = ','): ?array   
     {
         if (php_sapi_name() == 'cli' && $dir !== null && ! file_exists($dir))
             mkdir($dir, 0777, true);
@@ -203,7 +203,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
             
         foreach ($this->sets as $df) {
             $id = $df->values($this->column)[0];
-            $df->export("$dir/$id.csv", $columns, $delimeter);
+            $df->export("$dir/$id.csv", $columns, $delimiter);
         }
         return null;
     }

@@ -27,8 +27,8 @@ use sqonk\phext\core\{arrays,strings};
  * In particular it sports a variety of basic mathematical and
  * statistical functions.
  * 
- * @implements \IteratorAggregate<mixed>
- * @implements \ArrayAccess<mixed>
+ * @implements \IteratorAggregate<mixed, mixed>
+ * @implements \ArrayAccess<mixed, mixed>
  */
 final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -856,11 +856,11 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * but used to omit the associated item from any of the sets.
      * 
      * -- parameters:
-     * @param $callback A callback method that will produce the varying results used to sort each element into its own set.
+     * @param callable $callback A callback method that will produce the varying results used to sort each element into its own set.
      * 
-     * Callback format: `myFunc($value, $index) -> mixed`
+     * Callback format: `myFunc($value, $index): mixed`
      * 
-     * @throws UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
+     * @throws \UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
      * 
      * @return Vector A vector of vectors, one each for each different result returned from the callback.
      */

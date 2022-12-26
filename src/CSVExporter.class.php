@@ -218,10 +218,10 @@ class CSVExporter
      * should be associative where the keys correspond to the column headers.
      * 
      * -- parameters:
-     * @param array<string, string>|ArrayAccess $record An associative array or object containing the row of data.
+     * @param mixed $record An associative array or object containing the row of data.
      * 
-     * @throws RuntimeException If no field map has been set.
-     * @throws InvalidArgumentException If the provided record is not of the correct type.
+     * @throws \RuntimeException If no field map has been set.
+     * @throws \InvalidArgumentException If the provided record is not of the correct type.
      * 
      * @return self The CSV object.
      */
@@ -248,9 +248,9 @@ class CSVExporter
      * Add multiple records to the CSV.
      * 
      * -- parameters:
-     * @param list<array<string, string>>|ArrayAccess $records The array of records to add.
+     * @param mixed $records The array of records to add.
      * 
-     * @throws InvalidArgumentException If $records is not of the correct type.
+     * @throws \InvalidArgumentException If $records is not of the correct type.
      * 
      * @see add_record() for other possible exceptions that may be thrown.
      * 
