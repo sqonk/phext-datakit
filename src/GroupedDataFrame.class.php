@@ -192,8 +192,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
         
         if ($dir === null) {
             $out = [];
-            foreach ($this->sets as $df)
-                $out[] = $df->export("php://output", $columns, $delimeter);
+            foreach ($this->sets as $df) {
+                ob_start();
+                $df->export("php://output", $columns, $delimiter);
+                $out[] = ob_get_contents();
+                ob_end_clean();
+            }
             return $out;
         }
             

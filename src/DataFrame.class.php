@@ -298,7 +298,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array<mixed> An array containing all of the data in the object.
 	*/
-    public function flattened(bool $includeIndex = true, string ...$columns): array
+    public function flattened(bool $includeIndex = true, string|array ...$columns): array
     {
         if (count($columns) == 1 and is_array($columns[0]))
             $columns = $columns[0];
