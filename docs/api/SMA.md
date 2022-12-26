@@ -4,6 +4,8 @@
 A simple class for management of a Simple Moving Average. It works by alternating between adding new values to the array and calculating the current average.
 
 SMA adheres to various array-like behaviour protocols. You should keep in mind that whenever you access values from the class you will be receiving the relevant average, not the original raw value you placed in previously.
+
+@implements \IteratorAggregate<int|float> @implements \ArrayAccess<int|float>
 #### Methods
 - [count](#count)
 - [getIterator](#getiterator)
@@ -72,8 +74,8 @@ public function __construct(int $maxItems, int $defaultPrecision = null)
 ```
 Construct a new SMA with the specified maximum number of values.
 
-- **$maxItems** The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
-- **$defaultPrecision** If set, will automatically round all averages to given decimal precision.
+- **int** $maxItems The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
+- **?int** $defaultPrecision If set, will automatically round all averages to given decimal precision.
 
 
 ------
@@ -91,6 +93,10 @@ public function result(int $precision = null) : float
 ```
 Return the calculated result of the SMA as it currently stands, optionally rounding it to the specified precision. If $precision is `NULL` then it falls back to the default precision specified at the time of object creation.
 
+- **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the EMA object is used.
+
+**Returns:**  The most recent calculated moving average.
+
 
 ------
 ##### all
@@ -98,6 +104,10 @@ Return the calculated result of the SMA as it currently stands, optionally round
 public function all(int $precision = null) : array
 ```
 Return all acquired averages, optionally rounding them to the specified precision. If $precision is `NULL` then it falls back to the default precision specified at the time of object creation.
+
+- **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the SMA object is used.
+
+**Returns:**  list<int|float> The list of all acquired averages.
 
 
 ------

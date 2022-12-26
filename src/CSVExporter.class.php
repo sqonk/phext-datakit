@@ -39,13 +39,16 @@ use sqonk\phext\core\{arrays,strings};
  */
 class CSVExporter
 {
-    protected $headers = [];
-    protected $field_map = [];
-    protected $rows;
+    protected array $headers = [];
+    protected array $field_map = [];
     
-    protected $path;
+    protected string $path;
+    
+    /** 
+     * @var resource 
+     */
     protected $fh;
-    protected $headersWritten = false;
+    protected bool $headersWritten = false;
     
     
     /**
@@ -54,7 +57,7 @@ class CSVExporter
      * -- parameters:
      * @param $path A path to the output file that will be used to generate the CSV. If set to `NULL` the CSV will be produced directly in memory. Defaults to `NULL`.
      */
-    public function __construct(string $path = null)
+    public function __construct(string $path = '')
     {
         if (! $path)
             $this->path = 'php://memory';
@@ -67,7 +70,7 @@ class CSVExporter
             unlink($this->path);
     }
     
-    protected function closeFH()
+    protected function closeFH(): void
     {
         if ($this->fh) {
             fflush($this->fh);
@@ -76,6 +79,9 @@ class CSVExporter
         }
     }
     
+    /**
+     * @return resource The file handle.
+     */
     protected function fh()
     {
         if (! $this->fh)
@@ -88,7 +94,7 @@ class CSVExporter
         return $this->fh;
     }
     
-    protected function writeHeaders()
+    protected function writeHeaders(): void
     {
         $fh = $this->fh;
         fputcsv($fh, $this->headers);
@@ -97,6 +103,8 @@ class CSVExporter
     
     /**
      * Return the current header-to-key map.
+     * 
+     * @return array<string, string> A keyed array where the keys are the column headers and the values are the corresponding value keys.
      */
     public function map(): array {
         return $this->field_map;
@@ -107,13 +115,13 @@ class CSVExporter
      * that will be used to automatically build the CSV from one or more objects or 
      * associative arrays passed into the class at a later stage.
      * 
-     * -- parameters:
-     * @param $fieldMap An associative array where the column headers are the array keys and 
-     * the values are the array values.
-     * 
      * Will trigger a warning if called after the headers have already been output.
      * 
-     * @return TRUE if the field map was successfully set, FALSE otherwise.
+     * -- parameters:
+     * @param array<string, string> $fieldMap An associative array where the column headers are the array keys and 
+     * the values are the array values.
+     * 
+     * @return bool TRUE if the field map was successfully set, FALSE otherwise.
      */
     public function set_map(array $fieldMap): bool
     {
@@ -132,12 +140,12 @@ class CSVExporter
      * value from each record.
      * 
      * -- parameters:
-     * @param $header The column header.
-     * @param $key The corresponding key for accessing the value within a record.
+     * @param string $header The column header.
+     * @param string $key The corresponding key for accessing the value within a record.
      * 
      * Will trigger a warning if called after the headers have already been output.
      * 
-     * @return TRUE if the map header pair were successfully set, FALSE otherwise.
+     * @return bool TRUE if the map header pair were successfully set, FALSE otherwise.
      */
     public function add_map_pair(string $header, string $key): bool
     {
@@ -153,6 +161,8 @@ class CSVExporter
     
     /**
      * Return the current set of human-readable column headers.
+     * 
+     * @return list<string> The column headers.
      */
     public function headers(): array {
         return $this->headers;
@@ -166,7 +176,7 @@ class CSVExporter
      * you are bypassing the use of field maps and records.
      * 
      * -- parameters:
-     * @param $headers A sequential array of strings representing the column headers.
+     * @param list<string> $headers A sequential array of strings representing the column headers.
      * 
      * Will trigger a warning if called after the headers have already been output. 
      * Will also trigger a notice if a field map has previously been set.
@@ -192,11 +202,11 @@ class CSVExporter
      * Add a series of values as the next row in the CSV. 
      * 
      * -- parameters:
-     * @param $row A sequential array of the values corresponding the order of the column headers.
+     * @param array<string, string>$row A sequential array of the values corresponding the order of the column headers.
      *   
-     * @return The CSV object.
+     * @return self The CSV object.
      */
-    public function add_raw_row(array $row): CSVExporter
+    public function add_raw_row(array $row): self
     {
         fputcsv($this->fh(), $row);
         
@@ -208,14 +218,14 @@ class CSVExporter
      * should be associative where the keys correspond to the column headers.
      * 
      * -- parameters:
-     * @param array|ArrayAccess $record An associative array or object containing the row of data.
+     * @param array<string, string>|ArrayAccess $record An associative array or object containing the row of data.
      * 
      * @throws RuntimeException If no field map has been set.
      * @throws InvalidArgumentException If the provided record is not of the correct type.
      * 
-     * @return The CSV object.
+     * @return self The CSV object.
      */
-    public function add_record($record): CSVExporter
+    public function add_record(mixed $record): self
     {
         if (! is_array($record) and ! $record instanceof \ArrayAccess) {
             throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');
@@ -238,15 +248,15 @@ class CSVExporter
      * Add multiple records to the CSV.
      * 
      * -- parameters:
-     * @param array|ArrayAccess $records The array of records to add.
+     * @param list<array<string, string>>|ArrayAccess $records The array of records to add.
      * 
      * @throws InvalidArgumentException If $records is not of the correct type.
      * 
      * @see add_record() for other possible exceptions that may be thrown.
      * 
-     * @return The CSV object.
+     * @return self The CSV object.
      */
-    public function add_records($records): CSVExporter
+    public function add_records(mixed $records): self
     {
         if (! is_array($records) and ! $records instanceof \ArrayAccess) {
             throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');

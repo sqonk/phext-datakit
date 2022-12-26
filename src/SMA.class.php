@@ -25,6 +25,9 @@ namespace sqonk\phext\datakit;
  * SMA adheres to various array-like behaviour protocols. You should keep in 
  * mind that whenever you access values from the class you will be receiving the relevant
  * average, not the original raw value you placed in previously.
+ * 
+ * @implements \IteratorAggregate<int|float>
+ * @implements \ArrayAccess<int|float>
  */
 class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -84,8 +87,8 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
      * Construct a new SMA with the specified maximum number of values. 
      * 
      * -- parameters:
-     * @param $maxItems The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
-     * @param $defaultPrecision If set, will automatically round all averages to given decimal precision.
+     * @param int $maxItems The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
+     * @param ?int $defaultPrecision If set, will automatically round all averages to given decimal precision.
      */
 	public function __construct(int $maxItems, ?int $defaultPrecision = null)
 	{
@@ -119,6 +122,11 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return the calculated result of the SMA as it currently stands, optionally rounding it to the specified
      * precision. If $precision is NULL then it falls back to the default precision specified at the time 
      * of object creation.
+     * 
+     * -- parameters:
+     * @param ?int $precision The amount of decimal points to round to. If NULL then the default precision of the EMA object is used.
+     * 
+     * @return The most recent calculated moving average.
      */
 	public function result(?int $precision = null): float
 	{
@@ -132,6 +140,11 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Return all acquired averages, optionally rounding them to the specified precision. If $precision is
      * NULL then it falls back to the default precision specified at the time of object creation.
+     * 
+     * -- parameters:
+     * @param ?int $precision The amount of decimal points to round to. If NULL then the default precision of the SMA object is used.
+     * 
+     * @return list<int|float> The list of all acquired averages.
      */
     public function all(?int $precision = null): array
     {

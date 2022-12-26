@@ -5,7 +5,9 @@ The DataFrame is a class inspired by, and loosely based off of, a class by the s
 
 Various basic statistical and mathematical functions are provided as well numerous methods for transforming and manipulating the underlying data and presentation thereof.
 
-Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
+Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
+
+@implements \IteratorAggregate<list<array<string, string>>> @implements \ArrayAccess<list<array<string, string>>>
 #### Methods
 - [make](#make)
 - [empty_frames](#empty_frames)
@@ -99,9 +101,15 @@ Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
 ------
 ##### make
 ```php
-static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false) : static
+static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false) : sqonk\phext\datakit\DataFrame
 ```
 Static equivalent of `new DataFrame`.
+
+- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **?list<string>** $headers An optional custom set of column headers.
+- **bool** $isVerticalDataSet When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
+
+**Returns:**  DataFrame A new DataFrame.
 
 
 ------
@@ -167,11 +175,11 @@ See: report()
 ```php
 public function __construct(array $data = null, array $headers = null, bool $isVerticalDataSet = false) 
 ```
-Construct a new dataframe with the provided data. You may optionally provide the set of column headers in the second parameter. If you choose to do this then they should match the keys in the array.
+Construct a new DataFrame with the provided data. You may optionally provide the set of column headers in the second parameter. If you choose to do this then they should match the keys in the array.
 
-- **$data** The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
-- **$headers** An optional custom set of column headers.
-- **$isVerticalDataSet** When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
+- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **?list<string>** $headers An optional custom set of column headers.
+- **bool** $isVerticalDataSet When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
 
 Standard data array format:
 
@@ -207,6 +215,11 @@ Produce an exact replica of the dataframe.
 public function clone(array $data, array $headers = null) : sqonk\phext\datakit\DataFrame
 ```
 Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
+
+- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **?list<string>** $headers An optional custom set of column headers.
+
+**Returns:**  DataFrame A copy of the DataFrame.
 
 
 ------
@@ -276,10 +289,12 @@ public function flattened(bool $includeIndex = true, string ...$columns) : array
 ```
 Flatten the DataFrame into a native array.
 
-- **$includeIndex:**  If `TRUE` then use the DataFrame indexes as the keys in the array.
-- **$columns:**  One or more columns that should be used in the resulting array, all columns if null is supplied.
+- **bool** $includeIndex If `TRUE` then use the DataFrame indexes as the keys in the array.
+- **bool** $columns One or more columns that should be used in the resulting array, all columns if null is supplied.
 
 The columns can be supplied as a set of variable arguments or an array as the second argument.
+
+**Returns:**  array<mixed> An array containing all of the data in the object.
 
 
 ------
@@ -289,6 +304,8 @@ public function row(mixed $index) : array
 ```
 Return the row at $index.
 
+**Returns:**  array<string, string>
+
 
 ------
 ##### indexes
@@ -297,6 +314,8 @@ public function indexes() : array
 ```
 Return an array of all the current row indexes.
 
+**Returns:**  list<string|int|float>
+
 
 ------
 ##### headers
@@ -304,6 +323,8 @@ Return an array of all the current row indexes.
 public function headers() : array
 ```
 All column headers currently in the DataFrame.
+
+**Returns:**  list<string>
 
 
 ------
@@ -351,7 +372,12 @@ Change the name of a column within the DataFrame. If $inPlace is `TRUE` then thi
 ```php
 public function reindex_rows(array $labels, bool $inPlace = false) : sqonk\phext\datakit\DataFrame
 ```
-Reindex the DataFrame using the provided labels. If $inPlace is `TRUE` then this operation modifies the receiver otherwise a copy is returned.
+Reindex the DataFrame using the provided labels.
+
+- **list<string|int|float>** $labels The values to use as the indexes.
+- **bool** $inPlace If `TRUE` then this operation modifies the receiver otherwise a copy is returned.
+
+**Returns:**  DataFrame Either the receiver or a copy.
 
 
 ------
@@ -401,7 +427,7 @@ This function differs from filter() and unanfilter() in that it passes the whole
 ------
 ##### sort
 ```php
-public function sort(...$columns) : sqonk\phext\datakit\DataFrame
+public function sort(string|bool ...$columns) : sqonk\phext\datakit\DataFrame
 ```
 Sort the DataFrame via one or more columns.
 
@@ -425,11 +451,13 @@ public function shape() : array
 ```
 Return an array containing both the number of rows and columns.
 
+**Returns:**  array{int, int}
+
 
 ------
 ##### size
 ```php
-public function size(string $column = null) 
+public function size(string $column = null) : static|int
 ```
 If a column is specified then return the number of rows containing a value for it.
 
@@ -449,7 +477,12 @@ Return the number of rows.
 ```php
 public function values(array|string|null $columns = null, bool $filterNAN = true) : array
 ```
-Return all values for the given column. If $filterNAN is `TRUE` then omit values that are `NULL`.
+Return all values for one or more columns.
+
+- **array|string|null** $columns The column(s) to acquire the values for.
+- **bool** $filterNAN If `TRUE` then omit values that are `NULL`.
+
+**Returns:**  list<mixed>|list<list<mixed>> Either a singular list of values when one column is given, or a two dimensional array when two or more columns are requested.
 
 
 ------
@@ -460,6 +493,10 @@ public function report_data(string ...$columns) : array
 Return the data array with all values parsed by any registered transformers.
 
 If you wish to output a report to something else other than the command line then this method will allow you to present the data as desired.
+
+- **string** ...$columns The columns to use in the report.
+
+**Returns:**  array{array<mixed>, list<string>} A two-element array. The first element contains an array of the compiled data and second is a copy of the column names requested (potentially adjusted).
 
 
 ------
@@ -685,6 +722,8 @@ If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
 
+**Returns:**  DataFrame|list<int|float>
+
 
 ------
 ##### cumproduct
@@ -696,6 +735,8 @@ Compute the cumulative product for one or more columns.
 If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
+
+**Returns:**  DataFrame|list<int|float>
 
 
 ------
@@ -745,13 +786,17 @@ If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single array is returned, otherwise a DataFrame with the given columns is produced.
 
+**Returns:**  DataFrame|list<float>
+
 
 ------
 ##### normalize
 ```php
-public function normalize(string ...$columns) : sqonk\phext\datakit\DataFrame|int|float
+public function normalize(string ...$columns) : sqonk\phext\datakit\DataFrame|array
 ```
 Alias of self::normalise().
+
+**Returns:**  DataFrame|list<float>
 
 
 ------
@@ -781,12 +826,12 @@ public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|strin
 ```
 Round all values in one or more columns up or down to the given decimal point precision. Because of the imprecise nature of floats, the rounding will convert all data points it touches to string format in order to maintain the precision.
 
-- **$precision** the number of decimal points values should be rounded to.
-- **$mode** rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
-- **$columns** The columns to round. If no column is specified then the operation runs over all columns.
-- **$inPlace** If `TRUE` then this operation modifies the receiver, otherwise a copy is returned.
+- **int** $precision the number of decimal points values should be rounded to.
+- **int** $mode rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
+- **list<string>|string|null** $columns The columns to round. If no column is specified then the operation runs over all columns.
+- **bool** $inPlace If `TRUE` then this operation modifies the receiver, otherwise a copy is returned.
 
-**Returns:**  If $inPlace is `FALSE` then a copy of the Dataframe is rounded and returned. If `TRUE` then the DataFrame is directly modified and returns itself.
+**Returns:**  DataFrame If $inPlace is `FALSE` then a copy of the Dataframe is rounded and returned. If `TRUE` then the DataFrame is directly modified and returns itself.
 
 
 **See:**  [math::nf_round()](math.md#nf_round) for more information on how the rounding is performed.
@@ -795,20 +840,20 @@ Round all values in one or more columns up or down to the given decimal point pr
 ------
 ##### rolling
 ```php
-public function rolling(int $window, callable $callback, int $minObservation = 0, array|string $columns = '', array|string|int $indexes = '', bool $runHorizontal = false) : static
+public function rolling(int $window, callable $callback, int $minObservations = 0, array|string $columns = '', array|string|int $indexes = '', bool $runHorizontal = false) : static
 ```
 Continually apply a callback to a moving fixed window on the data frame.
 
-- **$window** The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
-- **$callback** The callback method that produces a result based on the provided subset of data.
-- **$minObservations** The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
-- **$columns** The set of columns to work with. If not provided (or an empty value) then all columns are included.
-- **$indexes** When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is ``FALSE`` then this parameter has no effect.
-- **$runHorizontal** When ``TRUE`` the rolling set will run across columns of the frame. When ``FALSE`` (the default) the rolling dataset is the series of values down each desired column.
+- **int** $window The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
+- **callable** $callback The callback method that produces a result based on the provided subset of data.
+- **int** $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+- **string|list<string>** $columns The set of columns to work with. If not provided (or an empty value) then all columns are included.
+- **string|int|list<int|string|float>** $indexes When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is ``FALSE`` then this parameter has no effect.
+- **bool** $runHorizontal When ``TRUE`` the rolling set will run across columns of the frame. When ``FALSE`` (the default) the rolling dataset is the series of values down each desired column.
 
 Callback format: `myFunc(Vector $rollingSet, mixed $index, string $column) : mixed`
 
-**Returns:**  A DataFrame containing the series of results produced by the callback method.
+**Returns:**  DataFrame The series of results produced by the callback method.
 
 
 ------
@@ -818,10 +863,10 @@ public function correlation(string $method, array $columns = null) : sqonk\phext
 ```
 Run a correlation over one or more columns to find similarities in values.
 
-The resulting DataFrame is a matrix of values representing the closeness of the adjoining values.
+- **string** $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+- **list<string>** $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
 
-- **$method** Correlation method to use. Accepted values are 'pearson' or 'spearman'.
-- **$columns** Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+**Returns:**  DataFrame A matrix of values representing the closeness of the adjoining values.
 
 
 ------
@@ -830,6 +875,11 @@ The resulting DataFrame is a matrix of values representing the closeness of the 
 public function corr(string $method, array $columns = null) : sqonk\phext\datakit\DataFrame
 ```
 Alias of correlation().
+
+- **string** $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+- **list<string>** $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+
+**Returns:**  DataFrame A matrix of values representing the closeness of the adjoining values.
 
 
 ------
@@ -878,6 +928,8 @@ public function duplicated(string ...$columns) : array
 Find all duplicate values for a given set of columns, or every column if none are supplied.
 
 This method only compares corresponding values between rows of each column. That is, it the comparison is performed vertically, not horizontally.
+
+**Returns:**  list<string|int|float> All found duplicates.
 
 
 ------
@@ -947,8 +999,8 @@ Replace all the values for a column with another set of values.
 
 The new value array should hold the exact amount of items as the amount of rows within the DataFrame.
 
-- **$column** The column/header that will have its set of values replaced.
-- **$newValues** An array of replacement values.
+- **string** $column The column/header that will have its set of values replaced.
+- **list<string|int|float>** $newValues An array of replacement values.
 
 
 **Throws:**  InvalidArgumentException If the specified column is not present. 
@@ -958,13 +1010,18 @@ The new value array should hold the exact amount of items as the amount of rows 
 ------
 ##### add_row
 ```php
-public function add_row(array $row = [], mixed $index = '') : sqonk\phext\datakit\DataFrame
+public function add_row(array $row = [], mixed $index = '') : self
 ```
 Add a new row to the DataFrame. $row is an associative array where the keys should correspond to one or more of the column headers in the DataFrame.
 
 $index is an optional keyed index to store the row against. If left empty then the next sequential number shall be used.
 
 Do not use new or unknown keys not already present in the DataFrame.
+
+- **array<string,** string> $row The new row to add.
+- **mixed** $index An optional custom index to apply to the row.
+
+**Returns:**  self The receiver.
 
 
 ------
@@ -1000,7 +1057,7 @@ public function plot(string $type, array $options = []) : sqonk\phext\plotlib\Bu
 ```
 Produce a plot object (from the plotlib module) auto-configured to create an image-based graph of one or more columns.
 
-- **$options** represent the chart configuration.
+- **array<string,** mixed> $options represent the chart configuration.
 	- title: 		Filename of the chart. Defaults to the chart type and series being plotted.
 	- columns: 	Array of the column names to produce charts for.
 	- xcolumn: 	A column name to use as the x-axis.
@@ -1016,7 +1073,7 @@ Produce a plot object (from the plotlib module) auto-configured to create an ima
 	- bars:		A linear array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
 	- barColor:	The colour of the bars dataset, default is 'lightgray'.
 	- barWidth:	The width of each bar in the bars dataset, default is 7.
-- **$type** represents the type of chart (e.g line, box, bar etc). Possible values:
+- **string** $type Represents the type of chart (e.g line, box, bar etc). Possible values:
 	- line: 		line chart.
 	- linefill: 	line chart with filled area.
 	- bar:			bar chart.
@@ -1024,7 +1081,8 @@ Produce a plot object (from the plotlib module) auto-configured to create an ima
 	- scatter:		scatter chart.
 	- box:			Similar to a stock plot but with a fifth median value.
 
-**Returns:**  A BulkPlot object containing the plots to be rendered. See: plotlib for possibly more information.
+**Returns:**  BulkPlot An object containing the plots to be rendered. 
+**See:**  plotlib for possibly more information.
 
 
 ------
@@ -1040,13 +1098,19 @@ $options can include a 'volume' key, specifying an associative array with the su
 
 All other standard option keys can be passed in.
 
+- **string** $openP The column used for the opening price values.
+- **string** $closeP The column used for the closing price values.
+- **string** $lowP The column used for the low price values.
+- **string** $highP The column used for the high price values.
+- **array<string,** mixed> $options
+
 **Returns:**  A BulkPlot object containing the plots to be rendered.
 
 
 ------
 ##### box
 ```php
-public function box(...$columns) : sqonk\phext\plotlib\BulkPlot
+public function box(string ...$columns) : sqonk\phext\plotlib\BulkPlot
 ```
 Create a box plot chart, which is a singular data point of box-like appearance that illustrates the place of the 25%, 50% and 75% quantiles as well as the outer whiskers.
 
@@ -1060,7 +1124,7 @@ public function hist(array $options = []) : sqonk\phext\plotlib\BulkPlot
 ```
 Create a bar chart styled in the fashion of a histogram.
 
-- **$options** is an array containing the following:
+- **array<string,** mixed> $options is an array containing the following:
 	- columns: Array of column names to use (1 or more)
 	- bins: Number of bins to use for the histogram. Defaults to 10.
 	- cumulative: Create a stacked histogram showing the accumulative scale along with the main. Defaults to `FALSE`.
@@ -1078,10 +1142,10 @@ public function export(string $filePath, array $columns = null, string $delimite
 ```
 Export the Dataframe to a delimited text file (CSV).
 
-- **$filePath:** The destination file.
-- **$columns:** The columns to export, or all if null is supplied.
-- **$delimiter:** The character that separates each column.
-- **$includeIndex:** When `TRUE`, adds the data frame row index as the first column.
+- **string** $filePath: The destination file.
+- **list<string>** $columns: The columns to export, or all if null is supplied.
+- **string** $delimiter: The character that separates each column.
+- **bool** $includeIndex: When `TRUE`, adds the data frame row index as the first column.
 
 
 ------

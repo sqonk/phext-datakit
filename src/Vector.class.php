@@ -26,10 +26,17 @@ use sqonk\phext\core\{arrays,strings};
  * 
  * In particular it sports a variety of basic mathematical and
  * statistical functions.
+ * 
+ * @implements \IteratorAggregate<mixed>
+ * @implements \ArrayAccess<mixed>
  */
 final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-	// The internal native array used to store the data.
+	/** 
+	 * @var array<mixed>
+	 * 
+	 * The internal native array used to store the data. 
+	 */
 	protected array $_array;
 	
 	// When the keys of the array are known to run in numerical order,
@@ -45,22 +52,22 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		return new \ArrayIterator($this->_array);
 	}
 	
-	public function offsetSet($index, $value): void {
+	public function offsetSet(mixed $index, mixed $value): void {
 		if ($index === null)
 			$this->add($value);
 		else
 			$this->set($index, $value);
 	}
 	
-	public function offsetGet($index): mixed {
+	public function offsetGet(mixed $index): mixed {
 		return $this->_array[$index] ?? null;
 	}
 	
-	public function offsetExists($index): bool {
+	public function offsetExists(mixed $index): bool {
 		return array_key_exists($index, $this->_array);
 	}
 	
-	public function offsetUnset($index): void {
+	public function offsetUnset(mixed $index): void {
 		$this->remove($index);
 	}
 
@@ -72,6 +79,8 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * Construct a new vector with the provided array.
+     * 
+     * @param array<mixed> $startingArray An option set of initial data to fill the vector with.
      */
 	public function __construct(array $startingArray = [])
 	{
@@ -79,8 +88,11 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		$this->testKeys();
 	}
 	
-	// Internal.
-	// Test whether the array is sequential or associative.
+    /**
+     * Test whether the array is sequential or associative.
+     * 
+     * @internal
+     */
 	protected function testKeys(): bool
 	{
         if (function_exists('array_is_list')) {
@@ -101,7 +113,11 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 		return $this->isSequential;
 	}
 	
-	// Returns a copy of the vector as a native array.
+	/**
+	 * Returns a copy of the vector as a native array.
+	 * 
+	 * @return array<mixed> The internal native array holding the data of the vector.
+	 */
 	public function array(): array {
 		return $this->_array;
 	}
@@ -121,7 +137,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     * Setting the limit to 0 will remove the constraint altogether,
     * which is the default.
     */
-	public function constrain(int $limit): Vector
+	public function constrain(int $limit): self
 	{
 		$this->constraint = $limit;
 		return $this;
@@ -131,7 +147,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	 * Add one element to the end of the vector. Slightly faster than using add()
 	 * in a tight loop.
 	 */
-    public function append($value): Vector 
+    public function append(mixed $value): self 
     {
         $this->_array[] = $value;
         
@@ -147,7 +163,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Add one or more elements to the end of the vector.
 	 */
-	public function add(...$values): Vector
+	public function add(mixed ...$values): self
 	{
 		foreach ($values as $value)
 			$this->_array[] = $value;
@@ -165,10 +181,10 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Append another array, vector or collection to the end of the vector.
      * 
      * -- parameters:
-     * @param $collection The set of items to add to the end of the vector.
-     * @param $maintainKeyAssociation When `TRUE`, both the keys and the values from the given collection will be merged into the vector. When `FALSE`, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge. 
+     * @param iterable<mixed> $collection The set of items to add to the end of the vector.
+     * @param bool $maintainKeyAssociation When `TRUE`, both the keys and the values from the given collection will be merged into the vector. When `FALSE`, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge. 
      */
-    public function merge(iterable $collection, bool $maintainKeyAssociation = false): Vector 
+    public function merge(iterable $collection, bool $maintainKeyAssociation = false): self 
     {
         if (is_array($collection)) {
             if (! $maintainKeyAssociation)
@@ -198,7 +214,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Set an element in the array to the provided key/index.
      */
-	public function set($key, $value): Vector
+	public function set(mixed $key, mixed $value): self
 	{
 		$isEmpty = $this->empty();
 		
@@ -220,7 +236,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Add one or more elements to the start of the vector. If a constraint
      * is set then excess elements will be removed from the end.
      */
-	public function prepend(...$values): Vector
+	public function prepend(mixed ...$values): self
 	{
 		array_unshift($this->_array, ...$values);
 		
@@ -239,7 +255,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * The callback should take no parameters.
      */
-	public function fill(int $amount, callable $callback): Vector
+	public function fill(int $amount, callable $callback): self
 	{
 		foreach (sequence(0, $amount-1) as $i) {
 			$this->add($callback($i));
@@ -254,7 +270,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * The callback should take no parameters.
      */
-	public function prefill(int $amount, callable $callback): Vector
+	public function prefill(int $amount, callable $callback): self
 	{
 		foreach (sequence(0, $amount-1) as $i) {
 			$this->prepend($callback($i));
@@ -273,9 +289,9 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc($value, $index) -> bool`
      * 
-     * @return The found item or NULL if nothing was located for the key.
+     * @return mixed The found item or NULL if nothing was located for the key.
      */
-	public function get($key, $default = null)
+	public function get(mixed $key, mixed $default = null): mixed
 	{
         if (is_callable($key) && ! is_string($key))
         {
@@ -291,7 +307,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Remove one or more elements from the vector.
      */
-	public function remove(...$keys): Vector
+	public function remove(mixed ...$keys): self
 	{
 		$modified = false;
 		foreach ($keys as $key) {
@@ -314,7 +330,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * will also work with associative arrays by running the start and length
      * through the extracted array keys.
      */
-    public function remove_range(int $start, int $length): Vector
+    public function remove_range(int $start, int $length): self
     {
         $keys = array_keys($this->_array);
         if ($start + $length > count($keys)-1)
@@ -335,7 +351,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Remove all elements from the array.
 	 */
-	public function clear(): Vector
+	public function clear(): self
 	{
 		unset($this->_array);
 		$this->_array = [];
@@ -347,7 +363,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Returns TRUE if all the specified keys are present within the vector, FALSE
      * otherwise.
      */
-	public function isset(...$keys): bool
+	public function isset(mixed ...$keys): bool
 	{
 		$vkeys = new Vector(array_keys($this->_array));
 		foreach ($keys as $key) {
@@ -378,7 +394,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If no key is provided then it will return all primary values in the vector.
      */
-    public function values($key = null): Vector {
+    public function values(mixed $key = null): Vector {
 		return new Vector($this->_values($key));
 	}
 	
@@ -390,9 +406,11 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * If no key is provided then it will return all primary values in the vector.
      * 
-     * @return a native PHP array of the correpsonding values.
+     * @internal
+     * 
+     * @return array<mixed> a native PHP array of the corresponding values.
      */
-    protected function _values($key = null)
+    protected function _values(mixed $key = null): array
 	{
 		if ($key === null)
 			return array_values($this->_array);
@@ -407,7 +425,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * from looking up $key on each element in the vector. This assumes all elements
      * inside of the vector are an array or object.
      */
-	public function unique($key = null): Vector
+	public function unique(mixed $key = null): Vector
 	{
 		if ($key === null)
 			$out = $this->_array;
@@ -440,7 +458,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Remove all entries where the values corresponding to 'empties' are omitted.
      */
-    public function prune($empties = ''): Vector
+    public function prune(mixed $empties = ''): self
     {
 		$modified = false;
         foreach ($this->_array as $key => $value) { 
@@ -458,14 +476,14 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	/**
 	 * Return the first object in the array or null if array is empty.
 	 */
-	public function first() {
+	public function first(): mixed {
 		return arrays::first($this->_array);
 	}
 	
 	/**
 	 * Return the last object in the array or null if array is empty.
 	 */
-	public function last() {
+	public function last(): mixed {
 		return arrays::end($this->_array);
 	}
 	
@@ -485,14 +503,14 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * @param $array The array containing the items.
      * @param $weightedToFront TRUE to favour centre items closer to the start of the array and FALSE to prefer items closer to the end.
      */
-	public function middle(bool $weightedToFront = true) {
+	public function middle(bool $weightedToFront = true): mixed {
 		return arrays::middle($this->_array, $weightedToFront);
 	}
 	
     /**
      * Randomly choose and return an item from the vector.
      */
-    public function choose() {
+    public function choose(): mixed {
 		return arrays::choose($this->_array);
 	}
 	
@@ -519,7 +537,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function any($match, bool $strict = false): bool
+	public function any(mixed $match, bool $strict = false): bool
 	{
 		if (is_callable($match))
 		{
@@ -544,7 +562,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function all($match, bool $strict = false): bool
+	public function all(mixed $match, bool $strict = false): bool
 	{
 		$isCallback = is_callable($match);
 		foreach ($this->_array as $value) {
@@ -568,17 +586,18 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Filter the vector based on the contents of one or more vectors or arrays and return a
      * new vector containing just the elements that were deemed to exist in all.
+     * 
+     * @param array<mixed>|Vector ...$otherArrays The other arrays or vectors to compare with the receiver.
      */
-    public function intersect(...$otherArrays): Vector
+    public function intersect(array|Vector ...$otherArrays): Vector
 	{
 		$adjusted = [];
-		foreach ($otherArrays as $index => $array) {
+		foreach ($otherArrays as $index => $array) 
+        {
 			if ($array instanceof Vector)
 				$adjusted[$index] = $array->array();
-			else if (is_array($array))
-				$adjusted[$index] = $array;
 			else
-				throw new \InvalidArgumentException('Only native arrays or vectors are valid parameters for interect().');
+				$adjusted[$index] = $array;
 		}
 		return new Vector(array_intersect($this->_array, ...$adjusted));
 	}
@@ -587,17 +606,18 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Filter the vector based on the contents of one or more arrays and return a
      * new vector containing just the elements that were deemed not to be present
      * in all.
+     * 
+     * @param array<mixed>|Vector ...$otherArrays The other arrays or vectors to compare with the receiver.
      */
-    public function diff(...$otherArrays): Vector
+    public function diff(array|Vector ...$otherArrays): Vector
 	{
 		$adjusted = [];
-		foreach ($otherArrays as $index => $array) {
+		foreach ($otherArrays as $index => $array) 
+        {
 			if ($array instanceof Vector)
 				$adjusted[$index] = $array->array();
-			else if (is_array($array))
-				$adjusted[$index] = $array;
 			else
-				throw new \InvalidArgumentException('Only native arrays or vectors are valid parameters for diff().');
+				$adjusted[$index] = $array;
 		}
 		return new Vector(array_diff($this->_array, ...$adjusted));
 	}
@@ -614,7 +634,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * It should be noted that if a key is not  present in the current vector then it will
      * not be present in the resulting vector.
      */
-	public function only_keys(...$keys): Vector
+	public function only_keys(mixed ...$keys): Vector
 	{
 		if ($this->isSequential) 
 		{	
@@ -635,21 +655,21 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Search the array for the given needle (subject). This function is an
      * alias of Vector::any().
      */
-    public function contains($needle): bool {
+    public function contains(mixed $needle): bool {
         return self::any($needle);
     }
     
     /**
      * Determines if the array ends with the needle.
      */
-    public function ends_with($needle): bool {
+    public function ends_with(mixed $needle): bool {
         return arrays::ends_with($this->_array, $needle);
     }
     
     /**
      * Determines if the array starts with the needle.
      */
-    public function starts_with($needle): bool {
+    public function starts_with(mixed $needle): bool {
         return arrays::starts_with($this->_array, $needle);
     }
     
@@ -697,7 +717,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * Apply a callback function to the vector. This version will optionally
      * supply the corresponding index/key of the value when needed.
      * 
-     * Callback format: `myFunc($value, $index) -> mixed`
+     * Callback format: `myFunc($value, $index): mixed`
      */
 	public function map(callable $callback): Vector {
 		return new Vector(arrays::map($this->_array, $callback));
@@ -723,7 +743,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * absolute value of $count is less than or equal to the length of the array
      * then no padding takes place.
      */
-	public function pad(int $count, $value): Vector
+	public function pad(int $count, mixed $value): self
 	{
 		$this->_array = array_pad($this->_array, $count, $value);
 		
@@ -732,8 +752,13 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * Shorten the vector by removing elements off the end of the array to the number
-     * specified in $amount. If $returnRemoved is TRUE then the items removed will
-     * be returned, otherwise it returns a reference to itself for chaining purposes.
+     * specified in $amount. 
+     * 
+     * -- parameters:
+     * @param int $amount The amount of elements to shift off of the end of the vector.
+     * @param bool $returnRemoved If TRUE the return a copy of all removed items as result of the call.
+     * 
+     * @return Vector If $returnRemoved is TRUE then the items removed will be returned, otherwise the receiver is returned.
      */
     public function pop(int $amount = 1, bool $returnRemoved = false): Vector
     {
@@ -751,8 +776,12 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Modify the vector by removing elements off the beginning of the array to the
      * number specified in $amount and return a vector containing the items removed.
-     * If $returnRemoved is TRUE then the items removed will be returned, otherwise
-     * it returns a reference to itself for chaining purposes
+     * 
+     * -- parameters:
+     * @param int $amount The amount of elements to shift off of the start of the vector.
+     * @param bool $returnRemoved If TRUE the return a copy of all removed items as result of the call.
+     * 
+     * @return Vector If $returnRemoved is TRUE then the items removed will be returned, otherwise the receiver is returned.
      */
     public function shift(int $amount = 1, bool $returnRemoved = false): Vector
     {
@@ -772,14 +801,19 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * where the resulting array contains a column for each different value for the given
      * fields in the merge map (associative array).
      * 
-     * The group key is used to specify which field in the array will be used to flatten
-     * multiple rows into one.
-     * 
      * For example, if you had a result set that contained a 'type' field, a corresponding
      * 'reading' field and a 'time' field (used as the group key) then this method would
      * merge all rows containing the same time value into a matrix containing as
      * many columns as there are differing values for the type field, with each column
      * containing the corresponding value from the 'reading' field.
+     * 
+     * -- parameters:
+     * @param string $groupKey Used to specify which key in the $array will be used to flatten multiple rows into one.
+     * @param array<string, string> $mergeMap Associative (keyed) array specifying pairs of columns that will be merged into header -> value.
+     * 
+     * @return Vector The transposed vector.
+     * 
+     * @see arrays::transpose() in PHEXT-Core for a more detailed explanation.
      */
     public function transpose(string $groupKey, array $mergeMap): Vector
 	{
@@ -789,15 +823,16 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * Transform the vector (assuming it is a flat array of elements) and split them into a
-     * tree of vectors based on the keys passed in.
+     * tree of vectors based on the keys passed in. The vector will be re-sorted by the same order as 
+     * the set of keys being used.
      * 
-     * The vector will be re-sorted by the same order as the set of keys being used. If only
-     * one key is required to split the array then a singular string may be provided, otherwise
-     * pass in an array.
+     * -- parameters:
+     * @param string|list<string> $keys A singular key, or array of keys, used to split the array by.
+     * @param bool $keepEmptyKeys If TRUE then the algorithm will keep any found empty key values in the result. If FALSE, they will be omitted.
      * 
-     * Unless $keepEmptyKeys is set to TRUE then any key values that are empty will be omitted.
+     * @return Vector The resulting vector or vectors.
      */
-	public function groupby($keys, bool $keepEmptyKeys = false): Vector
+	public function groupby(string|array $keys, bool $keepEmptyKeys = false): Vector
 	{
 		$this->keyed_sort($keys);
 		$r = arrays::group_by($this->_array, $keys, $keepEmptyKeys);
@@ -827,7 +862,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @throws UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
      * 
-     * @return A vector of vectors, one each for each different result returned from the callback.
+     * @return Vector A vector of vectors, one each for each different result returned from the callback.
      */
     public function splitby(callable $callback): Vector
     {
@@ -1014,7 +1049,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
      * 
-     * @return A vector containing the series of results produced by the callback method.
+     * @return Vector A vector containing the series of results produced by the callback method.
      */
     public function rolling(int $window, callable $callback, int $minObservations = 0): Vector 
     {
@@ -1058,7 +1093,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * If $inPlace is TRUE then this operation modifies this vector otherwise a copy is
      * returned.
      */
-    public function clip($lower, $upper, bool $inplace = false)
+    public function clip(int|float $lower, int|float $upper, bool $inplace = false): mixed
     {
         if ($inplace)
         {
@@ -1194,7 +1229,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Compute the variance of values within the vector.
      */
-	public function variance(): int|float|nul {
+	public function variance(): int|float|null {
 		return math::variance($this->_array);
 	}
 	
@@ -1209,7 +1244,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Returns the resulting value.
      */
-	public function reduce(callable $callback, $initial = null): mixed {
+	public function reduce(callable $callback, mixed $initial = null): mixed {
 		return array_reduce($this->_array, $callback, $initial);
 	}
     

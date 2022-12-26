@@ -14,6 +14,8 @@ Auto-Packing works as follows: - integers are either encoded as 32bit/4 byte or 
 This class should not be considered a blanket replacement for native arrays, instead the key is to identify when it is a better fit for any particular problem.
 
 In general native arrays offer flexibility and speed over memory consumption, where as a packed array prioritises memory usage for a little less flexibility. PackedArrays are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
+
+@implements \IteratorAggregate<mixed> @implements \ArrayAccess<mixed>
 #### Methods
 - [offsetSet](#offsetset)
 - [offsetGet](#offsetget)
@@ -53,6 +55,7 @@ In general native arrays offer flexibility and speed over memory consumption, wh
 - [tail](#tail)
 - [slice](#slice)
 - [sample](#sample)
+- [rolling](#rolling)
 - [clip](#clip)
 - [swap](#swap)
 - [sort](#sort)
@@ -70,7 +73,7 @@ In general native arrays offer flexibility and speed over memory consumption, wh
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) : void
+public function offsetSet(mixed $index, mixed $value) : void
 ```
 No documentation available.
 
@@ -78,7 +81,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) : mixed
+public function offsetGet(mixed $index) : mixed
 ```
 No documentation available.
 
@@ -86,7 +89,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) : bool
+public function offsetExists(mixed $index) : bool
 ```
 No documentation available.
 
@@ -94,7 +97,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) : void
+public function offsetUnset(mixed $index) : void
 ```
 No documentation available.
 
@@ -162,6 +165,8 @@ public function __construct(array $startingArray = [])
 ```
 Construct a new vector with the provided array.
 
+@param list<mixed> $startingArray is an optional array of starting numbers to add to the array.
+
 
 ------
 ##### print
@@ -182,7 +187,7 @@ Return the number of elements within the array.
 ------
 ##### add
 ```php
-public function add(...$values) : sqonk\phext\datakit\PackedArray
+public function add(mixed ...$values) : self
 ```
 Add a value to the end of the array. If the value is an array or a traversable object then it will be serialised prior to being stored.
 
@@ -190,7 +195,7 @@ Add a value to the end of the array. If the value is an array or a traversable o
 ------
 ##### insert
 ```php
-public function insert(int $index, $newVal) : sqonk\phext\datakit\PackedArray
+public function insert(int $index, mixed $newVal) : self
 ```
 Insert a new item into the array at a given index anywhere up to the end of the array.
 
@@ -198,7 +203,7 @@ Insert a new item into the array at a given index anywhere up to the end of the 
 ------
 ##### set
 ```php
-public function set(int $index, $value) : sqonk\phext\datakit\PackedArray
+public function set(int $index, mixed $value) : self
 ```
 Overwrite an existing value with the one provided. If $index is greater than the current count then the value is appended to the end.
 
@@ -206,7 +211,7 @@ Overwrite an existing value with the one provided. If $index is greater than the
 ------
 ##### get
 ```php
-public function get(int $index) 
+public function get(int $index) : mixed
 ```
 Return an item from the array at the given index.
 
@@ -214,7 +219,7 @@ Return an item from the array at the given index.
 ------
 ##### delete
 ```php
-public function delete(int $index) : sqonk\phext\datakit\PackedArray
+public function delete(int $index) : self
 ```
 Remove an item from the array  at the given index.
 
@@ -222,7 +227,7 @@ Remove an item from the array  at the given index.
 ------
 ##### pop
 ```php
-public function pop(&$poppedValue = null) : sqonk\phext\datakit\PackedArray
+public function pop(mixed &$poppedValue = null) : sqonk\phext\datakit\PackedArray
 ```
 Pop an item off the end of the array. If $poppedValue is provided then it is filled with the value that was removed.
 
@@ -238,7 +243,7 @@ Shift an item off the start of the array. If $shiftedItem is provided then it is
 ------
 ##### clear
 ```php
-public function clear() : sqonk\phext\datakit\PackedArray
+public function clear() : self
 ```
 Remove all elements from the array.
 
@@ -262,7 +267,7 @@ Returns `TRUE` if there are 0 elements in the array, `FALSE` otherwise.
 ------
 ##### first
 ```php
-public function first() 
+public function first() : mixed
 ```
 Return the first value in the array.
 
@@ -270,7 +275,7 @@ Return the first value in the array.
 ------
 ##### last
 ```php
-public function last() 
+public function last() : mixed
 ```
 Return the last value in the array.
 
@@ -278,7 +283,7 @@ Return the last value in the array.
 ------
 ##### any
 ```php
-public function any($match, bool $strict = false) : bool
+public function any(mixed $match, bool $strict = false) : bool
 ```
 Returns `TRUE` if any of the values within the array are equal to the value provided, `FALSE` otherwise.
 
@@ -292,7 +297,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = false) : bool
+public function all(mixed $match, bool $strict = false) : bool
 ```
 Returns `TRUE` if all of the values within the array are equal to the value provided, `FALSE` otherwise.
 
@@ -306,7 +311,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### contains
 ```php
-public function contains($needle) : bool
+public function contains(mixed $needle) : bool
 ```
 Search the array for the given needle (subject). This function is an alias of any().
 
@@ -314,7 +319,7 @@ Search the array for the given needle (subject). This function is an alias of an
 ------
 ##### ends_with
 ```php
-public function ends_with($needle) : bool
+public function ends_with(mixed $needle) : bool
 ```
 Determines if the array ends with the needle.
 
@@ -322,7 +327,7 @@ Determines if the array ends with the needle.
 ------
 ##### starts_with
 ```php
-public function starts_with($needle) : bool
+public function starts_with(mixed $needle) : bool
 ```
 Determines if the array starts with the needle.
 
@@ -350,7 +355,7 @@ Callback format: `myFunc($value, $index) -> mixed`
 ------
 ##### pad
 ```php
-public function pad(int $count, $value) : sqonk\phext\datakit\PackedArray
+public function pad(int $count, mixed $value) : self
 ```
 Pad the array to the specified length with a value. If $count is positive then the array is padded on the right, if it's negative then on the left.
 
@@ -388,9 +393,25 @@ Return a copy of the array containing a random subset of the elements. The minim
 
 
 ------
+##### rolling
+```php
+public function rolling(int $window, callable $callback, int $minObservations = 0) : sqonk\phext\datakit\PackedArray
+```
+Continually apply a callback to a moving fixed window on the array.
+
+- **int** $window The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
+- **callable** $callback The callback method that produces a result based on the provided subset of data.
+- **int** $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+
+Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
+
+**Returns:**  PackedArray A PackedArray of the same item size as the receiver, containing the series of results produced by the callback method.
+
+
+------
 ##### clip
 ```php
-public function clip($lower, $upper = null) : sqonk\phext\datakit\PackedArray
+public function clip(mixed $lower, mixed $upper = null) : sqonk\phext\datakit\PackedArray
 ```
 Provide a maximum or minimum (or both) constraint for the values in the array.
 
@@ -450,7 +471,7 @@ Alias of self::normalise().
 ------
 ##### sum
 ```php
-public function sum($key = null) 
+public function sum(mixed $key = null) : int|float
 ```
 Compute a sum of the values within the array.
 
@@ -460,7 +481,7 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### avg
 ```php
-public function avg($key = null) 
+public function avg(mixed $key = null) : int|float
 ```
 Compute the average of the values within the array.
 
@@ -470,7 +491,7 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### max
 ```php
-public function max($key = null) 
+public function max(mixed $key = null) : int|float|null
 ```
 Return the maximum value present within the array.
 
@@ -480,7 +501,7 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### min
 ```php
-public function min($key = null) 
+public function min(mixed $key = null) : int|float|null
 ```
 Return the minimum value present within the array.
 
@@ -490,7 +511,7 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### product
 ```php
-public function product($key = null) 
+public function product(mixed $key = null) : int|float|null
 ```
 Compute the product of the values within the array.
 
@@ -500,7 +521,7 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### variance
 ```php
-public function variance($key = null) 
+public function variance(mixed $key = null) : int|float
 ```
 Compute the variance of values within the array.
 
@@ -510,9 +531,9 @@ If $key is provided then the operation will be performed on the corresponding su
 ------
 ##### round
 ```php
-public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : sqonk\phext\datakit\PackedArray
+public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : self
 ```
-Round all values in the array up or down to the given decimal point precesion.
+Round all values in the array up or down to the given decimal point precision.
 
 
 ------

@@ -2,6 +2,8 @@
 ------
 ### EMA
 A simple class for management of a Exponential Moving Average. It works by alternating between adding new values to the array and calculating the current average.
+
+@implements \IteratorAggregate<int|float> @implements \ArrayAccess<int|float>
 #### Methods
 - [count](#count)
 - [getIterator](#getiterator)
@@ -70,14 +72,14 @@ public function __construct(int $maxItems, int $defaultPrecision = null)
 ```
 Construct a new EMA with the specified maximum number of values.
 
-- **$maxItems** The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
-- **$defaultPrecision** If set, will automatically round all averages to the given decimal precision.
+- **int** $maxItems The maximum amount of values that the moving average is allowed to work off of. As new values are added onto the end, old values are moved off the front.
+- **?int** $defaultPrecision If set, will automatically round all averages to the given decimal precision.
 
 
 ------
 ##### add
 ```php
-public function add(mixed ...$values) : sqonk\phext\datakit\EMA
+public function add(mixed ...$values) : self
 ```
 Add one or more new values to the EMA. The value must be numerical in nature.
 
@@ -89,6 +91,10 @@ public function result(int $precision = null) : float
 ```
 Return the calculated result of the EMA as it currently stands. You can optionally pass in a value to $precision to control the amount of decimal places that the result is rounded to. If $precision is `NULL` then it falls back to the default precision specified at the time of object creation.
 
+- **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the EMA object is used.
+
+**Returns:**  The most recent calculated moving average.
+
 
 ------
 ##### all
@@ -96,6 +102,10 @@ Return the calculated result of the EMA as it currently stands. You can optional
 public function all(int $precision = null) : array
 ```
 Return all acquired averages, optionally rounding them to the specified precision. If $precision is `NULL` then it falls back to the default precision specified at the time of object creation.
+
+- **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the EMA object is used.
+
+**Returns:**  list<int|float> The list of all acquired averages.
 
 
 ------

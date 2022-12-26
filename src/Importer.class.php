@@ -39,12 +39,12 @@ class Importer
      * sequential order.
      * 
      * -- parameters:
-     * @param $callback A callback method to process each row. Pass in NULL to have the data returned at the end.
-     * @param $data The CSV data in string format.
-     * @param $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
-     * @param $customHeaders A custom set of column headers to override any existing or absent headers.
+     * @param callable $callback A callback method to process each row. Pass in NULL to have the data returned at the end.
+     * @param string $data The CSV data in string format.
+     * @param bool $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
+     * @param ?list<string> $customHeaders A custom set of column headers to override any existing or absent headers.
      * 
-     * @return TRUE upon successful completion or the imported data array when no callback is
+     * @return bool|list<array<string, string>> TRUE upon successful completion or the imported data array when no callback is
      * being used. FALSE on failure to process the data source.
      * 
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
@@ -92,13 +92,13 @@ class Importer
      * sequential order.
      * 
      * -- parameters:
-     * @param $callback A callback method to process each row. Pass in NULL to have the data returned at the end.
-     * @param $filePath Path or URL to the file.
-     * @param $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
-     * @param $customHeaders A custom set of column headers to override any existing or absent headers.
-     * @param $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
+     * @param ?callable $callback A callback method to process each row. Pass in NULL to have the data returned at the end.
+     * @param string $filePath Path or URL to the file.
+     * @param bool $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
+     * @param ?list<string> $customHeaders A custom set of column headers to override any existing or absent headers.
+     * @param int $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
-     * @return TRUE upon successful completion or the imported data array when no callback is being used.
+     * @return bool|list<array<string, string>> TRUE upon successful completion or the imported data array when no callback is being used.
      * 
      * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
@@ -134,12 +134,12 @@ class Importer
      * sequential order.
      * 
      * -- parameters:
-     * @param $filePath Path or URL to the file.
-     * @param $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
-     * @param $customHeaders A custom set of column headers to override any existing or absent headers.
-     * @param $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
+     * @param string $filePath Path or URL to the file.
+     * @param bool $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
+     * @param ?list<string> $customHeaders A custom set of column headers to override any existing or absent headers.
+     * @param int $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
-     * @return A generator for use in a foreach loop.
+     * @return \Generator A generator for use in a foreach loop.
      * 
      * This method will throw a `RuntimeException` if the file can not be opened for any reason.
      */
@@ -164,13 +164,13 @@ class Importer
      * sequential order.
      * 
      * -- parameters:
-     * @param $filePath Path or URL to the CSV file.
-     * @param $headers When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing FALSE or any other value will result in sequential column headers.
-     * @param $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
+     * @param string $filePath Path or URL to the CSV file.
+     * @param ?list<string> $headers When TRUE, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing FALSE or any other value will result in sequential column headers.
+     * @param int $skipRows	Skip over a specified number of rows at the start. Defaults to 0.
      * 
      * @see Importer::yield_csv() for possible errors or exceptions that may be raised.
      * 
-     * @return A DataFrame object containing the rows from the CSV, or NULL if no rows were retrieved.
+     * @return ?DataFrame A DataFrame object containing the rows from the CSV, or NULL if no rows were retrieved.
      */
     static public function csv_dataframe(string $filePath, array|bool $headers = false, int $skipRows = 0): ?DataFrame
     {
@@ -210,14 +210,14 @@ class Importer
      * array will be in simple sequential order.
      * 
      * -- parameters:
-     * @param $callback A callback method to process each row.
-     * @param $data The data to be processed.
-     * @param $itemDelimiter The token used to split each row into individual items.
-     * @param $lineDelimiter The line ending used to split the data into seperate rows or lines.
-     * @param $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
-     * @param $customHeaders A custom set of column headers to override any existing or absent headers.
+     * @param callable $callback A callback method to process each row.
+     * @param string $data The data to be processed.
+     * @param string $itemDelimiter The token used to split each row into individual items.
+     * @param string $lineDelimiter The line ending used to split the data into seperate rows or lines.
+     * @param bool $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
+     * @param list<string> $customHeaders A custom set of column headers to override any existing or absent headers.
      * 
-     * @return TRUE upon successful completion or the compiled data array when not using a callback. FALSE on failure to process the data source.
+     * @return bool|list<array<string, string>> TRUE upon successful completion or the compiled data array when not using a callback. FALSE on failure to process the data source.
      * 
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
      * at least 1 line of applicable data.
@@ -266,16 +266,16 @@ class Importer
      * can not be trusted.
      * 
      * -- parameters:
-     * @param $database Name of the MySQL database to query.
-     * @param $source Either the name of table within the database or a full SELECT statement. 
-     * @param $server Server address where the database is hosted. Defaults to 'localhost'.
-     * @param $username Username used to log into the database. Defaults to 'root'.
-     * @param $password Matching password for the username. Defaults to ''.
+     * @param string $database Name of the MySQL database to query.
+     * @param string $source Either the name of table within the database or a full SELECT statement. 
+     * @param string $server Server address where the database is hosted. Defaults to 'localhost'.
+     * @param string $username Username used to log into the database. Defaults to 'root'.
+     * @param string $password Matching password for the username. Defaults to ''.
      * 
      * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
      * @throws `RuntimeException` If the MySQL library generates an error from executing the query.
      * 
-     * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
+     * @return ?DataFrame A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */
     static public function mysql_dataframe(string $database, string $source, string $server = 'localhost', string $username = 'root', string $password = ''): ?DataFrame
     {
@@ -298,11 +298,10 @@ class Importer
         $db = new \mysqli($server, $username, $password, $database);
         $r = $db->query($source);
         
-        if (is_object($r)) 
-            return $r->num_rows == 0 ? null : dataframe($r->fetch_all(MYSQLI_ASSOC));
-        
-        else if ($db->errno != 0) 
+        if ($db->errno != 0)
             throw new \RuntimeException("{$db->errno} {$db->error}\n$source");
+        
+        return is_object($r) ? $r->num_rows == 0 ? null : dataframe($r->fetch_all(MYSQLI_ASSOC)) : null;
     }
     
     /**
@@ -313,13 +312,13 @@ class Importer
      * NOTE: Requires the SQLite3 extension to be installed and active.
      * 
      * -- parameters:
-     * @param $database Name of the MySQL database to query.
-     * @param $source Either the name of table within the database or a full SELECT statement. 
+     * @param string $database Name of the MySQL database to query.
+     * @param string $source Either the name of table within the database or a full SELECT statement. 
      * 
      * @throws `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT.
      * @throws `RuntimeException` If the SQLite library generates an error from executing the query.
      * 
-     * @return A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
+     * @return ?DataFrame A DataFrame containing the resulting rows. Returns NULL if the specified table or query returns no rows.
      */
     static public function sqlite_dataframe(string $filepath, string $source): ?DataFrame
     {
@@ -348,5 +347,7 @@ class Importer
         
         if ($error)
             throw new \RuntimeException("$error {$msg}\n$source");
+        
+        return null;
     }
 }

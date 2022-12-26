@@ -35,21 +35,31 @@ use sqonk\phext\core\{arrays,strings};
  * methods for transforming and manipulating the underlying data and presentation 
  * thereof.
  * 
- * Adheres to interfaces: Stringable, ArrayAccess, Countable, IteratorAggregate
+ * Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
+ * 
+ * @implements \IteratorAggregate<list<array<string, string>>>
+ * @implements \ArrayAccess<list<array<string, string>>>
  */
 final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
-    protected $data;
-    protected $headers = [];
-    protected $transformers = [];
-    protected $indexHeader = '';
-    protected $showHeaders = true;
-    protected $showGenericIndexes = true;
+    protected array $data;
+    protected ?array $headers = [];
+    protected array $transformers = [];
+    protected string $indexHeader = '';
+    protected bool $showHeaders = true;
+    protected bool $showGenericIndexes = true;
 	
 	/** 
      *   Static equivalent of `new DataFrame`.
+     * 
+     * -- parameters:
+     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param ?list<string> $headers An optional custom set of column headers.
+     * @param bool $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
+     * 
+     * @return DataFrame A new DataFrame.
      */
-	static public function make(array $data, array $headers = null, bool $isVerticalDataSet = false): static {
+	static public function make(array $data, ?array $headers = null, bool $isVerticalDataSet = false): DataFrame {
 		return new DataFrame($data, $headers, $isVerticalDataSet);
 	}
     
@@ -109,14 +119,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	// ------- Main class methods
     
     /**
-     * Construct a new dataframe with the provided data. You may optionally provide the 
+     * Construct a new DataFrame with the provided data. You may optionally provide the 
      * set of column headers in the second parameter. If you choose to do this then they 
      * should match the keys in the array.
      * 
      * -- parameters:
-     * @param $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
-     * @param $headers An optional custom set of column headers.
-     * @param $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
+     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param ?list<string> $headers An optional custom set of column headers.
+     * @param bool $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
      * 
      * Standard data array format:
      * 
@@ -176,6 +186,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
+     * 
+     * -- parameters:
+     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param ?list<string> $headers An optional custom set of column headers.
+     * 
+     * @return DataFrame A copy of the DataFrame.
      */
     public function clone(array $data, ?array $headers = null): DataFrame
     {
@@ -275,10 +291,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	 *	Flatten the DataFrame into a native array.
 	 *
 	 * -- parameters:
-	 *	@param $includeIndex: 	If TRUE then use the DataFrame indexes as the keys in the array.
-	 *	@param $columns:		One or more columns that should be used in the resulting array, all columns if null is supplied.
+	 * @param bool $includeIndex If TRUE then use the DataFrame indexes as the keys in the array.
+	 * @param bool $columns One or more columns that should be used in the resulting array, all columns if null is supplied.
      *   
      *  The columns can be supplied as a set of variable arguments or an array as the second argument.
+     * 
+     * @return array<mixed> An array containing all of the data in the object.
 	*/
     public function flattened(bool $includeIndex = true, string ...$columns): array
     {
@@ -301,6 +319,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Return the row at $index.
+     * 
+     * @return array<string, string>
      */
     public function row(mixed $index): array
     {
@@ -321,6 +341,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Return an array of all the current row indexes.
+     * 
+     * @return list<string|int|float>
      */
     public function indexes(): array {
         return array_keys($this->data);
@@ -328,6 +350,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * All column headers currently in the DataFrame.
+     * 
+     * @return list<string>
      */
     public function headers(): array {
         return $this->headers;
@@ -444,9 +468,13 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Reindex the DataFrame using the provided labels. If $inPlace
-     * is TRUE then this operation modifies the receiver otherwise
-     * a copy is returned.
+     * Reindex the DataFrame using the provided labels.
+     * 
+     * -- parameters:
+     * @param list<string|int|float> $labels The values to use as the indexes.
+     * @param bool $inPlace If TRUE then this operation modifies the receiver otherwise a copy is returned.
+     * 
+     * @return DataFrame Either the receiver or a copy.
      */
     public function reindex_rows(array $labels, bool $inPlace = false): DataFrame
     { 
@@ -566,7 +594,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * then it will determine the direction in which the dataframe
      * is ordered. The default is `ASCENDING`.
      */
-    public function sort(...$columns): DataFrame
+    public function sort(string|bool ...$columns): DataFrame
     {
 		$asc = true;
 		if (count($columns) > 0 && is_bool(arrays::last($columns))) 
@@ -615,6 +643,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Return an array containing both the number of rows and columns.
+     * 
+     * @return array{int, int}
      */
     public function shape(): array
     {
@@ -635,21 +665,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If no column is given then return a new DataFrame containing
      * the counts for all columns.
      */
-    public function size(?string $column = null)
+    public function size(?string $column = null): int|static
     {
-        if ($column)
-        {
+        if ($column) {
             return count($this->values($column, false));
         }
-        else
-        {
-            $r = [];
-            foreach ($this->headers as $h) {
-                $values = $this->values($h, false);
-                $r[$h] = count($values);
-            }
-            return $this->clone([$r]);
+        
+        $r = [];
+        foreach ($this->headers as $h) {
+            $values = $this->values($h, false);
+            $r[$h] = count($values);
         }
+        return $this->clone([$r]);
     }
     
     /**
@@ -660,7 +687,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Internal function.
+     * @internal
+     * 
+     * -- parameters:
+     * @param list<string>|string|null $columns
+     * 
+     * @return list<string>
      */
     protected function determineColumns(array|string|null $columns): array
     {
@@ -676,8 +708,13 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Return all values for the given column. If $filterNAN is
-     * TRUE then omit values that are NULL.
+     * Return all values for one or more columns. 
+     * 
+     * -- parameters:
+     * @param array|string|null $columns The column(s) to acquire the values for.
+     * @param bool $filterNAN If TRUE then omit values that are NULL.
+     * 
+     * @return list<mixed>|list<list<mixed>> Either a singular list of values when one column is given, or a two dimensional array when two or more columns are requested.
      */
     public function values(array|string|null $columns = null, bool $filterNAN = true): array
     {
@@ -704,6 +741,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If you wish to output a report to something else other than the
      * command line then this method will allow you to present the data
      * as desired.
+     * 
+     * -- parameters:
+     * @param string ...$columns The columns to use in the report.
+     * 
+     * @return array{array<mixed>, list<string>} A two-element array. The first element contains an array of the compiled data and second is a copy of the column names requested (potentially adjusted).
      */
     public function report_data(string ...$columns): array
     {
@@ -911,6 +953,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $data = [];
         $count = count($this->data);
         $keys = array_keys($this->data);
+        $cols = null;
         for ($i = 0; $i < $count; $i++)
         {
             $index = $keys[$i];
@@ -1425,6 +1468,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If exactly one column is supplied then a single value is
      * returned, otherwise a DataFrame of 1 value per column is
      * produced.
+     * 
+     * @return DataFrame|list<int|float>
      */
     public function cummin(string ...$columns): DataFrame|array
     {
@@ -1456,6 +1501,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If exactly one column is supplied then a single value is
      * returned, otherwise a DataFrame of 1 value per column is
      * produced.
+     * 
+     * @return DataFrame|list<int|float>
      */
     public function cumproduct(string ...$columns): DataFrame|array
     {
@@ -1580,6 +1627,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If exactly one column is supplied then a single array is
      * returned, otherwise a DataFrame with the given columns is
      * produced.
+     * 
+     * @return DataFrame|list<float>
      */
     public function normalise(string ...$columns): DataFrame|array
     {
@@ -1618,9 +1667,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Alias of self::normalise().
+     * 
+     * @return DataFrame|list<float>
      */
-    public function normalize(string ...$columns): DataFrame|int|float {
-        return self::normalize(...$columns);
+    public function normalize(string ...$columns): DataFrame|array {
+        return self::normalise(...$columns);
     }
     
     /**
@@ -1666,16 +1717,16 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * data points it touches to string format in order to maintain the precision.
      * 
      * -- parameters:
-     * @param $precision the number of decimal points values should be rounded to.
-     * @param $mode rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
-     * @param $columns The columns to round. If no column is specified then the operation runs over all columns.
-     * @param $inPlace If TRUE then this operation modifies the receiver, otherwise a copy is returned.
+     * @param int $precision the number of decimal points values should be rounded to.
+     * @param int $mode rounding mode. See [round()](https://www.php.net/manual/en/function.round.php) for available values.
+     * @param list<string>|string|null $columns The columns to round. If no column is specified then the operation runs over all columns.
+     * @param bool $inPlace If TRUE then this operation modifies the receiver, otherwise a copy is returned.
      * 
-     * @return If $inPlace is FALSE then a copy of the Dataframe is rounded and returned. If TRUE then the DataFrame is directly modified and returns itself.
+     * @return DataFrame If $inPlace is FALSE then a copy of the Dataframe is rounded and returned. If TRUE then the DataFrame is directly modified and returns itself.
      * 
      * @see [math::nf_round()](math.md#nf_round) for more information on how the rounding is performed.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|string $columns = null, bool $inPlace = false): DataFrame
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, array|string|null $columns = null, bool $inPlace = false): DataFrame
     {
         $columns = $this->determineColumns($columns); 
         
@@ -1702,16 +1753,16 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Continually apply a callback to a moving fixed window on the data frame. 
      * 
      * -- parameters:
-     * @param $window The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
-     * @param $callback The callback method that produces a result based on the provided subset of data.
-     * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
-     * @param $columns The set of columns to work with. If not provided (or an empty value) then all columns are included.
-     * @param $indexes When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is `FALSE` then this parameter has no effect.
-     * @param $runHorizontal When `TRUE` the rolling set will run across columns of the frame. When `FALSE` (the default) the rolling dataset is the series of values down each desired column.
+     * @param int $window The size of the subset of the data frame that is passed to the callback on each iteration. Note that this is by default the maximum size the window can be. See `$minObservations`.
+     * @param callable $callback The callback method that produces a result based on the provided subset of data.
+     * @param int $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+     * @param string|list<string> $columns The set of columns to work with. If not provided (or an empty value) then all columns are included.
+     * @param string|int|list<int|string|float> $indexes When working horizontally, the collection of rows that should be included. This can either be a singular row or an array of independent indexes. If `$runHorizontal` is `FALSE` then this parameter has no effect.
+     * @param bool $runHorizontal When `TRUE` the rolling set will run across columns of the frame. When `FALSE` (the default) the rolling dataset is the series of values down each desired column.
      * 
      * Callback format: `myFunc(Vector $rollingSet, mixed $index, string $column) : mixed`
      * 
-     * @return A DataFrame containing the series of results produced by the callback method.
+     * @return DataFrame The series of results produced by the callback method.
      */
     public function rolling(
         int $window, 
@@ -1790,12 +1841,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Run a correlation over one or more columns to find similarities in values.
      * 
-     * The resulting DataFrame is a matrix of values representing the closeness
-     * of the adjoining values.
-     * 
      * -- parameters:
-     * @param $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
-     * @param $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+     * @param string $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+     * @param list<string> $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+     * 
+     * @return DataFrame A matrix of values representing the closeness of the adjoining values.
      */
     public function correlation(string $method, array $columns = null): DataFrame
     {
@@ -1818,6 +1868,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Alias of correlation().
+     * 
+     * -- parameters:
+     * @param string $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
+     * @param list<string> $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+     * 
+     * @return DataFrame A matrix of values representing the closeness of the adjoining values.
      */
     public function corr(string $method, array $columns = null): DataFrame {
         return $this->correlation($method, $columns);
@@ -1825,11 +1881,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Column and row structure must be inverted for this to work.
+     * 
+     * @internal
+     * 
+     * @param array<mixed> $matrix
+     * @param string $method
+     * 
+     * @return array<mixed>
      */
     protected function correlation_matrix(array $matrix, string $method): array
     {
         $accepted_methods = ['pearson', 'spearman'];
-        if (! arrays::contains($accepted_methods, $method)) {
+        if (! in_array(haystack:$accepted_methods, needle:$method)) {
             throw new \InvalidArgumentException("$method is not a supported correlation method.");
         }
         $result = [];
@@ -1848,7 +1911,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 }      
                 if ($method == 'pearson')
                     $r = math::correlation_pearson($matrix[$outer], $matrix[$inner]);
-                else if ($method == 'spearman')
+                else
                     $r = math::correlation_spearman($matrix[$outer], $matrix[$inner]);
                 $result[$outer][$inner] = $r;
                 
@@ -2061,6 +2124,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * This method only compares corresponding values between rows
      * of each column. That is, it the comparison is performed
      * vertically, not horizontally.
+     * 
+     * @return list<string|int|float> All found duplicates.
      */
     public function duplicated(string ...$columns): array
     {
@@ -2265,8 +2330,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * of rows within the DataFrame.
      * 
      * -- parameters:
-     * @param $column The column/header that will have its set of values replaced.
-     * @param $newValues An array of replacement values.
+     * @param string $column The column/header that will have its set of values replaced.
+     * @param list<string|int|float> $newValues An array of replacement values.
      * 
      * @throws InvalidArgumentException If the specified column is not present.
      * @throws LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
@@ -2299,8 +2364,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * ** Do not use new or unknown keys not already present
      * in the DataFrame.
+     * 
+     * -- parameters:
+     * @param array<string, string> $row The new row to add.
+     * @param mixed $index An optional custom index to apply to the row.
+     * 
+     * @return self The receiver.
      */
-    public function add_row(array $row = [], mixed $index = ''): DataFrame
+    public function add_row(array $row = [], mixed $index = ''): self
     {
         if (count($this->data) == 0 and ! $this->headers) 
             $this->headers = array_keys($row);
@@ -2360,7 +2431,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * to create an image-based graph of one or more columns.
      * 
      * -- parameters:
-     * @param $options represent the chart configuration.
+     * @param array<string, mixed> $options represent the chart configuration.
      *  -- title: 		Filename of the chart. Defaults to the chart type and series being plotted.
      *  -- columns: 	Array of the column names to produce charts for.
      *  -- xcolumn: 	A column name to use as the x-axis.
@@ -2376,7 +2447,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *  -- bars:		A linear array of values to represent an auxiliary/background bar chart dataset. This will plot on it's own Y axis.
      *  -- barColor:	The colour of the bars dataset, default is 'lightgray'.
      *  -- barWidth:	The width of each bar in the bars dataset, default is 7.
-     * @param $type represents the type of chart (e.g line, box, bar etc). Possible values:
+     * @param string $type Represents the type of chart (e.g line, box, bar etc). Possible values:
      *  -- line: 		line chart.
      *  -- linefill: 	line chart with filled area.
      *  -- bar:			bar chart.
@@ -2384,8 +2455,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *  -- scatter:		scatter chart.
      *  -- box:			Similar to a stock plot but with a fifth median value.
      * 
-     * @return A BulkPlot object containing the plots to be rendered.
-     * See: plotlib for possibly more information.
+     * @return BulkPlot An object containing the plots to be rendered.
+     * @see plotlib for possibly more information.
      */
     public function plot(string $type, array $options = []): BulkPlot
     {
@@ -2395,8 +2466,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         $oneChart = arrays::safe_value($options, 'one', false);
         
         $plot = new BulkPlot($title);
-        if ($oneChart)
-            $all_series = [];
+        $all_series = [];
         
         $xseries = null;
         $xtr = null; 
@@ -2452,11 +2522,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * All other standard option keys can be passed in.
      * 
+     * -- parameters:
+     * @param string $openP The column used for the opening price values.
+     * @param string $closeP The column used for the closing price values.
+     * @param string $lowP The column used for the low price values.
+     * @param string $highP The column used for the high price values.
+     * @param array<string, mixed> $options
+     * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
 	public function stock(string $openP, string $closeP, string $lowP, string $highP, array $options = []): BulkPlot
 	{
-		$series = [ $this->matrix($openP, $closeP, $lowP, $highP) ];
+		$series = [ $this->_sequence($openP, $closeP, $lowP, $highP) ];
 		
         $title = arrays::safe_value($options, 'title');
         $xcolumn = arrays::safe_value($options, 'xcolumn', null);
@@ -2491,13 +2568,33 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 	}
     
     /**
+     * @internal
+     * 
+     * @return list<mixed>
+     */
+    private function _sequence(string ...$columns): array 
+    {
+        $columns = $this->determineColumns($columns);
+        $out = [];
+        
+        foreach ($this as $i => $row)
+        {
+            foreach ($columns as $col) {
+                $out[] = $row[$col] ?? null;
+            }
+        }
+        
+        return $out;
+    }
+    
+    /**
      * Create a box plot chart, which is a singular data point of box-like
      * appearance that illustrates the place of the 25%, 50% and 75% quantiles
      * as well as the outer whiskers.
      * 
      * @return A BulkPlot object containing the plots to be rendered.
      */
-    public function box(...$columns): BulkPlot
+    public function box(string ...$columns): BulkPlot
     {
         $columns = $this->determineColumns($columns);
         $plot = new BulkPlot('box');
@@ -2524,7 +2621,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Create a bar chart styled in the fashion of a histogram.
      * 
      * -- parameters:
-     * @param $options is an array containing the following:
+     * @param array<string, mixed> $options is an array containing the following:
      *  -- columns: Array of column names to use (1 or more)
      *  -- bins: Number of bins to use for the histogram. Defaults to 10.
      *  -- cumulative: Create a stacked histogram showing the accumulative scale along with the main. Defaults to FALSE.
@@ -2619,10 +2716,10 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Export the Dataframe to a delimited text file (CSV).
      * 
      * -- parameters:
-     * @param $filePath: The destination file.
-     * @param $columns: The columns to export, or all if null is supplied.
-     * @param $delimiter: The character that separates each column.
-     * @param $includeIndex: When TRUE, adds the data frame row index as the first column.
+     * @param string $filePath: The destination file.
+     * @param list<string> $columns: The columns to export, or all if null is supplied.
+     * @param string $delimiter: The character that separates each column.
+     * @param bool $includeIndex: When TRUE, adds the data frame row index as the first column.
      */
     public function export(string $filePath, array $columns = null, string $delimiter = ',', bool $includeIndex = true): void
     {

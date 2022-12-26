@@ -1,6 +1,8 @@
 <?php
 namespace sqonk\phext\datakit;
 
+use sqonk\phext\core\arrays;
+
 /**
 *
 * Data Kit
@@ -25,30 +27,33 @@ namespace sqonk\phext\datakit;
  * called and actioned against all objects within the set.
  * 
  * This class is used internally by DataFrame and you should not
- * need to instanciate it yourself under most conditions.
+ * need to instantiate it yourself under most conditions.
+ * 
+ * @implements \IteratorAggregate<list<array<string, string>>>
+ * @implements \ArrayAccess<list<array<string, string>>>
  */
-
-use sqonk\phext\core\arrays;
-
 final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 {
-	// The collection of DataFrames.
-    protected $sets;
+	/**
+	 * The collection of DataFrames.
+	 * 
+	 * @var list<array<string, string>>
+	 */
+    protected array $sets;
 	
 	// The column the different frames were split by.
-    protected $column;
+    protected string $column;
 	
 	// -------- Class Interfaces
 	
-	public function getIterator(): \Iterator
-	{
+	public function getIterator(): \Iterator {
 		return new \ArrayIterator($this->sets);
 	}
 	
-	public function offsetSet($index, $dataFrame): void
+	public function offsetSet(mixed $index, mixed $dataFrame): void
 	{
 		if (! $dataFrame instanceof DataFrame)
-			throw new \IllegalArguementException('Only DataFrames can be added to the set of a GroupedDataFrame. Null or incorrect object type given.');
+			throw new \Exception('Only DataFrames can be added to the set of a GroupedDataFrame. Null or incorrect object type given.');
 		
 		if ($index === null)
 			$this->sets[] = $dataFrame;
@@ -56,12 +61,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 			$this->sets[$index] = $dataFrame;
 	}
 	
-	public function offsetExists($index): bool
+	public function offsetExists(mixed $index): bool
 	{
 		return isset($this->sets[$index]);
 	}
 	
-	public function offsetUnset($index): void
+	public function offsetUnset(mixed $index): void
 	{
 		if (isset($this->sets[$index])) {
 			$this->sets[$index] = null;
@@ -69,13 +74,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 		}
 	}
 	
-	public function offsetGet($index): mixed
+	public function offsetGet(mixed $index): mixed
 	{
 		return $this->sets[$index] ?? null;
 	}
 	
-	public function count(): int
-	{
+	public function count(): int {
 		return count($this->sets);
 	}
 	
@@ -85,8 +89,8 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
      * Construct a new GroupedDataFrame containing multiple DataFrame objects.
      * 
      * -- parameters:
-     * @param $groups Array of standard DataFrame objects.
-     * @param $groupedColumn The singular DataFrame column that was used to split the original frame into the group.
+     * @param list<array<string, string>> $groups Array of standard DataFrame objects.
+     * @param string $groupedColumn The singular DataFrame column that was used to split the original frame into the group.
      */
     public function __construct(array $groups, string $groupedColumn)
     {
@@ -94,7 +98,11 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
         $this->column = $groupedColumn;
     }
     
-    public function __call(string $name, array $args)
+    /**
+     * @param string $name
+     * @param array<mixed> $args
+     */
+    public function __call(string $name, array $args): mixed
     {
         $result = [];
         foreach ($this->sets as $df) {
@@ -123,13 +131,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
             return $result;
     }
     
-    public function __get($key)
-    {
+    public function __get(mixed $key): array {
         return $this->sets[$key];
     }
     
 	// Conversion to string will run a report on each frame within the group.
-    public function __toString()
+    public function __tostring(): string
     {
         $out = [];
         foreach ($this->sets as $df)
@@ -147,11 +154,11 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
      * of the frames in the set have matching indexes.
      * 
      * -- parameters:
-     * @param $keepIndexes  When set to FALSE then the new DataFrame reindexes all rows with a standard numerical sequence starting from 0.
+     * @param bool $keepIndexes  When set to FALSE then the new DataFrame reindexes all rows with a standard numerical sequence starting from 0.
      * 
-     * @return the new combined DataFrame.
+     * @return DataFrame the new combined DataFrame.
      */
-    public function combine(bool $keepIndexes = true)
+    public function combine(bool $keepIndexes = true): DataFrame
     {
         $combined = [];
         foreach ($this->sets as $df) {
@@ -172,11 +179,13 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	 * Functional map to the standard export within DataFrame.
 	 * 
 	 * -- parameters:
-	 * @param $dir Path to the directory/folder to export the CSV to.
-	 * @param $columns Which columns to export.
-	 * @param $delimeter CSV delimiter.
+	 * @param string $dir Path to the directory/folder to export the CSV to.
+	 * @param list<string> $columns Which columns to export.
+	 * @param string $delimiter CSV delimiter.
+	 * 
+	 * @return ?list<array<string, string>> 
 	 */
-    public function export($dir = '.', array $columns = null, string $delimeter = ',')   
+    public function export(string $dir = '.', array $columns = null, string $delimeter = ','): ?array   
     {
         if (php_sapi_name() == 'cli' && $dir !== null && ! file_exists($dir))
             mkdir($dir, 0777, true);
@@ -187,11 +196,11 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
                 $out[] = $df->export("php://output", $columns, $delimeter);
             return $out;
         }
-        else {
-            foreach ($this->sets as $df) {
-                $id = $df->values($this->column)[0];
-                $df->export("$dir/$id.csv", $columns, $delimeter);
-            }
+            
+        foreach ($this->sets as $df) {
+            $id = $df->values($this->column)[0];
+            $df->export("$dir/$id.csv", $columns, $delimeter);
         }
+        return null;
     }
 }

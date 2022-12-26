@@ -34,7 +34,7 @@ use \DOMNode;
 
 class DOMScraper
 {
-    protected $dom;
+    protected DomDocument $dom;
     
     /**
      * Create a new scraper using the provided text content. The contents
@@ -55,7 +55,7 @@ class DOMScraper
     /**
      * Return the DOMDocument object.
      */
-    public function dom()
+    public function dom(): DomDocument
     {
         return $this->dom;
     }
@@ -65,9 +65,9 @@ class DOMScraper
      * and providing them back to your program for processing.
      * 
      * -- parameters:
-     * @param $elements The configuration array of elements to traverse (see below examples).
-     * @param $callback A callback method that will repeatably receive each element at the end of the traversal chain.
-     * @param $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as NULL.
+     * @param list<array<string, string>> $elements The configuration array of elements to traverse (see below examples).
+     * @param callable $callback A callback method that will repeatably receive each element at the end of the traversal chain.
+     * @param ?DOMNode $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as NULL.
      * 
      * Elements array should be in format of:
      * 
@@ -91,12 +91,12 @@ class DOMScraper
      * In this example the table rows found from the last definition in the elements array would
      * be passed to your callback, which takes one parameter only.
      * 
-     * @return array [BOOL $pass, STRING $errorMessage].
+     * @return array{bool, string} A two-member array. The first element contains TRUE or FALSE on whether the traversal was successful. If FALSE, the second element contains the error message.
      * 
      * The first element of the result ($pass) is TRUE if 1 or more items were found and passed to 
      * the callback, FALSE otherwise.
      */
-    public function traverse(array $elements, callable $callback, DOMNode $current = null): array
+    public function traverse(array $elements, callable $callback, ?DOMNode $current = null): array
     {
         if (count($elements) == 0)
             throw new \InvalidArgumentException("elements array can not be empty");
@@ -169,10 +169,10 @@ class DOMScraper
      * them one at a time to your foreach loop.
      * 
      * -- parameters:
-     * @param $elements The configuration array of elements to traverse (see below examples).
-     * @param $result If passed in, sets the value to the result of the `traverse` method that was called internally.
+     * @param list<array<string, string>> $elements The configuration array of elements to traverse (see below examples).
+     * @param ?array{bool, string} &$result If passed in, sets the value to the result of the `traverse` method that was called internally.
      */
-    public function yield(array $elements, &$result = null): \Generator
+    public function yield(array $elements, ?array &$result = null): \Generator
     {
         $found = [];
         $result = $this->traverse($elements, function($element) use (&$found) {

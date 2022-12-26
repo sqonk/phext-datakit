@@ -26,12 +26,12 @@ where $row is an array of the values retrieved from the current row in the CSV. 
 
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
-- **$callback** A callback method to process each row. Pass in `NULL` to have the data returned at the end.
-- **$data** The CSV data in string format.
-- **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
-- **$customHeaders** A custom set of column headers to override any existing or absent headers.
+- **callable** $callback A callback method to process each row. Pass in `NULL` to have the data returned at the end.
+- **string** $data The CSV data in string format.
+- **bool** $headersAreFirstRow `TRUE` or `FALSE`, where are not the first row contains headers.
+- **?list<string>** $customHeaders A custom set of column headers to override any existing or absent headers.
 
-**Returns:**  `TRUE` upon successful completion or the imported data array when no callback is being used. `FALSE` on failure to process the data source.
+**Returns:**  bool|list<array<string, string>> `TRUE` upon successful completion or the imported data array when no callback is being used. `FALSE` on failure to process the data source.
 
 This method will generate a user level warning if data is empty or can not otherwise be derived into at least 1 line of applicable data.
 
@@ -53,13 +53,13 @@ where $row is an array of the values retrieved from the current row in the CSV. 
 
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
-- **$callback** A callback method to process each row. Pass in `NULL` to have the data returned at the end.
-- **$filePath** Path or URL to the file.
-- **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
-- **$customHeaders** A custom set of column headers to override any existing or absent headers.
-- **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
+- **?callable** $callback A callback method to process each row. Pass in `NULL` to have the data returned at the end.
+- **string** $filePath Path or URL to the file.
+- **bool** $headersAreFirstRow `TRUE` or `FALSE`, where are not the first row contains headers.
+- **?list<string>** $customHeaders A custom set of column headers to override any existing or absent headers.
+- **int** $skipRows Skip over a specified number of rows at the start. Defaults to 0.
 
-**Returns:**  `TRUE` upon successful completion or the imported data array when no callback is being used.
+**Returns:**  bool|list<array<string, string>> `TRUE` upon successful completion or the imported data array when no callback is being used.
 
 This method will throw a `RuntimeException` if the file can not be opened for any reason.
 
@@ -75,12 +75,12 @@ Each yielded row is an array of the values retrieved from the current row in the
 
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
-- **$filePath** Path or URL to the file.
-- **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
-- **$customHeaders** A custom set of column headers to override any existing or absent headers.
-- **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
+- **string** $filePath Path or URL to the file.
+- **bool** $headersAreFirstRow `TRUE` or `FALSE`, where are not the first row contains headers.
+- **?list<string>** $customHeaders A custom set of column headers to override any existing or absent headers.
+- **int** $skipRows Skip over a specified number of rows at the start. Defaults to 0.
 
-**Returns:**  A generator for use in a foreach loop.
+**Returns:**  \Generator A generator for use in a foreach loop.
 
 This method will throw a `RuntimeException` if the file can not be opened for any reason.
 
@@ -94,14 +94,14 @@ Import a CSV directly into a DataFrame object in the most memory efficient way.
 
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
-- **$filePath** Path or URL to the CSV file.
-- **$headers** When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing `FALSE` or any other value will result in sequential column headers.
-- **$skipRows** Skip over a specified number of rows at the start. Defaults to 0.
+- **string** $filePath Path or URL to the CSV file.
+- **?list<string>** $headers When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing `FALSE` or any other value will result in sequential column headers.
+- **int** $skipRows Skip over a specified number of rows at the start. Defaults to 0.
 
 
 **See:**  Importer::yield_csv() for possible errors or exceptions that may be raised.
 
-**Returns:**  A DataFrame object containing the rows from the CSV, or `NULL` if no rows were retrieved.
+**Returns:**  ?DataFrame A DataFrame object containing the rows from the CSV, or `NULL` if no rows were retrieved.
 
 
 ------
@@ -119,14 +119,14 @@ Your callback method should be in the format of:
 
 where $row is an array of the values retrieved from the current row or line in the data. The supplied array will be in simple sequential order.
 
-- **$callback** A callback method to process each row.
-- **$data** The data to be processed.
-- **$itemDelimiter** The token used to split each row into individual items.
-- **$lineDelimiter** The line ending used to split the data into seperate rows or lines.
-- **$headersAreFirstRow** `TRUE` or `FALSE`, where are not the first row contains headers.
-- **$customHeaders** A custom set of column headers to override any existing or absent headers.
+- **callable** $callback A callback method to process each row.
+- **string** $data The data to be processed.
+- **string** $itemDelimiter The token used to split each row into individual items.
+- **string** $lineDelimiter The line ending used to split the data into seperate rows or lines.
+- **bool** $headersAreFirstRow `TRUE` or `FALSE`, where are not the first row contains headers.
+- **list<string>** $customHeaders A custom set of column headers to override any existing or absent headers.
 
-**Returns:**  `TRUE` upon successful completion or the compiled data array when not using a callback. `FALSE` on failure to process the data source.
+**Returns:**  bool|list<array<string, string>> `TRUE` upon successful completion or the compiled data array when not using a callback. `FALSE` on failure to process the data source.
 
 This method will generate a user level warning if data is empty or can not otherwise be derived into at least 1 line of applicable data.
 
@@ -142,17 +142,17 @@ NOTE: Requires the MySQLi extension to be installed and active.
 
 CAUTION: This method is designed for CLI usage only and will trigger a warning if called from any other SAPI. Additionally it performs <u>no</u> escaping or other security checks and so should <u>not</u> be used in any situation where common sense security would be expected or the input can not be trusted.
 
-- **$database** Name of the MySQL database to query.
-- **$source** Either the name of table within the database or a full SELECT statement.
-- **$server** Server address where the database is hosted. Defaults to 'localhost'.
-- **$username** Username used to log into the database. Defaults to 'root'.
-- **$password** Matching password for the username. Defaults to ''.
+- **string** $database Name of the MySQL database to query.
+- **string** $source Either the name of table within the database or a full SELECT statement.
+- **string** $server Server address where the database is hosted. Defaults to 'localhost'.
+- **string** $username Username used to log into the database. Defaults to 'root'.
+- **string** $password Matching password for the username. Defaults to ''.
 
 
 **Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
 **Throws:**  `RuntimeException` If the MySQL library generates an error from executing the query.
 
-**Returns:**  A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
+**Returns:**  ?DataFrame A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
 
 
 ------
@@ -164,14 +164,14 @@ Loads data out of a SQLite database into a DataFrame. $source can either be a ta
 
 NOTE: Requires the SQLite3 extension to be installed and active.
 
-- **$database** Name of the MySQL database to query.
-- **$source** Either the name of table within the database or a full SELECT statement.
+- **string** $database Name of the MySQL database to query.
+- **string** $source Either the name of table within the database or a full SELECT statement.
 
 
 **Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
 **Throws:**  `RuntimeException` If the SQLite library generates an error from executing the query.
 
-**Returns:**  A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
+**Returns:**  ?DataFrame A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
 
 
 ------

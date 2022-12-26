@@ -49,7 +49,7 @@ class math
      * >
      * 
      * -- parameters:
-     * @param array $a
+     * @param list<int|float> $a
      * @param bool $sample [optional] Defaults to false
      * 
      * @return float|bool The standard deviation or FALSE on error.
@@ -79,6 +79,9 @@ class math
     
 	/**
 	 * Compute the variance of an array of values.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
 	 */
     static public function variance(array $array): float
     {
@@ -101,6 +104,9 @@ class math
 
     /**
      * Produce the average of an array of numbers.
+     * 
+     * -- parameters:
+	 * @param list<int|float> $array The input array of values.
      */
     static public function avg(array $array): float|int
     {
@@ -112,7 +118,10 @@ class math
      * Find the minimum floating point number present in an array. This method
      * works correctly when comparing negative floating point units.
      * 
-     * Returns the lowest value in the array or null if the array is empty.
+     * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+     * 
+     * @return ?float The lowest value in the array or NULL if the array is empty.
      */
     static public function min(array $array): ?float
     {
@@ -128,7 +137,10 @@ class math
      * Find the maximum floating point number present in an array. This method
      * works correctly when comparing negative floating point units.
      * 
-     * Returns the highest value in the array or null if the array is empty.
+     * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+     * 
+     * @return ?float The highest value in the array or NULL if the array is empty.
      */
     static public function max(array $array): ?float
     {
@@ -142,6 +154,9 @@ class math
 	
 	/**
 	 * Return the middle number within an array.
+	 * 
+	 * -- parameters:
+	 * @param list<mixed> $array The input array of values.
 	 */
     static public function median(array $array): float|int|bool
     {
@@ -171,6 +186,10 @@ class math
 
 	/**
 	 * Compute the quantile from the given percentile of the given array.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * @param float $quantile The quantile to compute.
 	 */
     static public function quantile(array $array, float $quantile): float|int
     {
@@ -203,6 +222,11 @@ class math
     
     /**
      * Normalise a series of numbers to a range between 0 and 1.
+     * 
+     * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float> A copy of the input array with all values normalised.
      */
     static public function normalise(array $array): array
     {
@@ -229,7 +253,11 @@ class math
     /**
      * Compute a correlation using the Pearson method with the two given arrays.
      * 
-     * @return 1.0 if both arrays are empty, -1.0 if both arrays do not match in size, otherwise a float or int representing the result of the correlation.
+     * -- parameters:
+	 * @param list<int|float> $x The first input array of values.
+	 * @param list<int|float> $y The second input array of values.
+     * 
+     * @return float|int 1.0 if both arrays are empty, -1.0 if both arrays do not match in size, otherwise a float or int representing the result of the correlation.
      * 
      * This method was taken from: https://gist.github.com/fdcore/a4dd72580244ffeac3039741b4904b31
      */
@@ -265,6 +293,11 @@ class math
 
 	/**
 	 * Accumulative minimum of the values within an array.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float> An array of running minimum values.
 	 */
     static public function cumulative_min(array $array): array
     {
@@ -277,6 +310,11 @@ class math
 
 	/**
 	 * Accumulative maximum of the values within an array.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float> An array of running maximum values.
 	 */
     static public function cumulative_max(array $array): array
     {
@@ -289,6 +327,11 @@ class math
     
 	/**
 	 * Accumulative sum of the values within an array.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float> An array of running totals.
 	 */
     static public function cumulative_sum(array $array): array
     {
@@ -318,6 +361,11 @@ class math
     
 	/**
 	 * Accumulative product of the values within an array.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float> An array of running products.
 	 */
     static public function cumulative_prod(array $array): array
     {
@@ -349,7 +397,11 @@ class math
     /**
      * Compute a correlation using the Spearman method with the two given arrays.
      * 
-     * @return 1 if both arrays are empty, FALSE if both arrays are not the same size, otherwise a float or int representing the result of the correlation.
+     * -- parameters:
+	 * @param list<int|float> $data1 The first input array of values.
+	 * @param list<int|float> $data2 The second input array of values.
+     * 
+     * @return float|int|bool 1 if both arrays are empty, FALSE if both arrays are not the same size, otherwise a float or int representing the result of the correlation.
      * 
      * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
@@ -382,9 +434,6 @@ class math
         // Back to prevous orders/relationships
         array_multisort($relation1, $ranking1); 
         array_multisort($relation2, $ranking2);
-
-        if (! isset($ranking1) || ! isset($ranking2)) 
-            return null; 
         
         $distances = self::distances($ranking1, $ranking2);
         return self::coefficient($distances);
@@ -392,6 +441,11 @@ class math
     
 	/**
 	 * Compute the coefficient of an array of distances.
+	 * 
+	 * -- parameters:
+	 * @param list<int|float> $distances The input array of values.
+	 * 
+	 * @return float|int|bool The calculated coefficient.
 	 * 
 	 * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
@@ -417,6 +471,12 @@ class math
      * Return an array of distances computed from the values of the two
      * given arrays.
      * 
+     * -- parameters:
+	 * @param list<int|float> $ranking1 The first input array of values.
+	 * @param list<int|float> $ranking2 The second input array of values.
+	 *
+	 * @return list<int|float> An array of computed distances.
+     * 
      * This method is part of the spearman correlation and was originally
      * written by Alejandro Mitrou under the GPL license. 
      * 
@@ -435,6 +495,13 @@ class math
     /**
      * This method is part of the spearman correlation and were originally
      * written by Alejandro Mitrou under the GPL license. 
+     * 
+     * @internal
+     * 
+     * -- parameters:
+	 * @param list<int|float> $array The input array of values.
+	 * 
+	 * @return list<int|float>
      * 
      * see: http://www.wisetonic.com/
      * see: https://github.com/amitrou/Spearman-Correlation
@@ -487,11 +554,11 @@ class math
      * in order to hold the precision.
      * 
      * -- parameters:
-     * @param $value The value to be rounded. If an array is passed in then each element within is rounded.
-     * @param $precision The number of decimal digits to round to. Defaults to 2.
-     * @param $mode The rounding mode used.
+     * @param float|int|string|list<int|float|string> $value The value to be rounded. If an array is passed in then each element within is rounded.
+     * @param int $precision The number of decimal digits to round to. Defaults to 2.
+     * @param int $mode The rounding mode used.
      * 
-     * @return The rounded value, or array of rounded values (depending on the input).
+     * @return string|list<string> The rounded value, or array of rounded values (depending on the input).
      * 
      * @see Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information on rounding modes and how the rounding engine works.
      */

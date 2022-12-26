@@ -44,6 +44,9 @@ namespace sqonk\phext\datakit;
  * are built to address situations where working with large data sets that challenge
  * the available RAM on the running machine can not be practically solved by other
  * means.
+ * 
+ * @implements \IteratorAggregate<mixed>
+ * @implements \ArrayAccess<mixed>
  */
 class PackedArray implements \ArrayAccess, \Countable, \Iterator
 {
@@ -73,7 +76,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	
 	public function offsetUnset(mixed $index): void
 	{
-		$this->remove($index);
+		$this->delete($index);
 	}
 
     public function __tostring(): string {
@@ -110,6 +113,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     
     /**
      * Construct a new vector with the provided array.
+     * 
+     * @param list<mixed> $startingArray is an optional array of starting numbers to add
+     * to the array.
      */
     public function __construct(array $startingArray = [])
     {
@@ -143,7 +149,12 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         return $this->indexes->count();
     }
     
-    protected function encode($value)
+    /**
+     * @internal
+     * 
+     * @return array{mixed, string}
+     */
+    protected function encode(mixed $value): array
     {
         if (is_int($value))
             return [pack('i', $value), 'i'];
@@ -157,7 +168,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         return [$value, 's'];
     }
     
-    protected function decode($value, $type)
+    /**
+     * @internal
+     */
+    protected function decode(mixed $value, string $type): mixed
     {
         if ($type == 'i')
             return unpack('i', $value)[1];
@@ -175,7 +189,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Add a value to the end of the array. If the value is an array or a
      * traversable object then it will be serialised prior to being stored.
      */
-    public function add(...$values): PackedArray
+    public function add(mixed ...$values): self
     {
         foreach ($values as $value)
         {
@@ -202,7 +216,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Insert a new item into the array at a given index anywhere up to the end of the array.
      */
-    public function insert(int $index, $newVal): PackedArray
+    public function insert(int $index, mixed $newVal): self
     {
         $count = $this->count();
         
@@ -244,7 +258,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Overwrite an existing value with the one provided. If $index is greater than the current
      * count then the value is appended to the end.
      */
-    public function set(int $index, $value): PackedArray
+    public function set(int $index, mixed $value): self
     {
         $count = $this->count();
         
@@ -270,14 +284,19 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Return an item from the array at the given index.
      */
-    public function get(int $index)
+    public function get(int $index): mixed
     {
         [$value] = $this->_get($index);
         
         return $this->decode($value, $this->types->get($index));
     }
     
-    protected function _get(int $index)
+    /**
+     * @internal
+     * 
+     * @return array{mixed, int, int}
+     */
+    protected function _get(int $index): array
     {
         $pos = $this->indexes->get($index);
         $len = $this->lengths->get($index);
@@ -291,7 +310,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Remove an item from the array  at the given index.
      */
-    public function delete(int $index): PackedArray
+    public function delete(int $index): self
     {
         $count = $this->count();
         
@@ -325,7 +344,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Pop an item off the end of the array. If $poppedValue is provided
      * then it is filled with the value that was removed.
      */
-    public function pop(&$poppedValue = null): PackedArray
+    public function pop(mixed &$poppedValue = null): PackedArray
     {
         if ($this->count() == 0) {
             trigger_error('Tried to pop an array that has no elements.', E_USER_WARNING);
@@ -355,7 +374,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Remove all elements from the array.
      */
-    public function clear(): PackedArray
+    public function clear(): self
     {
         $this->indexes->clear();
         $this->lengths->clear();
@@ -372,32 +391,28 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	/**
 	 * Return a new vector containing all indexes.
 	 */
-	public function keys(): Vector
-	{
+	public function keys(): Vector {
 		return new Vector(range(0, $this->count()-1));
 	}
     
 	/**
 	 * Returns TRUE if there are 0 elements in the array, FALSE otherwise.
 	 */
-	public function empty(): bool
-	{
+	public function empty(): bool {
 		return $this->count() == 0;
 	}
     
 	/**
 	 * Return the first value in the array.
 	 */
-	public function first()
-	{
+	public function first(): mixed {
 		return $this->get(0);
 	}
 	
 	/**
 	 * Return the last value in the array.
 	 */
-	public function last()
-	{
+	public function last(): mixed {
 		return $this->get($this->count()-1);
 	}
     
@@ -412,7 +427,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function any($match, bool $strict = false): bool
+	public function any(mixed $match, bool $strict = false): bool
 	{
 		if (is_callable($match))
 		{
@@ -444,7 +459,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * For basic (non-callback) matches, setting $strict to TRUE will enforce
      * type-safe comparisons.
      */
-	public function all($match, bool $strict = false): bool
+	public function all(mixed $match, bool $strict = false): bool
 	{
 		$isCallback = is_callable($match);
 		foreach ($this as $value) {
@@ -459,24 +474,21 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Search the array for the given needle (subject). This function is an
      * alias of any().
      */
-    public function contains($needle): bool
-    {
+    public function contains(mixed $needle): bool {
         return self::any($needle);
     }
     
     /**
      * Determines if the array ends with the needle.
      */
-    public function ends_with($needle): bool
-    {
+    public function ends_with(mixed $needle): bool {
         return $this->last() == $needle;
     }
     
     /**
      * Determines if the array starts with the needle.
      */
-    public function starts_with($needle): bool
-    {
+    public function starts_with(mixed $needle): bool {
         return $this->first() == $needle;
     }
     
@@ -511,7 +523,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Pad the array to the specified length with a value. If $count is positive then
      * the array is padded on the right, if it's negative then on the left.
      */
-	public function pad(int $count, $value): PackedArray
+	public function pad(int $count, mixed $value): self
 	{
         if ($count > 0)
         {
@@ -602,15 +614,15 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Continually apply a callback to a moving fixed window on the array. 
      * 
      * -- parameters:
-     * @param $window The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
-     * @param $callback The callback method that produces a result based on the provided subset of data.
-     * @param $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
+     * @param int $window The size of the subset of the vector that is passed to the callback on each iteration. Note that this is the by default the maximum size the window can be. See `$minObservations`.
+     * @param callable $callback The callback method that produces a result based on the provided subset of data.
+     * @param int $minObservations The minimum number of elements that is permitted to be passed to the callback. If set to 0 the minimum observations will match whatever the window size is set to, thus enforcing the window size. If the value passed in is greater than the window size a warning will be triggered.
      * 
      * Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
      * 
      * @return PackedArray A PackedArray of the same item size as the receiver, containing the series of results produced by the callback method.
      */
-    public function rolling(int $window, callable $callback, int $minObservations = 0): static 
+    public function rolling(int $window, callable $callback, int $minObservations = 0): PackedArray 
     {
         if ($window < 1) {
             throw new \InvalidArgumentException("window must be a number greater than 0 ($window given)");
@@ -652,7 +664,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * If $inPlace is TRUE then this operation modifies this array otherwise a copy is
      * returned.
      */
-    public function clip($lower, $upper = null): PackedArray
+    public function clip(mixed $lower, mixed $upper = null): PackedArray
     {
         foreach ($this as $key => $value)
         {
@@ -773,8 +785,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
     /**
      * Alias of self::normalise().
      */
-    public function normalize(): PackedSequence
-    {
+    public function normalize(): PackedSequence {
         return self::normalise();
     }
     
@@ -785,7 +796,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-    public function sum($key = null)
+    public function sum(mixed $key = null): int|float
 	{
 		$sum = 0;
         foreach ($this as $value)
@@ -803,7 +814,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-    public function avg($key = null)
+    public function avg(mixed $key = null): int|float
     {
         $count = $this->count();
         return ($count > 0) ? $this->sum($key) / $count : $count;
@@ -816,7 +827,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-    public function max($key = null)
+    public function max(mixed $key = null): int|float|null
     {
         $max = null;
         foreach ($this as $value)
@@ -841,7 +852,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-    public function min($key = null)
+    public function min(mixed $key = null): int|float|null
     {
         $min = null;
         foreach ($this as $value)
@@ -866,7 +877,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-    public function product($key = null)
+    public function product(mixed $key = null): int|float|null
 	{
 		$product = null;
         foreach ($this as $value)
@@ -903,24 +914,25 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * the corresponding sub value of array element, assuming each
      * element is an array or an object that provides array access.
      */
-	public function variance($key = null)
+	public function variance(mixed $key = null): int|float
 	{
         if ($this->empty())
             return 0.0;
         $variance = 0.0;
         $average = $this->avg();
 
-        foreach ($this as $i)
+        foreach ($this as $i => $value)
         {
             // sum of squares of differences between 
             // all numbers and means.
-            if (is_numeric($i))
-                $variance += pow(($i - $average), 2);
+            if (is_numeric($value)) {
+                $variance += pow(($value - $average), 2);
+            }
             else if ($key !== null and is_numeric($value[$key]))
             {
-                $i = $value[$key] ?? null;
-                if ($i !== null)
-                    $product += pow(($i - $average), 2);
+                $j = $value[$key] ?? null;
+                if ($j !== null)
+                    $variance += pow(($j - $average), 2);
             }
         }
 
@@ -928,9 +940,9 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	}
 	
     /**
-     * Round all values in the array up or down to the given decimal point precesion.
+     * Round all values in the array up or down to the given decimal point precision.
      */
-    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): PackedArray
+    public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): self
     {
         foreach ($this as $key => $value)
         {

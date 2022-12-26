@@ -4,6 +4,8 @@
 A class to add both object orientation and utility methods to native arrays, enabling easier to write and easier to read code.
 
 In particular it sports a variety of basic mathematical and statistical functions.
+
+@implements \IteratorAggregate<mixed> @implements \ArrayAccess<mixed>
 #### Methods
 - [getIterator](#getiterator)
 - [offsetSet](#offsetset)
@@ -101,7 +103,7 @@ No documentation available.
 ------
 ##### offsetSet
 ```php
-public function offsetSet($index, $value) : void
+public function offsetSet(mixed $index, mixed $value) : void
 ```
 No documentation available.
 
@@ -109,7 +111,7 @@ No documentation available.
 ------
 ##### offsetGet
 ```php
-public function offsetGet($index) : mixed
+public function offsetGet(mixed $index) : mixed
 ```
 No documentation available.
 
@@ -117,7 +119,7 @@ No documentation available.
 ------
 ##### offsetExists
 ```php
-public function offsetExists($index) : bool
+public function offsetExists(mixed $index) : bool
 ```
 No documentation available.
 
@@ -125,7 +127,7 @@ No documentation available.
 ------
 ##### offsetUnset
 ```php
-public function offsetUnset($index) : void
+public function offsetUnset(mixed $index) : void
 ```
 No documentation available.
 
@@ -145,13 +147,17 @@ public function __construct(array $startingArray = [])
 ```
 Construct a new vector with the provided array.
 
+@param array<mixed> $startingArray An option set of initial data to fill the vector with.
+
 
 ------
 ##### array
 ```php
 public function array() : array
 ```
-No documentation available.
+Returns a copy of the vector as a native array.
+
+**Returns:**  array<mixed> The internal native array holding the data of the vector.
 
 
 ------
@@ -165,7 +171,7 @@ Return the number of elements in the array.
 ------
 ##### constrain
 ```php
-public function constrain(int $limit) : sqonk\phext\datakit\Vector
+public function constrain(int $limit) : self
 ```
 Set a rolling capacity limit on the vector. Once set, old values will be shifted off of the beginning to make room for new values once the capacity is reached.
 
@@ -175,7 +181,7 @@ Setting the limit to 0 will remove the constraint altogether, which is the defau
 ------
 ##### append
 ```php
-public function append($value) : sqonk\phext\datakit\Vector
+public function append(mixed $value) : self
 ```
 Add one element to the end of the vector. Slightly faster than using add() in a tight loop.
 
@@ -183,7 +189,7 @@ Add one element to the end of the vector. Slightly faster than using add() in a 
 ------
 ##### add
 ```php
-public function add(...$values) : sqonk\phext\datakit\Vector
+public function add(mixed ...$values) : self
 ```
 Add one or more elements to the end of the vector.
 
@@ -191,18 +197,18 @@ Add one or more elements to the end of the vector.
 ------
 ##### merge
 ```php
-public function merge(iterable $collection, bool $maintainKeyAssociation = false) : sqonk\phext\datakit\Vector
+public function merge(iterable $collection, bool $maintainKeyAssociation = false) : self
 ```
 Append another array, vector or collection to the end of the vector.
 
-- **$collection** The set of items to add to the end of the vector.
-- **$maintainKeyAssociation** When ``TRUE``, both the keys and the values from the given collection will be merged into the vector. When ``FALSE``, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge.
+- **iterable<mixed>** $collection The set of items to add to the end of the vector.
+- **bool** $maintainKeyAssociation When ``TRUE``, both the keys and the values from the given collection will be merged into the vector. When ``FALSE``, only the values will. It should be noted that this method will not attempt to modify the keys/indexes already in the vector prior to the merge.
 
 
 ------
 ##### set
 ```php
-public function set($key, $value) : sqonk\phext\datakit\Vector
+public function set(mixed $key, mixed $value) : self
 ```
 Set an element in the array to the provided key/index.
 
@@ -210,7 +216,7 @@ Set an element in the array to the provided key/index.
 ------
 ##### prepend
 ```php
-public function prepend(...$values) : sqonk\phext\datakit\Vector
+public function prepend(mixed ...$values) : self
 ```
 Add one or more elements to the start of the vector. If a constraint is set then excess elements will be removed from the end.
 
@@ -218,7 +224,7 @@ Add one or more elements to the start of the vector. If a constraint is set then
 ------
 ##### fill
 ```php
-public function fill(int $amount, callable $callback) : sqonk\phext\datakit\Vector
+public function fill(int $amount, callable $callback) : self
 ```
 Add a value supplied by the callback to the end of the vector a set number of times.
 
@@ -228,7 +234,7 @@ The callback should take no parameters.
 ------
 ##### prefill
 ```php
-public function prefill(int $amount, callable $callback) : sqonk\phext\datakit\Vector
+public function prefill(int $amount, callable $callback) : self
 ```
 Add a value supplied by the callback to the start of the vector a set number of times.
 
@@ -238,7 +244,7 @@ The callback should take no parameters.
 ------
 ##### get
 ```php
-public function get($key, $default = null) 
+public function get(mixed $key, mixed $default = null) : mixed
 ```
 Return the value for a specified key. If the key is not present in the array then the default value is returned instead.
 
@@ -246,13 +252,13 @@ You may optionally pass a callback as the $key. When you do this the callback is
 
 Callback format: `myFunc($value, $index) -> bool`
 
-**Returns:**  The found item or `NULL` if nothing was located for the key.
+**Returns:**  mixed The found item or `NULL` if nothing was located for the key.
 
 
 ------
 ##### remove
 ```php
-public function remove(...$keys) : sqonk\phext\datakit\Vector
+public function remove(mixed ...$keys) : self
 ```
 Remove one or more elements from the vector.
 
@@ -260,7 +266,7 @@ Remove one or more elements from the vector.
 ------
 ##### remove_range
 ```php
-public function remove_range(int $start, int $length) : sqonk\phext\datakit\Vector
+public function remove_range(int $start, int $length) : self
 ```
 Remove a range of values from the vector from the index at $start and extending for $length.
 
@@ -270,7 +276,7 @@ This method is primarily designed to work with sequential indexes but will also 
 ------
 ##### clear
 ```php
-public function clear() : sqonk\phext\datakit\Vector
+public function clear() : self
 ```
 Remove all elements from the array.
 
@@ -278,7 +284,7 @@ Remove all elements from the array.
 ------
 ##### isset
 ```php
-public function isset(...$keys) : bool
+public function isset(mixed ...$keys) : bool
 ```
 Returns `TRUE` if all the specified keys are present within the vector, `FALSE` otherwise.
 
@@ -302,7 +308,7 @@ Returns `TRUE` if there are 0 elements in the array, `FALSE` otherwise.
 ------
 ##### values
 ```php
-public function values($key = null) : sqonk\phext\datakit\Vector
+public function values(mixed $key = null) : sqonk\phext\datakit\Vector
 ```
 Return all values for a given key in the vector. This assumes all elements inside of the vector are an array or object.
 
@@ -312,7 +318,7 @@ If no key is provided then it will return all primary values in the vector.
 ------
 ##### unique
 ```php
-public function unique($key = null) : sqonk\phext\datakit\Vector
+public function unique(mixed $key = null) : sqonk\phext\datakit\Vector
 ```
 Return a new vector containing all unique values in the current.
 
@@ -332,7 +338,7 @@ If $key is provided then the operation is performed on the values resulting from
 ------
 ##### prune
 ```php
-public function prune($empties = '') : sqonk\phext\datakit\Vector
+public function prune(mixed $empties = '') : self
 ```
 Remove all entries where the values corresponding to 'empties' are omitted.
 
@@ -340,7 +346,7 @@ Remove all entries where the values corresponding to 'empties' are omitted.
 ------
 ##### first
 ```php
-public function first() 
+public function first() : mixed
 ```
 Return the first object in the array or null if array is empty.
 
@@ -348,7 +354,7 @@ Return the first object in the array or null if array is empty.
 ------
 ##### last
 ```php
-public function last() 
+public function last() : mixed
 ```
 Return the last object in the array or null if array is empty.
 
@@ -356,7 +362,7 @@ Return the last object in the array or null if array is empty.
 ------
 ##### middle
 ```php
-public function middle(bool $weightedToFront = true) 
+public function middle(bool $weightedToFront = true) : mixed
 ```
 Return the object closest to the middle of the array.
 
@@ -373,7 +379,7 @@ Return the object closest to the middle of the array.
 ------
 ##### choose
 ```php
-public function choose() 
+public function choose() : mixed
 ```
 Randomly choose and return an item from the vector.
 
@@ -389,7 +395,7 @@ Returns the first item in the vector found in the heystack or `FALSE` if none ar
 ------
 ##### any
 ```php
-public function any($match, bool $strict = false) : bool
+public function any(mixed $match, bool $strict = false) : bool
 ```
 Returns `TRUE` if any of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
@@ -403,7 +409,7 @@ For basic (non-callback) matches, setting $strict to `TRUE` will enforce type-sa
 ------
 ##### all
 ```php
-public function all($match, bool $strict = false) : bool
+public function all(mixed $match, bool $strict = false) : bool
 ```
 Returns `TRUE` if all of the values within the vector are equal to the value provided, `FALSE` otherwise.
 
@@ -427,23 +433,27 @@ Filter the contents of the vector using the provided callback.
 ------
 ##### intersect
 ```php
-public function intersect(...$otherArrays) : sqonk\phext\datakit\Vector
+public function intersect(sqonk\phext\datakit\Vector|array ...$otherArrays) : sqonk\phext\datakit\Vector
 ```
 Filter the vector based on the contents of one or more vectors or arrays and return a new vector containing just the elements that were deemed to exist in all.
+
+@param array<mixed>|Vector ...$otherArrays The other arrays or vectors to compare with the receiver.
 
 
 ------
 ##### diff
 ```php
-public function diff(...$otherArrays) : sqonk\phext\datakit\Vector
+public function diff(sqonk\phext\datakit\Vector|array ...$otherArrays) : sqonk\phext\datakit\Vector
 ```
 Filter the vector based on the contents of one or more arrays and return a new vector containing just the elements that were deemed not to be present in all.
+
+@param array<mixed>|Vector ...$otherArrays The other arrays or vectors to compare with the receiver.
 
 
 ------
 ##### only_keys
 ```php
-public function only_keys(...$keys) : sqonk\phext\datakit\Vector
+public function only_keys(mixed ...$keys) : sqonk\phext\datakit\Vector
 ```
 Return a copy of the vector containing only the values for the specified keys, with index association being maintained.
 
@@ -455,7 +465,7 @@ It should be noted that if a key is not  present in the current vector then it w
 ------
 ##### contains
 ```php
-public function contains($needle) : bool
+public function contains(mixed $needle) : bool
 ```
 Search the array for the given needle (subject). This function is an alias of Vector::any().
 
@@ -463,7 +473,7 @@ Search the array for the given needle (subject). This function is an alias of Ve
 ------
 ##### ends_with
 ```php
-public function ends_with($needle) : bool
+public function ends_with(mixed $needle) : bool
 ```
 Determines if the array ends with the needle.
 
@@ -471,7 +481,7 @@ Determines if the array ends with the needle.
 ------
 ##### starts_with
 ```php
-public function starts_with($needle) : bool
+public function starts_with(mixed $needle) : bool
 ```
 Determines if the array starts with the needle.
 
@@ -511,7 +521,7 @@ public function map(callable $callback) : sqonk\phext\datakit\Vector
 ```
 Apply a callback function to the vector. This version will optionally supply the corresponding index/key of the value when needed.
 
-Callback format: `myFunc($value, $index) -> mixed`
+Callback format: `myFunc($value, $index): mixed`
 
 
 ------
@@ -527,7 +537,7 @@ The final batch may contain less than the specified batch count if the array tot
 ------
 ##### pad
 ```php
-public function pad(int $count, $value) : sqonk\phext\datakit\Vector
+public function pad(int $count, mixed $value) : self
 ```
 Pad vector to the specified length with a value. If $count is positive then the array is padded on the right, if it's negative then on the left. If the absolute value of $count is less than or equal to the length of the array then no padding takes place.
 
@@ -537,7 +547,12 @@ Pad vector to the specified length with a value. If $count is positive then the 
 ```php
 public function pop(int $amount = 1, bool $returnRemoved = false) : sqonk\phext\datakit\Vector
 ```
-Shorten the vector by removing elements off the end of the array to the number specified in $amount. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes.
+Shorten the vector by removing elements off the end of the array to the number specified in $amount.
+
+- **int** $amount The amount of elements to shift off of the end of the vector.
+- **bool** $returnRemoved If `TRUE` the return a copy of all removed items as result of the call.
+
+**Returns:**  Vector If $returnRemoved is `TRUE` then the items removed will be returned, otherwise the receiver is returned.
 
 
 ------
@@ -545,7 +560,12 @@ Shorten the vector by removing elements off the end of the array to the number s
 ```php
 public function shift(int $amount = 1, bool $returnRemoved = false) : sqonk\phext\datakit\Vector
 ```
-Modify the vector by removing elements off the beginning of the array to the number specified in $amount and return a vector containing the items removed. If $returnRemoved is `TRUE` then the items removed will be returned, otherwise it returns a reference to itself for chaining purposes
+Modify the vector by removing elements off the beginning of the array to the number specified in $amount and return a vector containing the items removed.
+
+- **int** $amount The amount of elements to shift off of the start of the vector.
+- **bool** $returnRemoved If `TRUE` the return a copy of all removed items as result of the call.
+
+**Returns:**  Vector If $returnRemoved is `TRUE` then the items removed will be returned, otherwise the receiver is returned.
 
 
 ------
@@ -555,21 +575,28 @@ public function transpose(string $groupKey, array $mergeMap) : sqonk\phext\datak
 ```
 Transform a set of rows and columns with vertical data into a horizontal configuration where the resulting array contains a column for each different value for the given fields in the merge map (associative array).
 
-The group key is used to specify which field in the array will be used to flatten multiple rows into one.
-
 For example, if you had a result set that contained a 'type' field, a corresponding 'reading' field and a 'time' field (used as the group key) then this method would merge all rows containing the same time value into a matrix containing as many columns as there are differing values for the type field, with each column containing the corresponding value from the 'reading' field.
+
+- **string** $groupKey Used to specify which key in the $array will be used to flatten multiple rows into one.
+- **array<string,** string> $mergeMap Associative (keyed) array specifying pairs of columns that will be merged into header -> value.
+
+**Returns:**  Vector The transposed vector.
+
+
+**See:**  arrays::transpose() in PHEXT-Core for a more detailed explanation.
 
 
 ------
 ##### groupby
 ```php
-public function groupby($keys, bool $keepEmptyKeys = false) : sqonk\phext\datakit\Vector
+public function groupby(array|string $keys, bool $keepEmptyKeys = false) : sqonk\phext\datakit\Vector
 ```
-Transform the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in.
+Transform the vector (assuming it is a flat array of elements) and split them into a tree of vectors based on the keys passed in. The vector will be re-sorted by the same order as the set of keys being used.
 
-The vector will be re-sorted by the same order as the set of keys being used. If only one key is required to split the array then a singular string may be provided, otherwise pass in an array.
+- **string|list<string>** $keys A singular key, or array of keys, used to split the array by.
+- **bool** $keepEmptyKeys If `TRUE` then the algorithm will keep any found empty key values in the result. If `FALSE`, they will be omitted.
 
-Unless $keepEmptyKeys is set to `TRUE` then any key values that are empty will be omitted.
+**Returns:**  Vector The resulting vector or vectors.
 
 
 ------
@@ -590,7 +617,7 @@ Callback format: `myFunc($value, $index) -> mixed`
 
 **Throws:**  UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
 
-**Returns:**  A vector of vectors, one each for each different result returned from the callback.
+**Returns:**  Vector A vector of vectors, one each for each different result returned from the callback.
 
 
 ------
@@ -718,13 +745,13 @@ Continually apply a callback to a moving fixed window on the vector.
 
 Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
 
-**Returns:**  A vector containing the series of results produced by the callback method.
+**Returns:**  Vector A vector containing the series of results produced by the callback method.
 
 
 ------
 ##### clip
 ```php
-public function clip($lower, $upper, bool $inplace = false) 
+public function clip(int|float $lower, int|float $upper, bool $inplace = false) : mixed
 ```
 Provide a maximum or minimum (or both) constraint for the values in the vector.
 
@@ -834,7 +861,7 @@ Compute the cumulative product of the values within the vector.
 ------
 ##### variance
 ```php
-public function variance() : sqonk\phext\datakit\nul|int|float
+public function variance() : int|float|null
 ```
 Compute the variance of values within the vector.
 
@@ -842,7 +869,7 @@ Compute the variance of values within the vector.
 ------
 ##### reduce
 ```php
-public function reduce(callable $callback, $initial = null) : mixed
+public function reduce(callable $callback, mixed $initial = null) : mixed
 ```
 Iteratively reduce the vector to a single value using a callback function.
 

@@ -40,7 +40,7 @@ define('COR_PEARSON', 'pearson');
  * If only one element is passed in and it is an array then the array will
  * be transformed into the vector.
  */ 
-function vector(...$items)
+function vector(mixed ...$items): \sqonk\phext\datakit\Vector
 {
 	if (count($items) == 1 and is_array($items[0]))
 		$items = $items[0];
@@ -50,9 +50,14 @@ function vector(...$items)
 /**
  * Create a new DataFrame with the supplied rows & columns.
  * 
+ * -- parameters:
+ * @param ?list<array<string, string>> $data
+ * @param ?list<string> $headers
+ * @param bool $isVerticalDataSet
+ * 
  * @see [DataFrame::__construct()](DataFrame.md#__construct) for a proper description.
  */
-function dataframe(?array $data = null, array $headers = null, bool $isVerticalDataSet = false)
+function dataframe(?array $data = null, ?array $headers = null, bool $isVerticalDataSet = false): \sqonk\phext\datakit\DataFrame
 {
 	return new \sqonk\phext\datakit\DataFrame($data, $headers, $isVerticalDataSet);
 }

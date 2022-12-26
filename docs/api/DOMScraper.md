@@ -21,7 +21,7 @@ Create a new scraper using the provided text content. The contents should be eit
 ------
 ##### dom
 ```php
-public function dom() 
+public function dom() : DomDocument
 ```
 Return the DOMDocument object.
 
@@ -33,9 +33,9 @@ public function traverse(array $elements, callable $callback, DOMNode $current =
 ```
 Traverse a hierarchal series of elements in the document, drilling down to the final set and providing them back to your program for processing.
 
-- **$elements** The configuration array of elements to traverse (see below examples).
-- **$callback** A callback method that will repeatably receive each element at the end of the traversal chain.
-- **$current** The parent node to begin from. This parameter services the recursive nature of the method and should be left as `NULL`.
+- **list<array<string,** string>> $elements The configuration array of elements to traverse (see below examples).
+- **callable** $callback A callback method that will repeatably receive each element at the end of the traversal chain.
+- **?DOMNode** $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as `NULL`.
 
 Elements array should be in format of:
 
@@ -58,7 +58,7 @@ traverse([
 
 In this example the table rows found from the last definition in the elements array would be passed to your callback, which takes one parameter only.
 
-**Returns:**  array [BOOL $pass, STRING $errorMessage].
+**Returns:**  array{bool, string} A two-member array. The first element contains `TRUE` or `FALSE` on whether the traversal was successful. If `FALSE`, the second element contains the error message.
 
 The first element of the result ($pass) is `TRUE` if 1 or more items were found and passed to the callback, `FALSE` otherwise.
 
@@ -66,12 +66,12 @@ The first element of the result ($pass) is `TRUE` if 1 or more items were found 
 ------
 ##### yield
 ```php
-public function yield(array $elements, &$result = null) : Generator
+public function yield(array $elements, array &$result = null) : Generator
 ```
 This method is the same as `traverse` but operates as a Generator for use within a foreach loop. Unlike the `traverse` method however, `yield` will first gather all found elements in memory and then distribute them one at a time to your foreach loop.
 
-- **$elements** The configuration array of elements to traverse (see below examples).
-- **$result** If passed in, sets the value to the result of the `traverse` method that was called internally.
+- **list<array<string,** string>> $elements The configuration array of elements to traverse (see below examples).
+- **?array{bool,** string} &$result If passed in, sets the value to the result of the `traverse` method that was called internally.
 
 
 ------

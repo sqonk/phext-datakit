@@ -59,6 +59,19 @@ function formatComment($comment)
     return $comment;
 }
 
+function flattenComboTypes(array $types) {
+    $out = [];
+    foreach ($types as $t) {
+        if ($t instanceof ReflectionUnionType || $t instanceof ReflectionIntersectionType) {
+            array_push($out, flattenComboTypes($t->getTypes()));
+        }
+        else {
+            $out[] = $t;
+        }
+    }
+    return $out;
+}
+
 function generateForClass($cl)
 {
     $class = new ReflectionClass($cl);

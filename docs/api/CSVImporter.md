@@ -33,14 +33,14 @@ static public function init(string $input, bool $inputIsRawData = false, bool $h
 ```
 Initialise a new CSVImporter. Use this static method if you wish to chain a sequence of calls in one line.
 
-- **$input** Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
-- **$inputIsRawData** When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
-- **$headersAreFirstRow** When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
-- **$customHeaders** Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
-- **$skipRows** Additionally skip over the given number or rows before reading begins.
-- **$delimiter** Set the field delimiter (one single-byte character only).
-- **$enclosedBy** Set the field enclosure character (one single-byte character only).
-- **$lineEnding** Set character sequence that denotes the end of a line (row).
+- **string** $input Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
+- **bool** $inputIsRawData When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
+- **bool** $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
+- **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
+- **int** $skipRows Additionally skip over the given number or rows before reading begins.
+- **string** $delimiter Set the field delimiter (one single-byte character only).
+- **string** $enclosedBy Set the field enclosure character (one single-byte character only).
+- **string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
 ------
@@ -50,14 +50,14 @@ public function __construct(string $input, bool $inputIsRawData = false, bool $h
 ```
 Initialise a new CSVImporter.
 
-- **$input** Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
-- **$inputIsRawData** When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
-- **$headersAreFirstRow** When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
-- **$customHeaders** Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
-- **$skipRows** Additionally skip over the given number or rows before reading begins.
-- **$delimiter** Set the field delimiter (one single-byte character only).
-- **$enclosedBy** Set the field enclosure character (one single-byte character only).
-- **$lineEnding** Set character sequence that denotes the end of a line (row).
+- **string** $input Either the file path of the CSV Document or the raw CSV text. @see $inputIsRawData.
+- **bool** $inputIsRawData When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
+- **bool** $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
+- **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
+- **int** $skipRows Additionally skip over the given number or rows before reading begins.
+- **string** $delimiter Set the field delimiter (one single-byte character only).
+- **string** $enclosedBy Set the field enclosure character (one single-byte character only).
+- **string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
 ------
@@ -103,7 +103,7 @@ Set character sequence that denotes the end of a line (row).
 ------
 ##### headers_first_row
 ```php
-public function headers_first_row(bool $headersPresent) : sqonk\phext\datakit\CSVImporter
+public function headers_first_row(bool $headersPresent) : self
 ```
 When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
 
@@ -111,7 +111,7 @@ When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data.
 ------
 ##### skip
 ```php
-public function skip(int $rows) : sqonk\phext\datakit\CSVImporter
+public function skip(int $rows) : self
 ```
 Additionally skip over the given number or rows before reading begins. This method has no effect once reading has begun, unless the importer is reset.
 
@@ -124,7 +124,7 @@ If the given value exceeds the number of rows in the CSV then the importer will 
 ------
 ##### custom_headers
 ```php
-public function custom_headers(array $headers) : sqonk\phext\datakit\CSVImporter
+public function custom_headers(array $headers) : self
 ```
 Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 
@@ -136,7 +136,7 @@ public function next_row() : array|bool
 ```
 Advance the importer by one line and return the resulting row of fields.
 
-**Returns:**  An associative array containing the decoded fields that were read in or `FALSE` if the end of the CSV was reached.
+**Returns:**  **Returns:**  array<string, string>|bool An associative array containing the decoded fields that were read in or `FALSE` if the end of the CSV was reached.
 
 
 ------
@@ -146,7 +146,7 @@ public function validate() : bool
 ```
 Preflight the importer by running the initial internal setup and verifying that it completed without error.
 
-**Returns:**  ``TRUE`` if no problems were encountered, ``FALSE`` otherwise.
+**Returns:**  bool ``TRUE`` if no problems were encountered, ``FALSE`` otherwise.
 
 
 ------
@@ -164,6 +164,8 @@ public function headers() : ?array
 ```
 Return the calculated set of headers.
 
+**Returns:**  ?list<string> The header array, or `NULL` if the importer has not yet been initialised or failed to initialise.
+
 
 ------
 ##### all_remaining
@@ -172,7 +174,7 @@ public function all_remaining() : array
 ```
 Return all remaining rows yet to be read in from the document.
 
-**Returns:**  An array containing every row that was read in.
+**Returns:**  list<array<string, string>> An array containing every row that was read in.
 
 
 ------
@@ -182,7 +184,7 @@ public function all() : array
 ```
 Return all rows contained within the CSV document. If reading has already commenced then the importer is first reset.
 
-**Returns:**  An array containing every row that was read in.
+**Returns:**  list<array<string, string>> An array containing every row that was read in.
 
 
 ------
