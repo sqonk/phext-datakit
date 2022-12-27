@@ -122,10 +122,10 @@ class DOMScraper
             $item = $info['item'] ?? null;
 			$class = $info['class'] ?? null;
             $items = $current->getElementsByTagName($key);
-            if ($items && $item !== null) 
+            if (count($items) > 0 && $item !== null) 
                 $items = [$items[$item]]; 
 			
-			else if ($items && $class) {
+			else if (count($items) > 0 && $class) {
 				$filtered = [];
 				foreach ($items as $el) {
 					if ($el->hasAttributes()) {
