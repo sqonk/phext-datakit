@@ -191,7 +191,7 @@ class math
 	 * @param list<int|float> $array The input array of values.
 	 * @param float $quantile The quantile to compute.
 	 */
-    static public function quantile(array $array, float $quantile): float|int
+    static public function quantile(array $array, float $quantile): float|int|bool
     {
 		if (numbers::is_within(0, 1, $quantile))
 			throw new \InvalidArgumentException("The quantile must be a decimal value between 0 and 1. [$quantile] was provided.");
