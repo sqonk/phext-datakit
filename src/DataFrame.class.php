@@ -46,7 +46,15 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var array<mixed, array<mixed, mixed>> 
      */
     protected array $data;
+    
+    /** 
+     * @var ?list<string> 
+     */
     protected ?array $headers = [];
+    
+    /** 
+     * @var array<string, callable>
+     */
     protected array $transformers = [];
     protected string $indexHeader = '';
     protected bool $showHeaders = true;
@@ -253,11 +261,18 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     }
     
     /**
-     * Used to set or get the full list of display transformers.
+     * @internal 
      * 
-     * Used internally. You should not need to call this unction under normal circumstances.
+     * Used to set or get the full list of display transformers. 
      * 
-     * See apply_display_transformer() instead.
+     * You should not need to call this function under normal circumstances.
+     * 
+     * @see apply_display_transformer() instead.
+     * 
+     * -- parameters:
+     * @param ?array<string, callable> $transformers
+     * 
+     * @return static|array<string, callable>
      */
     public function transformers(?array $transformers = null): static|array
     {
@@ -285,6 +300,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * Return the associative array containing all the data within the DataFrame.
+     * 
+     * @return array<mixed, array<mixed, mixed>> 
      */
     public function data(): array {
         return $this->data;
@@ -714,7 +731,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Return all values for one or more columns. 
      * 
      * -- parameters:
-     * @param array|string|null $columns The column(s) to acquire the values for.
+     * @param list<string>|string|null $columns The column(s) to acquire the values for.
      * @param bool $filterNAN If TRUE then omit values that are NULL.
      * 
      * @return list<mixed>|list<list<mixed>> Either a singular list of values when one column is given, or a two dimensional array when two or more columns are requested.
@@ -758,7 +775,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         // filters the transformers to the set applicable for this report.
         $trs = [];
         foreach ($this->transformers as $h => $tf) { 
-            if ((arrays::contains($columns, $h) || $this->indexHeader == $h) && $tf) {
+            if (in_array(haystack:$columns, needle:$h) || $this->indexHeader == $h) {
                 $trs[$h] = $tf;
             }
         } 
@@ -1406,6 +1423,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If exactly one column is supplied then a single value is
      * returned, otherwise a DataFrame of 1 value per column is
      * produced.
+     * 
+     * @return DataFrame|list<int|float|null>
      */
     public function cumsum(string ...$columns): DataFrame|array
     {
@@ -1439,6 +1458,8 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * If exactly one column is supplied then a single value is
      * returned, otherwise a DataFrame of 1 value per column is
      * produced.
+     * 
+     * @return DataFrame|list<int|float|null>
      */
     public function cummax(string ...$columns): DataFrame|array
     {
@@ -1472,7 +1493,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * returned, otherwise a DataFrame of 1 value per column is
      * produced.
      * 
-     * @return DataFrame|list<int|float>
+     * @return DataFrame|list<int|float|null>
      */
     public function cummin(string ...$columns): DataFrame|array
     {
@@ -1680,7 +1701,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Alias of self::quantile().
      */
-    public function quartile($q, $column = null) {
+    public function quartile(float $q, ?string $column = null): DataFrame|int|float {
         return $this->quantile($q, $column);
     }
     
@@ -1963,16 +1984,14 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
         
         $data = $sf->data;
         foreach ($this->transformers as $h => $tf) {
-            if ($tf) {
-                foreach ($data as $index => &$row) {
-                    if (isset($row[$h])) {
-                        $row[$h] = $tf($row[$h]);
-                    }
-                    else if ($this->indexHeader == $h) {
-                        // apply transformer to the index.
-                        $data[$tf($index)] = $row;
-                        unset($data[$index]);
-                    }
+            foreach ($data as $index => &$row) {
+                if (isset($row[$h])) {
+                    $row[$h] = $tf($row[$h]);
+                }
+                else if ($this->indexHeader == $h) {
+                    // apply transformer to the index.
+                    $data[$tf($index)] = $row;
+                    unset($data[$index]);
                 }
             }
         }
@@ -2030,8 +2049,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Remove the specified columns from the DataFrame.
      * 
-     * If $inPlace is TRUE then this operation modifies the
-     * current DataFrame, otherwise a copy is returned.
+     * -- parameters:
+     * @param list<string>|string|null $columns The column(s) to remove.
+     * @param $inplace If TRUE then this operation modifies the receiver, otherwise a copy is made.
+     * 
+     * @return DataFrame When $inplace is TRUE the receiver is returned, otherwise a copy is.
      */
     public function drop_columns(array|string|null $columns, bool $inplace = false): DataFrame
     {
@@ -2059,29 +2081,27 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
             
             return $this;
         }
-        else
+        
+        $modified = [];
+        foreach ($this->data as $index => $row)
         {
-            $modified = [];
-            foreach ($this->data as $index => $row)
-            {
-                foreach ($columns as $column) {
-                    if (isset($row[$column])) {
-                        unset($row[$column]);
-                    }
-                }
-                $modified[$index] = $row;
-            }
-            $headers = array_filter($this->headers, function($h) use ($columns) {
-                return (! arrays::contains($columns, $h));
-            });
-            
-            $copy = $this->clone($modified, $headers);
             foreach ($columns as $column) {
-                if (isset($copy->transformers[$column]) && $column != $copy->indexHeader)
-                    unset($copy->transformers[$column]);
+                if (isset($row[$column])) {
+                    unset($row[$column]);
+                }
             }
-            return $copy;
+            $modified[$index] = $row;
         }
+        $headers = array_filter($this->headers, function($h) use ($columns) {
+            return (! arrays::contains($columns, $h));
+        });
+        
+        $copy = $this->clone($modified, $headers);
+        foreach ($columns as $column) {
+            if (isset($copy->transformers[$column]) && $column != $copy->indexHeader)
+                unset($copy->transformers[$column]);
+        }
+        return $copy;
     }
     
     /**
@@ -2295,7 +2315,13 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * DataFrame and each column name specified as a value in the
      * array becomes the corresponding value of that column.
      * 
+     * -- parameters:
+     * @param non-empty-string $groupColumn Used to specify which key in the $array will be used to flatten multiple rows into one.
+     * @param array<string, string> $mergeMap Associative (keyed) array specifying pairs of columns that will be merged into header -> value.
+     * 
      * @return DataFrame A new DataFrame with the transposed data.
+     * 
+     * @see [arrays::transpose](https://github.com/sqonk/phext-core/blob/master/docs/api/arrays.md#transpose) in the PHEXT-Core library for more information.
      */
     public function transpose(string $groupColumn, array $mergeMap): DataFrame
     {

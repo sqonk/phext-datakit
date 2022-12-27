@@ -39,7 +39,14 @@ use sqonk\phext\core\{arrays,strings};
  */
 class CSVExporter
 {
+    /** 
+     * @var list<string> 
+     */
     protected array $headers = [];
+    
+    /** 
+     * @var array<string, string> 
+     */
     protected array $field_map = [];
     
     protected string $path;

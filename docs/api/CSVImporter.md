@@ -2,6 +2,8 @@
 ------
 ### CSVImporter
 The CSVImporter is designed to efficiently load or parse CSV documents. It is the underlying engine used by the static methods in the Importer class.
+
+@implements \Iterator<mixed, mixed>
 #### Methods
 - [init](#init)
 - [__construct](#__construct)
@@ -131,6 +133,8 @@ If the given value exceeds the number of rows in the CSV then the importer will 
 public function custom_headers(array $headers) : self
 ```
 Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
+
+- **list<string>** $headers The custom headers to assign.
 
 
 ------

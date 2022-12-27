@@ -328,7 +328,7 @@ If $key is provided then the operation is performed on the values resulting from
 ------
 ##### frequency
 ```php
-public function frequency($key = null) : sqonk\phext\datakit\Vector
+public function frequency(mixed $key = null) : sqonk\phext\datakit\Vector
 ```
 Produces a new vector containing counts for the number of times each value occurs in the array.
 
@@ -507,11 +507,17 @@ This assumes all elements in the vector are capable of being cast to a string.
 ------
 ##### implode_only
 ```php
-public function implode_only(string $delimier, array $keys, string $subDelimiter = '') : string
+public function implode_only(string $delimiter, array $keys, string $subDelimiter = '') : string
 ```
 Implode the vector using the desired delimiter and sub-delimiter.
 
 This method is primarily intended for non-sequential/associative vectors and differs from the standard implode in that it will only implode the values associated with the specified keys/indexes.
+
+- **non-empty-string** $delimiter The token to implode the vector with.
+- **list<mixed>** $keys The corresponding keys for the values to implode.
+- **string** $subDelimiter An option sub-token to use when imploding each key with its value.
+
+**Returns:**  string The string representation of the imploded vector.
 
 
 ------
@@ -643,7 +649,7 @@ Refer to the PHP documentation for all possible values on the $flags.
 ------
 ##### keyed_sort
 ```php
-public function keyed_sort($key) : sqonk\phext\datakit\Vector
+public function keyed_sort(mixed $key) : sqonk\phext\datakit\Vector
 ```
 Sort the vector based on the value of a key inside of the sub-array/object.
 

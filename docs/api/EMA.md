@@ -28,7 +28,7 @@ Returns the total number of averages calculated so far.
 ------
 ##### getIterator
 ```php
-public function getIterator() : ArrayIterator
+public function getIterator() : Iterator
 ```
 No documentation available.
 

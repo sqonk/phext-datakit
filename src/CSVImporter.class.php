@@ -22,11 +22,21 @@ namespace sqonk\phext\datakit;
 /**
  * The CSVImporter is designed to efficiently load or parse CSV documents. It is the 
  * underlying engine used by the static methods in the Importer class.
+ * 
+ * @implements \Iterator<mixed, mixed>
  */
 class CSVImporter implements \Iterator
 {
     protected bool $headersAreFirstRow = false;
+    
+    /** 
+     * @var ?list<string> 
+     */
     protected ?array $headers = null;
+    
+    /** 
+     * @var resource|list<string>|null 
+     */
     protected $handle; // Either the file handle or array of rows (extrapolated from the raw string).
     
     /** 
@@ -43,6 +53,10 @@ class CSVImporter implements \Iterator
     protected int $arrayIndex = 0;
     protected int $skipRows = 0;
     protected int $rowCount = 0;
+    
+    /** 
+     * @var array<mixed, string>|bool|null 
+     */
     protected array|bool|null $current = null;
     protected bool $skipRowsHeaderAdjustmentMade = false;
     
@@ -184,6 +198,9 @@ class CSVImporter implements \Iterator
      * the associative array produced for each row that is read in. If this is set and 
      * $headersAreFirstRow is set to `TRUE` then the custom headers will override it, however 
      * the first row will still be skipped over.
+     * 
+     * -- parameters:
+     * @param list<string> $headers The custom headers to assign.
      */
     public function custom_headers(array $headers): self 
     {

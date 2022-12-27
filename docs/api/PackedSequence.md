@@ -408,7 +408,7 @@ Callback format: `myFunc(Vector $rollingSet, mixed $index) : mixed`
 ------
 ##### clip
 ```php
-public function clip($lower, $upper = null) : sqonk\phext\datakit\PackedSequence
+public function clip(int|float|null $lower, int|float|null $upper) : self
 ```
 Provide a maximum or minimum (or both) constraint for the values in the array.
 
@@ -420,7 +420,7 @@ If either the lower or upper constraint is not needed then passing in null will 
 ------
 ##### swap
 ```php
-public function swap(int $index1, int $index2) : sqonk\phext\datakit\PackedSequence
+public function swap(int $index1, int $index2) : self
 ```
 Swap the positions of 2 values within the array.
 
@@ -428,7 +428,7 @@ Swap the positions of 2 values within the array.
 ------
 ##### sort
 ```php
-public function sort(bool $dir = ASCENDING) : sqonk\phext\datakit\PackedSequence
+public function sort(bool $dir = ASCENDING) : self
 ```
 Sort the array in either `ASCENDING` or `DESCENDING` direction.
 
@@ -436,7 +436,7 @@ Sort the array in either `ASCENDING` or `DESCENDING` direction.
 ------
 ##### reverse
 ```php
-public function reverse() : sqonk\phext\datakit\PackedSequence
+public function reverse() : self
 ```
 Reserve the order of the elements.
 

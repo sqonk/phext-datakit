@@ -260,11 +260,18 @@ See reindex_rows_with_column() instead.
 ```php
 public function transformers(array $transformers = null) : static|array
 ```
+@internal
+
 Used to set or get the full list of display transformers.
 
-Used internally. You should not need to call this unction under normal circumstances.
+You should not need to call this function under normal circumstances.
 
-See apply_display_transformer() instead.
+
+**See:**  apply_display_transformer() instead.
+
+- **?array<string,** callable> $transformers
+
+**Returns:**  static|array<string, callable>
 
 
 ------
@@ -281,6 +288,8 @@ Returns `TRUE` if and only if all values within the given column ontain a valid 
 public function data() : array
 ```
 Return the associative array containing all the data within the DataFrame.
+
+**Returns:**  array<mixed, array<mixed, mixed>>
 
 
 ------
@@ -480,7 +489,7 @@ public function values(array|string|null $columns = null, bool $filterNAN = true
 ```
 Return all values for one or more columns.
 
-- **array|string|null** $columns The column(s) to acquire the values for.
+- **list<string>|string|null** $columns The column(s) to acquire the values for.
 - **bool** $filterNAN If `TRUE` then omit values that are `NULL`.
 
 **Returns:**  list<mixed>|list<list<mixed>> Either a singular list of values when one column is given, or a two dimensional array when two or more columns are requested.
@@ -699,6 +708,8 @@ If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
 
+**Returns:**  DataFrame|list<int|float|null>
+
 
 ------
 ##### cummax
@@ -710,6 +721,8 @@ Compute the cumulative maximum value for one or more columns.
 If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
+
+**Returns:**  DataFrame|list<int|float|null>
 
 
 ------
@@ -723,7 +736,7 @@ If no column is specified then the operation runs over all columns.
 
 If exactly one column is supplied then a single value is returned, otherwise a DataFrame of 1 value per column is produced.
 
-**Returns:**  DataFrame|list<int|float>
+**Returns:**  DataFrame|list<int|float|null>
 
 
 ------
@@ -803,7 +816,7 @@ Alias of self::normalise().
 ------
 ##### quartile
 ```php
-public function quartile($q, $column = null) 
+public function quartile(float $q, string $column = null) : sqonk\phext\datakit\DataFrame|int|float
 ```
 Alias of self::quantile().
 
@@ -908,7 +921,10 @@ public function drop_columns(array|string|null $columns, bool $inplace = false) 
 ```
 Remove the specified columns from the DataFrame.
 
-If $inPlace is `TRUE` then this operation modifies the current DataFrame, otherwise a copy is returned.
+- **list<string>|string|null** $columns The column(s) to remove.
+- **$inplace** If `TRUE` then this operation modifies the receiver, otherwise a copy is made.
+
+**Returns:**  DataFrame When $inplace is `TRUE` the receiver is returned, otherwise a copy is.
 
 
 ------
@@ -978,7 +994,13 @@ Perform a complex transformation on the DataFrame where by the column specified 
 
 The $mergeMap is an associative array where by each column name specified as a key becomes a column in the resulting DataFrame and each column name specified as a value in the array becomes the corresponding value of that column.
 
+- **non-empty-string** $groupColumn Used to specify which key in the $array will be used to flatten multiple rows into one.
+- **array<string,** string> $mergeMap Associative (keyed) array specifying pairs of columns that will be merged into header -> value.
+
 **Returns:**  DataFrame A new DataFrame with the transposed data.
+
+
+**See:**  [arrays::transpose](https://github.com/sqonk/phext-core/blob/master/docs/api/arrays.md#transpose) in the PHEXT-Core library for more information.
 
 
 ------

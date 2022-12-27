@@ -708,9 +708,16 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * This method is primarily intended for non-sequential/associative vectors
      * and differs from the standard implode in that it will only implode the values
      * associated with the specified keys/indexes.
+     * 
+     * -- parameters:
+     * @param non-empty-string $delimiter The token to implode the vector with.
+     * @param list<mixed> $keys The corresponding keys for the values to implode.
+     * @param string $subDelimiter An option sub-token to use when imploding each key with its value.
+     * 
+     * @return string The string representation of the imploded vector.
      */
-	public function implode_only(string $delimier, array $keys, string $subDelimiter = ''): string {
-		return $this->only_keys(...$keys)->implode($delimier, $subDelimiter);
+	public function implode_only(string $delimiter, array $keys, string $subDelimiter = ''): string {
+		return $this->only_keys(...$keys)->implode($delimiter, $subDelimiter);
 	}
 
     /**

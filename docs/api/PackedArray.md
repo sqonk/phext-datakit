@@ -235,7 +235,7 @@ Pop an item off the end of the array. If $poppedValue is provided then it is fil
 ------
 ##### shift
 ```php
-public function shift(&$shiftedItem = null) : sqonk\phext\datakit\PackedArray
+public function shift(mixed &$shiftedItem = null) : sqonk\phext\datakit\PackedArray
 ```
 Shift an item off the start of the array. If $shiftedItem is provided then it is filled with the value that was removed.
 
