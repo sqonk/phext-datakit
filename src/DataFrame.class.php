@@ -1916,7 +1916,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
                 $result[$outer][$inner] = $r;
                 
                 if ($result[$outer][$inner] == NULL) 
-                    return null;
+                    return [];
             }
         }
         return $result;
