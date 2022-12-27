@@ -555,14 +555,13 @@ class math
      * 
      * -- parameters:
      * @param float|int|string|list<int|float|string> $value The value to be rounded. If an array is passed in then each element within is rounded.
-     * @param int $precision The number of decimal digits to round to. Defaults to 2.
      * @param int $mode The rounding mode used.
      * 
      * @return string|list<string> The rounded value, or array of rounded values (depending on the input).
      * 
      * @see Both [round()](https://www.php.net/manual/en/function.round.php) and [number_format()](https://www.php.net/manual/en/function.number-format.php) for further information on rounding modes and how the rounding engine works.
      */
-    static function nf_round(float|array|int|string $value, int $precision = 2, int $mode = PHP_ROUND_HALF_UP): string|array 
+    static function nf_round(float|array|int|string $value, int $precision, int $mode = PHP_ROUND_HALF_UP): string|array 
     {
         if (is_array($value)) {
             return array_map(fn($v) => self::nf_round($v, $precision, $mode), $value);
