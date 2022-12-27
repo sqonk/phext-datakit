@@ -229,7 +229,7 @@ class CSVImporter implements \Iterator
     /**
      * @internal
      * 
-     * @return array<string, string>|bool
+     * @return array<mixed, string>|bool
      */
     protected function advance(): array|bool 
     {

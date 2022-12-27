@@ -5,7 +5,7 @@ The GroupedDataFrame is a special class that manages a group of normal DataFrame
 
 This class is used internally by DataFrame and you should not need to instantiate it yourself under most conditions.
 
-@implements \IteratorAggregate<list<array<string, string>>> @implements \ArrayAccess<list<array<string, string>>>
+@implements \IteratorAggregate<mixed, list<array<string, string>>> @implements \ArrayAccess<mixed, list<array<string, string>>>
 #### Methods
 - [getIterator](#getiterator)
 - [offsetSet](#offsetset)
@@ -75,7 +75,7 @@ public function __construct(array $groups, string $groupedColumn)
 ```
 Construct a new GroupedDataFrame containing multiple DataFrame objects.
 
-- **list<array<string,** string>> $groups Array of standard DataFrame objects.
+- **array<mixed,** DataFrame> $groups Array of standard DataFrame objects.
 - **string** $groupedColumn The singular DataFrame column that was used to split the original frame into the group.
 
 
@@ -90,7 +90,7 @@ public function __call(string $name, array $args) : mixed
 ------
 ##### __get
 ```php
-public function __get(mixed $key) : array
+public function __get(mixed $key) : mixed
 ```
 No documentation available.
 
@@ -120,7 +120,7 @@ If $keepIndexes is set to true then all existing indexes are kept and merged. Ke
 ------
 ##### export
 ```php
-public function export(string $dir = '.', array $columns = null, string $delimeter = ',') : ?array
+public function export(string $dir = '.', array $columns = null, string $delimiter = ',') : ?array
 ```
 Functional map to the standard export within DataFrame.
 
@@ -128,7 +128,7 @@ Functional map to the standard export within DataFrame.
 - **list<string>** $columns Which columns to export.
 - **string** $delimiter CSV delimiter.
 
-**Returns:**  ?list<array<string, string>>
+**Returns:**  ?list<string>
 
 
 ------

@@ -11,7 +11,7 @@ Auto-packing and unpacking is available for values going in and out of the array
 
 It is particularly useful for large numerical arrays or indexes.
 
-@implements \IteratorAggregate<int|float> @implements \ArrayAccess<int|float>
+@implements \Iterator<int, int|float> @implements \ArrayAccess<int, int|float>
 #### Methods
 - [offsetSet](#offsetset)
 - [offsetGet](#offsetget)

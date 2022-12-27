@@ -103,7 +103,7 @@ Return the middle number within an array.
 ------
 ##### quantile
 ```php
-static public function quantile(array $array, float $quantile) : int|float
+static public function quantile(array $array, float $quantile) : int|float|bool
 ```
 Compute the quantile from the given percentile of the given array.
 

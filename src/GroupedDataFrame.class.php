@@ -37,7 +37,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	/**
 	 * The collection of DataFrames.
 	 * 
-	 * @var array<string|int, DataFrame>
+	 * @var array<mixed, DataFrame>
 	 */
     protected array $sets;
 	
@@ -74,9 +74,8 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 		}
 	}
 	
-	public function offsetGet(mixed $index): mixed
-	{
-		return $this->sets[$index] ?? null;
+	public function offsetGet(mixed $index): mixed {
+		return $this->sets[$index] ?? null; // @phpstan-ignore-line
 	}
 	
 	public function count(): int {
@@ -89,7 +88,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
      * Construct a new GroupedDataFrame containing multiple DataFrame objects.
      * 
      * -- parameters:
-     * @param list<array<string, string>> $groups Array of standard DataFrame objects.
+     * @param array<mixed, DataFrame> $groups Array of standard DataFrame objects.
      * @param string $groupedColumn The singular DataFrame column that was used to split the original frame into the group.
      */
     public function __construct(array $groups, string $groupedColumn)
@@ -183,7 +182,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	 * @param list<string> $columns Which columns to export.
 	 * @param string $delimiter CSV delimiter.
 	 * 
-	 * @return ?list<array<string, string>> 
+	 * @return ?list<string> 
 	 */
     public function export(string $dir = '.', array $columns = null, string $delimiter = ','): ?array   
     {

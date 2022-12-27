@@ -95,7 +95,7 @@ Import a CSV directly into a DataFrame object in the most memory efficient way.
 In the cases were the CSV has no column headers then the supplied array will be in simple sequential order.
 
 - **string** $filePath Path or URL to the CSV file.
-- **?list<string>** $headers When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing `FALSE` or any other value will result in sequential column headers.
+- **list<string>|bool** $headers When `TRUE`, will take the first row as the headers. When an array is supplied then the array will be used as the column headers. Passing `FALSE` or any other value will result in sequential column headers.
 - **int** $skipRows Skip over a specified number of rows at the start. Defaults to 0.
 
 
@@ -149,8 +149,8 @@ CAUTION: This method is designed for CLI usage only and will trigger a warning i
 - **string** $password Matching password for the username. Defaults to ''.
 
 
-**Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
-**Throws:**  `RuntimeException` If the MySQL library generates an error from executing the query.
+**Throws:**  \InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT. 
+**Throws:**  \RuntimeException If the MySQL library generates an error from executing the query.
 
 **Returns:**  ?DataFrame A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
 
@@ -164,12 +164,12 @@ Loads data out of a SQLite database into a DataFrame. $source can either be a ta
 
 NOTE: Requires the SQLite3 extension to be installed and active.
 
-- **string** $database Name of the MySQL database to query.
+- **string** $filepath Name of the MySQL database to query.
 - **string** $source Either the name of table within the database or a full SELECT statement.
 
 
-**Throws:**  `InvalidArgumentException` If any other kind of SQL query is attempted outside of a SELECT. 
-**Throws:**  `RuntimeException` If the SQLite library generates an error from executing the query.
+**Throws:**  \InvalidArgumentException If any other kind of SQL query is attempted outside of a SELECT. 
+**Throws:**  \RuntimeException If the SQLite library generates an error from executing the query.
 
 **Returns:**  ?DataFrame A DataFrame containing the resulting rows. Returns `NULL` if the specified table or query returns no rows.
 

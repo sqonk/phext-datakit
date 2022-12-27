@@ -45,7 +45,7 @@ class CSVExporter
     protected string $path;
     
     /** 
-     * @var resource 
+     * @var ?resource 
      */
     protected $fh;
     protected bool $headersWritten = false;
@@ -181,7 +181,7 @@ class CSVExporter
      * Will trigger a warning if called after the headers have already been output. 
      * Will also trigger a notice if a field map has previously been set.
      * 
-     * @return TRUE if the headers were successfully set, FALSE otherwise.
+     * @return bool TRUE if the headers were successfully set, FALSE otherwise.
      */
     public function set_headers(array $headers): bool
     {

@@ -29,13 +29,13 @@ Return the DOMDocument object.
 ------
 ##### traverse
 ```php
-public function traverse(array $elements, callable $callback, DOMNode $current = null) : array
+public function traverse(array $elements, callable $callback, DOMElement|DomDocument|null $current = null) : array
 ```
 Traverse a hierarchal series of elements in the document, drilling down to the final set and providing them back to your program for processing.
 
 - **list<array<string,** string>> $elements The configuration array of elements to traverse (see below examples).
 - **callable** $callback A callback method that will repeatably receive each element at the end of the traversal chain.
-- **?DOMNode** $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as `NULL`.
+- **DOMElement|DOMDocument|null** $current The parent node to begin from. This parameter services the recursive nature of the method and should be left as `NULL`.
 
 Elements array should be in format of:
 
@@ -57,6 +57,10 @@ traverse([
 ```
 
 In this example the table rows found from the last definition in the elements array would be passed to your callback, which takes one parameter only.
+
+
+**Throws:**  \InvalidArgumentException If $elements is an empty array. 
+**Throws:**  \UnexpectedValueException If a given type for an element is not id, tag or class.
 
 **Returns:**  array{bool, string} A two-member array. The first element contains `TRUE` or `FALSE` on whether the traversal was successful. If `FALSE`, the second element contains the error message.
 

@@ -136,7 +136,7 @@ public function next_row() : array|bool
 ```
 Advance the importer by one line and return the resulting row of fields.
 
-**Returns:**  **Returns:**  array<string, string>|bool An associative array containing the decoded fields that were read in or `FALSE` if the end of the CSV was reached.
+**Returns:**  array<string, string>|bool An associative array containing the decoded fields that were read in or `FALSE` if the end of the CSV was reached.
 
 
 ------

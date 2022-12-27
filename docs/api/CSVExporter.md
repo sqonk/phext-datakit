@@ -102,7 +102,7 @@ NOTE: If you have previously set a map by calling `set_map()` then the headers a
 
 Will trigger a warning if called after the headers have already been output. Will also trigger a notice if a field map has previously been set.
 
-**Returns:**  `TRUE` if the headers were successfully set, `FALSE` otherwise.
+**Returns:**  bool `TRUE` if the headers were successfully set, `FALSE` otherwise.
 
 
 ------
@@ -124,11 +124,11 @@ public function add_record(mixed $record) : self
 ```
 Add a single record to the CSV. This method differs from `add_raw_row()` in that the provided array or object should be associative where the keys correspond to the column headers.
 
-- **array<string,** string>|ArrayAccess $record An associative array or object containing the row of data.
+- **mixed** $record An associative array or object containing the row of data.
 
 
-**Throws:**  RuntimeException If no field map has been set. 
-**Throws:**  InvalidArgumentException If the provided record is not of the correct type.
+**Throws:**  \RuntimeException If no field map has been set. 
+**Throws:**  \InvalidArgumentException If the provided record is not of the correct type.
 
 **Returns:**  self The CSV object.
 
@@ -140,10 +140,10 @@ public function add_records(mixed $records) : self
 ```
 Add multiple records to the CSV.
 
-- **list<array<string,** string>>|ArrayAccess $records The array of records to add.
+- **mixed** $records The array of records to add.
 
 
-**Throws:**  InvalidArgumentException If $records is not of the correct type.
+**Throws:**  \InvalidArgumentException If $records is not of the correct type.
 
 
 **See:**  add_record() for other possible exceptions that may be thrown.

@@ -501,7 +501,7 @@ class math
      * -- parameters:
 	 * @param list<int|float> $data The input array of values.
 	 * 
-	 * @return list<int|float>
+	 * @return ?list<int|float>
      * 
      * @see http://www.wisetonic.com/
      * @see https://github.com/amitrou/Spearman-Correlation

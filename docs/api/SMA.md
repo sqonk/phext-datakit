@@ -5,7 +5,7 @@ A simple class for management of a Simple Moving Average. It works by alternatin
 
 SMA adheres to various array-like behaviour protocols. You should keep in mind that whenever you access values from the class you will be receiving the relevant average, not the original raw value you placed in previously.
 
-@implements \IteratorAggregate<int|float> @implements \ArrayAccess<int|float>
+@implements \IteratorAggregate<int, int|float> @implements \ArrayAccess<int, int|float>
 #### Methods
 - [count](#count)
 - [getIterator](#getiterator)
@@ -95,7 +95,7 @@ Return the calculated result of the SMA as it currently stands, optionally round
 
 - **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the EMA object is used.
 
-**Returns:**  The most recent calculated moving average.
+**Returns:**  float The most recent calculated moving average.
 
 
 ------

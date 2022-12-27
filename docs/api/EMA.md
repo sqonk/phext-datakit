@@ -3,7 +3,7 @@
 ### EMA
 A simple class for management of a Exponential Moving Average. It works by alternating between adding new values to the array and calculating the current average.
 
-@implements \IteratorAggregate<int|float> @implements \ArrayAccess<int|float>
+@implements \IteratorAggregate<int, int|float> @implements \ArrayAccess<int, int|float>
 #### Methods
 - [count](#count)
 - [getIterator](#getiterator)
@@ -93,7 +93,7 @@ Return the calculated result of the EMA as it currently stands. You can optional
 
 - **?int** $precision The amount of decimal points to round to. If `NULL` then the default precision of the EMA object is used.
 
-**Returns:**  The most recent calculated moving average.
+**Returns:**  float The most recent calculated moving average.
 
 
 ------

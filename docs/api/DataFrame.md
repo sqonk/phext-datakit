@@ -7,7 +7,7 @@ Various basic statistical and mathematical functions are provided as well numero
 
 Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
 
-@implements \IteratorAggregate<list<array<string, string>>> @implements \ArrayAccess<list<array<string, string>>>
+@implements \IteratorAggregate<mixed, array<string, string>> @implements \ArrayAccess<mixed, array<string, string>>
 #### Methods
 - [make](#make)
 - [empty_frames](#empty_frames)
@@ -167,7 +167,8 @@ public function __tostring() : string
 ```
 Converting the DataFrame to a string produces the report.
 
-See: report()
+
+**See:**  report()
 
 
 ------
@@ -285,12 +286,12 @@ Return the associative array containing all the data within the DataFrame.
 ------
 ##### flattened
 ```php
-public function flattened(bool $includeIndex = true, string ...$columns) : array
+public function flattened(bool $includeIndex = true, array|string ...$columns) : array
 ```
 Flatten the DataFrame into a native array.
 
 - **bool** $includeIndex If `TRUE` then use the DataFrame indexes as the keys in the array.
-- **bool** $columns One or more columns that should be used in the resulting array, all columns if null is supplied.
+- **string|list<string>** ...$columns One or more columns that should be used in the resulting array, all columns if null is supplied.
 
 The columns can be supplied as a set of variable arguments or an array as the second argument.
 
@@ -927,9 +928,9 @@ public function duplicated(string ...$columns) : array
 ```
 Find all duplicate values for a given set of columns, or every column if none are supplied.
 
-This method only compares corresponding values between rows of each column. That is, it the comparison is performed vertically, not horizontally.
+This method only compares corresponding values between rows of each column, the comparison is only performed vertically.
 
-**Returns:**  list<string|int|float> All found duplicates.
+**Returns:**  list<array<mixed, string|int|float>> All found duplicates.
 
 
 ------
@@ -951,7 +952,7 @@ This has the effect of grouping common values under a singular index.
 
 If a set of columns are provided then all other columns are stripped out of the result.
 
-**Returns:**  A new DataFrame with the modified data.
+**Returns:**  DataFrame A new DataFrame with the modified data.
 
 
 ------
@@ -965,7 +966,7 @@ Note that $columns in this method actually refer  to the current grouped indexes
 
 If no columns are supplied then all indexes are used.
 
-**Returns:**  A new DataFrame with the modified data.
+**Returns:**  DataFrame A new DataFrame with the modified data.
 
 
 ------
@@ -977,7 +978,7 @@ Perform a complex transformation on the DataFrame where by the column specified 
 
 The $mergeMap is an associative array where by each column name specified as a key becomes a column in the resulting DataFrame and each column name specified as a value in the array becomes the corresponding value of that column.
 
-**Returns:**  A new DataFrame with the transposed data.
+**Returns:**  DataFrame A new DataFrame with the transposed data.
 
 
 ------
@@ -987,13 +988,13 @@ public function transform(callable $callback, string ...$columns) : sqonk\phext\
 ```
 Transform the value of one or more columns using the provided callback. If no columns are specified then the operation applies to all.
 
-Callback format: `myFunc($value, $columnName, $rowIndex) -> mixed`
+Callback format: `myFunc($value, $columnName, $rowIndex): mixed`
 
 
 ------
 ##### replace
 ```php
-public function replace(string $column, array $newValues) : sqonk\phext\datakit\DataFrame
+public function replace(string $column, array $newValues) : self
 ```
 Replace all the values for a column with another set of values.
 
@@ -1003,8 +1004,8 @@ The new value array should hold the exact amount of items as the amount of rows 
 - **list<string|int|float>** $newValues An array of replacement values.
 
 
-**Throws:**  InvalidArgumentException If the specified column is not present. 
-**Throws:**  LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
+**Throws:**  \InvalidArgumentException If the specified column is not present. 
+**Throws:**  \LengthException If the amount of items in $newValues does not precisely match the amount of rows within the DataFrame.
 
 
 ------
@@ -1104,7 +1105,7 @@ All other standard option keys can be passed in.
 - **string** $highP The column used for the high price values.
 - **array<string,** mixed> $options
 
-**Returns:**  A BulkPlot object containing the plots to be rendered.
+**Returns:**  BulkPlot The set of plots to be rendered.
 
 
 ------
@@ -1114,7 +1115,7 @@ public function box(string ...$columns) : sqonk\phext\plotlib\BulkPlot
 ```
 Create a box plot chart, which is a singular data point of box-like appearance that illustrates the place of the 25%, 50% and 75% quantiles as well as the outer whiskers.
 
-**Returns:**  A BulkPlot object containing the plots to be rendered.
+**Returns:**  BulkPlot An object containing the plots to be rendered.
 
 
 ------
@@ -1132,7 +1133,7 @@ Create a bar chart styled in the fashion of a histogram.
 	- low: Low range bins filter. Defaults to `NULL`.
 	- high: High range bins filter. Defaults to `NULL`.
 
-**Returns:**  A BulkPlot object containing the plots to be rendered.
+**Returns:**  BulkPlot An object containing the plots to be rendered.
 
 
 ------
@@ -1140,7 +1141,7 @@ Create a bar chart styled in the fashion of a histogram.
 ```php
 public function export(string $filePath, array $columns = null, string $delimiter = ',', bool $includeIndex = true) : void
 ```
-Export the Dataframe to a delimited text file (CSV).
+Export the DataFrame to a delimited text file (CSV).
 
 - **string** $filePath: The destination file.
 - **list<string>** $columns: The columns to export, or all if null is supplied.

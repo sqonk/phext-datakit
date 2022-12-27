@@ -5,7 +5,7 @@ A class to add both object orientation and utility methods to native arrays, ena
 
 In particular it sports a variety of basic mathematical and statistical functions.
 
-@implements \IteratorAggregate<mixed> @implements \ArrayAccess<mixed>
+@implements \IteratorAggregate<mixed, mixed> @implements \ArrayAccess<mixed, mixed>
 #### Methods
 - [getIterator](#getiterator)
 - [offsetSet](#offsetset)
@@ -610,12 +610,12 @@ This method differs from `groupby` in that it does not care about the underlying
 
 The values returned from the callback must be capable of being used as an array key (e.g. strings, numbers). This is done by a `var_is_stringable` check. `NULL` values are allowed but used to omit the associated item from any of the sets.
 
-- **$callback** A callback method that will produce the varying results used to sort each element into its own set.
+- **callable** $callback A callback method that will produce the varying results used to sort each element into its own set.
 
-Callback format: `myFunc($value, $index) -> mixed`
+Callback format: `myFunc($value, $index): mixed`
 
 
-**Throws:**  UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
+**Throws:**  \UnexpectedValueException If the value returned from the callback is not capable of being used as an array key.
 
 **Returns:**  Vector A vector of vectors, one each for each different result returned from the callback.
 

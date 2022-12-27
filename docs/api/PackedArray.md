@@ -15,7 +15,7 @@ This class should not be considered a blanket replacement for native arrays, ins
 
 In general native arrays offer flexibility and speed over memory consumption, where as a packed array prioritises memory usage for a little less flexibility. PackedArrays are built to address situations where working with large data sets that challenge the available RAM on the running machine can not be practically solved by other means.
 
-@implements \IteratorAggregate<mixed> @implements \ArrayAccess<mixed>
+@implements \Iterator<int, mixed> @implements \ArrayAccess<int, mixed>
 #### Methods
 - [offsetSet](#offsetset)
 - [offsetGet](#offsetget)

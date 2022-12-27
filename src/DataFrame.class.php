@@ -2122,10 +2122,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * every column if none are supplied.
      * 
      * This method only compares corresponding values between rows
-     * of each column. That is, it the comparison is performed
-     * vertically, not horizontally.
+     * of each column, the comparison is only performed vertically.
      * 
-     * @return list<string|int|float> All found duplicates.
+     * @return list<array<mixed, string|int|float>> All found duplicates.
      */
     public function duplicated(string ...$columns): array
     {
