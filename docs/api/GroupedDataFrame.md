@@ -124,7 +124,7 @@ public function export(string $dir = '.', array $columns = null, string $delimit
 ```
 Functional map to the standard export within DataFrame.
 
-- **string** $dir Path to the directory/folder to export the CSV to.
+- **string** $dir Path to the directory/folder to export the CSV to. Defaults to the current working directory.
 - **list<string>** $columns Which columns to export.
 - **string** $delimiter CSV delimiter.
 

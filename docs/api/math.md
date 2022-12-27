@@ -145,9 +145,9 @@ static public function cumulative_min(array $array) : array
 ```
 Accumulative minimum of the values within an array.
 
-- **list<int|float>** $array The input array of values.
+- **list<int|float|null>** $array The input array of values.
 
-**Returns:**  list<int|float> An array of running minimum values.
+**Returns:**  list<int|float|null> An array of running minimum values.
 
 
 ------
@@ -157,9 +157,9 @@ static public function cumulative_max(array $array) : array
 ```
 Accumulative maximum of the values within an array.
 
-- **list<int|float>** $array The input array of values.
+- **list<int|float|null>** $array The input array of values.
 
-**Returns:**  list<int|float> An array of running maximum values.
+**Returns:**  list<int|float|null> An array of running maximum values.
 
 
 ------
@@ -169,9 +169,9 @@ static public function cumulative_sum(array $array) : array
 ```
 Accumulative sum of the values within an array.
 
-- **list<int|float>** $array The input array of values.
+- **list<int|float|null>** $array The input array of values.
 
-**Returns:**  list<int|float> An array of running totals.
+**Returns:**  list<int|float|null> An array of running totals.
 
 
 ------
@@ -181,9 +181,9 @@ static public function cumulative_prod(array $array) : array
 ```
 Accumulative product of the values within an array.
 
-- **list<int|float>** $array The input array of values.
+- **list<int|float|null>** $array The input array of values.
 
-**Returns:**  list<int|float> An array of running products.
+**Returns:**  list<int|float|null> An array of running products.
 
 
 ------

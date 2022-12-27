@@ -329,9 +329,9 @@ class math
 	 * Accumulative sum of the values within an array.
 	 * 
 	 * -- parameters:
-	 * @param list<int|float> $array The input array of values.
+	 * @param list<int|float|null> $array The input array of values.
 	 * 
-	 * @return list<int|float> An array of running totals.
+	 * @return list<int|float|null> An array of running totals.
 	 */
     static public function cumulative_sum(array $array): array
     {
@@ -363,9 +363,9 @@ class math
 	 * Accumulative product of the values within an array.
 	 * 
 	 * -- parameters:
-	 * @param list<int|float> $array The input array of values.
+	 * @param list<int|float|null> $array The input array of values.
 	 * 
-	 * @return list<int|float> An array of running products.
+	 * @return list<int|float|null> An array of running products.
 	 */
     static public function cumulative_prod(array $array): array
     {

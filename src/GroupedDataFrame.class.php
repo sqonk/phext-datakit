@@ -52,10 +52,11 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	
 	public function offsetSet(mixed $index, mixed $dataFrame): void
 	{
-		if (! $dataFrame instanceof DataFrame)
-			throw new \Exception('Only DataFrames can be added to the set of a GroupedDataFrame. Null or incorrect object type given.');
-		
-		if ($index === null)
+		if (! $dataFrame instanceof DataFrame) { // @phpstan-ignore-line
+			throw new \Exception('Only DataFrames can be added to the set of a GroupedDataFrame. NULL or incorrect object type given.');
+		}
+        
+		if ($index === null) // @phpstan-ignore-line
 			$this->sets[] = $dataFrame;
 		else
 			$this->sets[$index] = $dataFrame;
@@ -178,7 +179,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	 * Functional map to the standard export within DataFrame.
 	 * 
 	 * -- parameters:
-	 * @param string $dir Path to the directory/folder to export the CSV to.
+	 * @param string $dir Path to the directory/folder to export the CSV to. Defaults to the current working directory.
 	 * @param list<string> $columns Which columns to export.
 	 * @param string $delimiter CSV delimiter.
 	 * 

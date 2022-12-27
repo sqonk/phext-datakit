@@ -119,7 +119,7 @@ Your callback method should be in the format of:
 
 where $row is an array of the values retrieved from the current row or line in the data. The supplied array will be in simple sequential order.
 
-- **callable** $callback A callback method to process each row.
+- **?callable** $callback A callback method to process each row. Pass `NULL` to receive all data as an array at the end of the call.
 - **string** $data The data to be processed.
 - **string** $itemDelimiter The token used to split each row into individual items.
 - **string** $lineDelimiter The line ending used to split the data into seperate rows or lines.
