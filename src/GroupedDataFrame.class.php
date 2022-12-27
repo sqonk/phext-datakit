@@ -189,7 +189,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
         if (php_sapi_name() == 'cli' && $dir !== null && ! file_exists($dir))
             mkdir($dir, 0777, true);
         
-        if ($dir === null) {
+        if (! $dir) {
             $out = [];
             foreach ($this->sets as $df) {
                 ob_start();
