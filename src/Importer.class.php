@@ -210,7 +210,7 @@ class Importer
      * array will be in simple sequential order.
      * 
      * -- parameters:
-     * @param callable $callback A callback method to process each row.
+     * @param ?callable $callback A callback method to process each row. Pass NULL to receive all data as an array at the end of the call.
      * @param string $data The data to be processed.
      * @param string $itemDelimiter The token used to split each row into individual items.
      * @param string $lineDelimiter The line ending used to split the data into seperate rows or lines.
@@ -222,14 +222,13 @@ class Importer
      * This method will generate a user level warning if data is empty or can not otherwise be derived into
      * at least 1 line of applicable data.
      */
-    static public function delimitered_data(callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, ?array $customHeaders = null): bool|array
+    static public function delimitered_data(?callable $callback, string $data, string $itemDelimiter, string $lineDelimiter = "\n", bool $headersAreFirstRow = false, ?array $customHeaders = null): bool|array
     {
         $lines = explode($lineDelimiter, trim($data));
         $count = count($lines);
         if ($count == 0 or ($count == 1 && $lines[0] === ''))  {
             trigger_error('Provided data can not be broken apart using the provided line delimiter, or the data is empty.', E_USER_WARNING);
             return $callback ? false : [];
-            
         }
         
         if ($headersAreFirstRow || is_array($customHeaders))
