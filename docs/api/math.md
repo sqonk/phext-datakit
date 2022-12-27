@@ -245,13 +245,13 @@ This method is part of the spearman correlation and was originally written by Al
 ------
 ##### nf_round
 ```php
-static public function nf_round(array|string|int|float $value, int $precision = 2, int $mode = PHP_ROUND_HALF_UP) : array|string
+static public function nf_round(array|string|int|float $value, int $precision, int $mode = PHP_ROUND_HALF_UP) : array|string
 ```
 Round the given value(s) to the desired precision. This method performs a double round, first rounding the float using the preferred mode of rounding, then converting the result to a string with number_format in order to hold the precision.
 
 - **float|int|string|list<int|float|string>** $value The value to be rounded. If an array is passed in then each element within is rounded.
-- **int** $precision The number of decimal digits to round to. Defaults to 2.
-- **int** $mode The rounding mode used.
+- **int** $precision The number of decimal digits to round to.
+- **int-mask<1,2,3,4>** $mode<1|2|3|4> The rounding mode used.
 
 **Returns:**  string|list<string> The rounded value, or array of rounded values (depending on the input).
 

@@ -1269,6 +1269,14 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * Round all values in the vector up or down to the given decimal point precision.
+     * 
+     * -- parameters:
+     * @param int $precision The number of decimal digits to round to.
+     * @param int-mask<1,2,3,4> $mode The rounding mode used.
+     * @param bool $stringify When TRUE, not only round numbers but format them to a string in order to freeze the precision.
+     * @param $inplace If TRUE then modify the receiver, otherwise performing the rounding on a copy.
+     * 
+     * @return Vector If $inplace then returns the receiver, otherwise returns a modified copy.
      */
     public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, bool $stringify = false, bool $inplace = false): Vector
     {

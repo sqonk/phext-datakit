@@ -105,7 +105,7 @@ static public function make(array $data, array $headers = null, bool $isVertical
 ```
 Static equivalent of `new DataFrame`.
 
-- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **array<mixed,** array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
 - **?list<string>** $headers An optional custom set of column headers.
 - **bool** $isVerticalDataSet When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
 
@@ -178,7 +178,7 @@ public function __construct(array $data = null, array $headers = null, bool $isV
 ```
 Construct a new DataFrame with the provided data. You may optionally provide the set of column headers in the second parameter. If you choose to do this then they should match the keys in the array.
 
-- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **array<mixed,** array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
 - **?list<string>** $headers An optional custom set of column headers.
 - **bool** $isVerticalDataSet When set to `TRUE` the $data array is interpreted as a vertical series of columns instead of rows. Defaults to `FALSE`.
 
@@ -217,7 +217,7 @@ public function clone(array $data, array $headers = null) : sqonk\phext\datakit\
 ```
 Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
 
-- **list<array<string,** string>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
+- **array<mixed,** array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is `TRUE`, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column.
 - **?list<string>** $headers An optional custom set of column headers.
 
 **Returns:**  DataFrame A copy of the DataFrame.

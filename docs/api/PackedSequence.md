@@ -512,5 +512,8 @@ public function round(int $precision, int $mode = PHP_ROUND_HALF_UP) : self
 ```
 Round all values in the array up or down to the given decimal point precision.
 
+- **int** $precision The number of decimal digits to round to.
+- **int-mask<1,2,3,4>** $mode The rounding mode used.
+
 
 ------

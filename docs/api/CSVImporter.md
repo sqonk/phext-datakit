@@ -38,9 +38,9 @@ Initialise a new CSVImporter. Use this static method if you wish to chain a sequ
 - **bool** $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
 - **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 - **int** $skipRows Additionally skip over the given number or rows before reading begins.
-- **string** $delimiter Set the field delimiter (one single-byte character only).
+- **non-empty-string** $delimiter Set the field delimiter (one single-byte character only).
 - **string** $enclosedBy Set the field enclosure character (one single-byte character only).
-- **string** $lineEnding Set character sequence that denotes the end of a line (row).
+- **non-empty-string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
 ------
@@ -55,9 +55,9 @@ Initialise a new CSVImporter.
 - **bool** $headersAreFirstRow When `TRUE` the first row of the CSV document is assigned as the headers, which are the resulting keys in the associative array produced for each row that is read in. Defaults to ``FALSE``.
 - **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 - **int** $skipRows Additionally skip over the given number or rows before reading begins.
-- **string** $delimiter Set the field delimiter (one single-byte character only).
+- **non-empty-string** $delimiter Set the field delimiter (one single-byte character only).
 - **string** $enclosedBy Set the field enclosure character (one single-byte character only).
-- **string** $lineEnding Set character sequence that denotes the end of a line (row).
+- **non-empty-string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
 ------
@@ -79,15 +79,17 @@ Close off access to the underlying file resource, if one is open. Repeated calls
 ------
 ##### delimiter
 ```php
-public function delimiter(string $seperatedBy) : sqonk\phext\datakit\CSVImporter
+public function delimiter(string $separatedBy) : self
 ```
 Set the field delimiter (one single-byte character only).
+
+- **non-empty-string** $separatedBy A non-empty string used as a token to split the text of each line into seperate elements.
 
 
 ------
 ##### enclosedBy
 ```php
-public function enclosedBy(string $enclosure) : sqonk\phext\datakit\CSVImporter
+public function enclosedBy(string $enclosure) : self
 ```
 Set the field enclosure character (one single-byte character only).
 
@@ -95,9 +97,11 @@ Set the field enclosure character (one single-byte character only).
 ------
 ##### line_ending
 ```php
-public function line_ending(string $delimiter) : sqonk\phext\datakit\CSVImporter
+public function line_ending(string $lineEnding) : self
 ```
 Set character sequence that denotes the end of a line (row).
+
+- **non-empty-string** $lineEnding The character(s) that denote the line ending for the target CSV file.
 
 
 ------

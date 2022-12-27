@@ -42,6 +42,9 @@ use sqonk\phext\core\{arrays,strings};
  */
 final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 {
+    /** 
+     * @var array<mixed, array<mixed, mixed>> 
+     */
     protected array $data;
     protected ?array $headers = [];
     protected array $transformers = [];
@@ -53,7 +56,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      *   Static equivalent of `new DataFrame`.
      * 
      * -- parameters:
-     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param array<mixed, array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
      * @param ?list<string> $headers An optional custom set of column headers.
      * @param bool $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
      * 
@@ -124,7 +127,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * should match the keys in the array.
      * 
      * -- parameters:
-     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param array<mixed, array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
      * @param ?list<string> $headers An optional custom set of column headers.
      * @param bool $isVerticalDataSet When set to TRUE the $data array is interpreted as a vertical series of columns instead of rows. Defaults to FALSE.
      * 
@@ -188,7 +191,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * Produce a copy of the dataframe consisting of only the supplied data. All other information such as transformers and header settings remain the same.
      * 
      * -- parameters:
-     * @param list<array<string, string>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
+     * @param array<mixed, array<mixed, mixed>> $data The array of data. Unless `$isVerticalDataSet` is TRUE, the array should be an array of rows. Each row is an associative array where the keys correspond to the headers of each column. 
      * @param ?list<string> $headers An optional custom set of column headers.
      * 
      * @return DataFrame A copy of the DataFrame.

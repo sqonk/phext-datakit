@@ -941,6 +941,10 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
 	
     /**
      * Round all values in the array up or down to the given decimal point precision.
+     * 
+     * -- parameters:
+     * @param int $precision The number of decimal digits to round to.
+     * @param int-mask<1,2,3,4> $mode The rounding mode used.
      */
     public function round(int $precision, int $mode = PHP_ROUND_HALF_UP): self
     {

@@ -555,7 +555,8 @@ class math
      * 
      * -- parameters:
      * @param float|int|string|list<int|float|string> $value The value to be rounded. If an array is passed in then each element within is rounded.
-     * @param int $mode The rounding mode used.
+     * @param int $precision The number of decimal digits to round to.
+     * @param int-mask<1,2,3,4> $mode<1|2|3|4> The rounding mode used.
      * 
      * @return string|list<string> The rounded value, or array of rounded values (depending on the input).
      * 

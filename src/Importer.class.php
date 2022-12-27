@@ -212,8 +212,8 @@ class Importer
      * -- parameters:
      * @param ?callable $callback A callback method to process each row. Pass NULL to receive all data as an array at the end of the call.
      * @param string $data The data to be processed.
-     * @param string $itemDelimiter The token used to split each row into individual items.
-     * @param string $lineDelimiter The line ending used to split the data into seperate rows or lines.
+     * @param non-empty-string $itemDelimiter The token used to split each row into individual items.
+     * @param non-empty-string $lineDelimiter The line ending used to split the data into seperate rows or lines.
      * @param bool $headersAreFirstRow TRUE or FALSE, where are not the first row contains headers.
      * @param list<string> $customHeaders A custom set of column headers to override any existing or absent headers.
      * 

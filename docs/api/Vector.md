@@ -905,5 +905,12 @@ public function round(int $precision, int $mode = PHP_ROUND_HALF_UP, bool $strin
 ```
 Round all values in the vector up or down to the given decimal point precision.
 
+- **int** $precision The number of decimal digits to round to.
+- **int-mask<1,2,3,4>** $mode The rounding mode used.
+- **bool** $stringify When `TRUE`, not only round numbers but format them to a string in order to freeze the precision.
+- **$inplace** If `TRUE` then modify the receiver, otherwise performing the rounding on a copy.
+
+**Returns:**  Vector If $inplace then returns the receiver, otherwise returns a modified copy.
+
 
 ------

@@ -112,7 +112,7 @@ public function add_raw_row(array $row) : self
 ```
 Add a series of values as the next row in the CSV.
 
-- **array<string,** string>$row A sequential array of the values corresponding the order of the column headers.
+- **array<mixed>$row** A sequential array of the values corresponding the order of the column headers.
 
 **Returns:**  self The CSV object.
 

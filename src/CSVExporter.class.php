@@ -202,7 +202,7 @@ class CSVExporter
      * Add a series of values as the next row in the CSV. 
      * 
      * -- parameters:
-     * @param array<string, string>$row A sequential array of the values corresponding the order of the column headers.
+     * @param array<mixed>$row A sequential array of the values corresponding the order of the column headers.
      *   
      * @return self The CSV object.
      */
