@@ -601,7 +601,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * If either the lower or upper constraint is not needed then passing in null will
      * ignore it.
      */
-    public function clip($lower, $upper = null): PackedSequence
+    public function clip(int|float|null $lower, int|float|null $upper): self
     {
         foreach ($this as $key => $value)
         {

@@ -246,14 +246,14 @@ class PackedSequenceTest extends TestCase
     {
         $input = [4.3, 4.35, 4.5, 5.7, 6.8, 4.8, 5.1, 3.6];
         $ps = new PackedSequence('d', $input);
-        $clipped = $ps->clip(4.4);
+        $clipped = $ps->clip(lower:4.4, upper:null);
         
         $expected = [4.4, 4.4, 4.5, 5.7, 6.8, 4.8, 5.1, 4.4];
         foreach ($clipped as $v)
             $this->assertSame($v, array_shift($expected));
         
         $expected = [4.5, 4.5, 4.5, 4.8, 4.8, 4.8, 4.8, 4.5];
-        $clipped = $ps->clip(4.5, 4.8);
+        $clipped = $ps->clip(lower:4.5, upper:4.8);
         foreach ($clipped as $v)
             $this->assertSame($v, array_shift($expected));
     }
