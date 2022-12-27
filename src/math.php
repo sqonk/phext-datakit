@@ -506,7 +506,7 @@ class math
      * @see http://www.wisetonic.com/
      * @see https://github.com/amitrou/Spearman-Correlation
      */
-    static protected function ranking(array $data): array
+    static protected function ranking(array $data): ?array
     {
         $ranking    = [];
         $prevValue  = '';
