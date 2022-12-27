@@ -117,7 +117,7 @@ class CSVImporter implements \Iterator
     /**
      * Set the field delimiter (one single-byte character only).
      */
-    public function delimiter(string $seperatedBy): CSVImporter 
+    public function delimiter(string $separatedBy): self 
     {
         $this->delim = $seperatedBy;
         return $this;
@@ -126,7 +126,7 @@ class CSVImporter implements \Iterator
     /**
      * Set the field enclosure character (one single-byte character only).
      */
-    public function enclosedBy(string $enclosure): CSVImporter 
+    public function enclosedBy(string $enclosure): self 
     {
         $this->enclosure = $enclosure;
         return $this;
@@ -135,7 +135,7 @@ class CSVImporter implements \Iterator
     /**
      * Set character sequence that denotes the end of a line (row).
      */
-    public function line_ending(string $delimiter): CSVImporter 
+    public function line_ending(string $lineEnding): self 
     {
         $this->lineEnding = $delimiter;
         return $this;
