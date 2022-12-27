@@ -1,5 +1,10 @@
 <?php
 namespace sqonk\phext\datakit;
+
+use sqonk\phext\core\arrays;
+use \DomDocument;
+use \DOMElement;
+
 /**
 *
 * Data Kit
@@ -27,11 +32,6 @@ namespace sqonk\phext\datakit;
  * dispatching the nodes to your callback when the last item type in the
  * element array has been reached.
  */
-
-use sqonk\phext\core\arrays;
-use \DomDocument;
-use \DOMElement;
-
 class DOMScraper
 {
     protected DomDocument $dom;
