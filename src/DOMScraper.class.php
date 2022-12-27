@@ -42,7 +42,7 @@ class DOMScraper
      */
     public function __construct(string $contents)
     {
-        $this->dom = new \DomDocument;
+        $this->dom = new DomDocument;
 		try {
             $this->dom->preserveWhiteSpace = false;
             @$this->dom->loadHTML($contents);
@@ -55,8 +55,7 @@ class DOMScraper
     /**
      * Return the DOMDocument object.
      */
-    public function dom(): DomDocument
-    {
+    public function dom(): DomDocument {
         return $this->dom;
     }
     
