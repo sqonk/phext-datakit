@@ -131,7 +131,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
             return $result;
     }
     
-    public function __get(mixed $key): array {
+    public function __get(mixed $key): mixed {
         return $this->sets[$key];
     }
     
