@@ -161,7 +161,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
      * Add a value to the end of the array. If the value is an array or a
      * traversable object then each element of it will instead be added.
      */
-    public function add(int|float|string ...$values): self
+    public function add(mixed ...$values): self
     {
         foreach ($values as $value)
         {
