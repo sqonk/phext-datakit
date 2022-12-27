@@ -582,7 +582,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
         if ($start >= $total)
             throw new \InvalidArgumentException('Start of slice is greater than the length of the array.');
 		
-        if (! $length || ($length && $start + $length > $total-1)) 
+        if (! $length || ($start + $length > $total-1)) 
             $length = $total - $start;
         
         $slice = new PackedArray;
