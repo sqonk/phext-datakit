@@ -114,7 +114,7 @@ class DOMScraper
         if ($type == 'id')
         {
             $items = $current->getElementById($key);
-            if ($items && ! is_array($items))
+            if ($items)
                 $items = [$items];
         }
         else if ($type == 'tag')
