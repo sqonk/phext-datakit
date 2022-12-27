@@ -226,7 +226,7 @@ class Importer
     {
         $lines = explode($lineDelimiter, trim($data));
         $count = count($lines);
-        if ($count == 0 or ($count == 1 && $lines[0] === ''))  {
+        if ($count == 1 && $lines[0] === '')  {
             trigger_error('Provided data can not be broken apart using the provided line delimiter, or the data is empty.', E_USER_WARNING);
             return $callback ? false : [];
         }
