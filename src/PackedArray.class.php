@@ -360,7 +360,7 @@ class PackedArray implements \ArrayAccess, \Countable, \Iterator
      * Shift an item off the start of the array. If $shiftedItem is provided
      * then it is filled with the value that was removed.
      */
-    public function shift(&$shiftedItem = null): PackedArray
+    public function shift(mixed &$shiftedItem = null): PackedArray
     {
         if ($this->count() == 0) {
             trigger_error('Tried to shift an array that has no elements.', E_USER_WARNING);

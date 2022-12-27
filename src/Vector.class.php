@@ -444,7 +444,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * from looking up $key on each element in the vector, assuming all elements
      * inside of the vector are an array or object.
      */
-	public function frequency($key = null): Vector
+	public function frequency(mixed $key = null): Vector
 	{
 		if ($key === null)
 			$out = $this->_array;
@@ -924,7 +924,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * See ksort for sorting the vector based on the array indexes.
      */
-	public function keyed_sort($key): Vector
+	public function keyed_sort(mixed $key): Vector
 	{
 		arrays::key_sort($this->_array, $key, ! $this->isSequential);
 		

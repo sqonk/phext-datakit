@@ -46,7 +46,7 @@ class SMA implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->averages->count();
     }
     
-	public function getIterator(): \ArrayIterator
+	public function getIterator(): \Iterator
 	{
         $array = $this->defaultPrecision ? $this->averages->round($this->defaultPrecision)->array() : 
             $this->averages->array();
