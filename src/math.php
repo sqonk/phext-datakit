@@ -295,9 +295,9 @@ class math
 	 * Accumulative minimum of the values within an array.
 	 * 
 	 * -- parameters:
-	 * @param list<int|float> $array The input array of values.
+	 * @param list<int|float|null> $array The input array of values.
 	 * 
-	 * @return list<int|float> An array of running minimum values.
+	 * @return list<int|float|null> An array of running minimum values.
 	 */
     static public function cumulative_min(array $array): array
     {
@@ -312,9 +312,9 @@ class math
 	 * Accumulative maximum of the values within an array.
 	 * 
 	 * -- parameters:
-	 * @param list<int|float> $array The input array of values.
+	 * @param list<int|float|null> $array The input array of values.
 	 * 
-	 * @return list<int|float> An array of running maximum values.
+	 * @return list<int|float|null> An array of running maximum values.
 	 */
     static public function cumulative_max(array $array): array
     {
