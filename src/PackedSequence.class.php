@@ -617,7 +617,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Swap the positions of 2 values within the array.
      */
-    public function swap(int $index1, int $index2): PackedSequence
+    public function swap(int $index1, int $index2): self
     {
         $val1 = $this->get($index1);
         $this->set($index1, $this->get($index2));
@@ -628,7 +628,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Sort the array in either `ASCENDING` or `DESCENDING` direction.
      */
-    public function sort(bool $dir = ASCENDING): PackedSequence
+    public function sort(bool $dir = ASCENDING): self
     {
         $start = 0;
         $end = $this->count()-1;
@@ -656,7 +656,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
     /**
      * Reserve the order of the elements.
      */
-    public function reverse(): PackedSequence
+    public function reverse(): self
     {
         $count = $this->count();
         
