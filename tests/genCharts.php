@@ -4,6 +4,7 @@ require_once '../vendor/autoload.php';
 require 'TCFuncs.php';
 
 boxPlot(true);
+stockplot(true);
 histogram(true);
 histogramWithBins(true);
 cumulativeHistogram(true);

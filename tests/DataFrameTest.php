@@ -1272,6 +1272,16 @@ class DataFrameTest extends TestCase
             $this->compareImages($img, "box_$i");
     }
     
+    public function testStockPlot()
+    {
+        if (! $this->gdAvailable())
+            return;
+        
+        $img = stockPlot();
+                
+        $this->compareImages($img, "candlesticks");
+    }
+    
     public function testHistogram()
     {
         if (! $this->gdAvailable())
