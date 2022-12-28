@@ -48,6 +48,10 @@ class CSVImporter implements \Iterator
      * @var non-empty-string 
      */
     protected string $lineEnding = "\n"; // used for raw string input.
+    
+    /** 
+     * @var non-empty-string 
+     */
     protected string $enclosure = "\"";
     protected bool $initialised = false; // Set on scan of first row.
     protected int $arrayIndex = 0;
@@ -70,7 +74,7 @@ class CSVImporter implements \Iterator
      * @param list<string> $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to `TRUE` then the custom headers will override it, however the first row will still be skipped over.
      * @param int $skipRows Additionally skip over the given number or rows before reading begins.
      * @param non-empty-string $delimiter Set the field delimiter (one single-byte character only).
-     * @param string $enclosedBy Set the field enclosure character (one single-byte character only).
+     * @param non-empty-string $enclosedBy Set the field enclosure character (one single-byte character only).
      * @param non-empty-string $lineEnding Set character sequence that denotes the end of a line (row).
      */
     static public function init(string $input, bool $inputIsRawData = false, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0, string $delimiter = ",", string $enclosedBy = "\"", string $lineEnding = "\n"): CSVImporter {
@@ -96,7 +100,7 @@ class CSVImporter implements \Iterator
      * @param list<string> $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to `TRUE` then the custom headers will override it, however the first row will still be skipped over.
      * @param int $skipRows Additionally skip over the given number or rows before reading begins.
      * @param non-empty-string $delimiter Set the field delimiter (one single-byte character only).
-     * @param string $enclosedBy Set the field enclosure character (one single-byte character only).
+     * @param non-empty-string $enclosedBy Set the field enclosure character (one single-byte character only).
      * @param non-empty-string $lineEnding Set character sequence that denotes the end of a line (row).
      */
     public function __construct(private string $input, private bool $inputIsRawData = false, bool $headersAreFirstRow = false, ?array $customHeaders = null, int $skipRows = 0, string $delimiter = ",", string $enclosedBy = "\"", string $lineEnding = "\n")
@@ -141,6 +145,8 @@ class CSVImporter implements \Iterator
      * 
      * -- parameters:
      * @param non-empty-string $separatedBy A non-empty string used as a token to split the text of each line into seperate elements.
+     * 
+     * @return self The receiver.
      */
     public function delimiter(string $separatedBy): self 
     {
@@ -150,6 +156,11 @@ class CSVImporter implements \Iterator
     
     /**
      * Set the field enclosure character (one single-byte character only).
+     * 
+     * -- parameters:
+     * @param non-empty-string $enclosure A single byte character.
+     * 
+     * @return self The receiver.
      */
     public function enclosedBy(string $enclosure): self 
     {
@@ -162,6 +173,8 @@ class CSVImporter implements \Iterator
      * 
      * -- parameters:
      * @param non-empty-string $lineEnding The character(s) that denote the line ending for the target CSV file.
+     * 
+     * @return self The receiver.
      */
     public function line_ending(string $lineEnding): self 
     {
@@ -172,6 +185,11 @@ class CSVImporter implements \Iterator
     /**
      * When `TRUE`, the `$input` parameter is interpreted as containing the CSV data. When FALSE 
      * it is assumed to be the file path to the relevant CSV document.
+     * 
+     * -- parameters:
+     * @param bool $headersPresent TRUE if the first row are the column headers.
+     * 
+     * @return self The receiver.
      */
     public function headers_first_row(bool $headersPresent): self 
     {
@@ -184,6 +202,11 @@ class CSVImporter implements \Iterator
      * has no effect once reading has begun, unless the importer is reset.
      * 
      * If the given value exceeds the number of rows in the CSV then the importer will raise an E_USER_WARNING at the time of internal initialisation.
+     * 
+     * -- parameters:
+     * @param int $rows The number of rows to skip.
+     * 
+     * @return self The receiver.
      * 
      * @see reset
      */
@@ -201,6 +224,8 @@ class CSVImporter implements \Iterator
      * 
      * -- parameters:
      * @param list<string> $headers The custom headers to assign.
+     * 
+     * @return self The receiver
      */
     public function custom_headers(array $headers): self 
     {

@@ -41,7 +41,7 @@ Initialise a new CSVImporter. Use this static method if you wish to chain a sequ
 - **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 - **int** $skipRows Additionally skip over the given number or rows before reading begins.
 - **non-empty-string** $delimiter Set the field delimiter (one single-byte character only).
-- **string** $enclosedBy Set the field enclosure character (one single-byte character only).
+- **non-empty-string** $enclosedBy Set the field enclosure character (one single-byte character only).
 - **non-empty-string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
@@ -58,7 +58,7 @@ Initialise a new CSVImporter.
 - **list<string>** $customHeaders Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 - **int** $skipRows Additionally skip over the given number or rows before reading begins.
 - **non-empty-string** $delimiter Set the field delimiter (one single-byte character only).
-- **string** $enclosedBy Set the field enclosure character (one single-byte character only).
+- **non-empty-string** $enclosedBy Set the field enclosure character (one single-byte character only).
 - **non-empty-string** $lineEnding Set character sequence that denotes the end of a line (row).
 
 
@@ -87,6 +87,8 @@ Set the field delimiter (one single-byte character only).
 
 - **non-empty-string** $separatedBy A non-empty string used as a token to split the text of each line into seperate elements.
 
+**Returns:**  self The receiver.
+
 
 ------
 ##### enclosedBy
@@ -94,6 +96,10 @@ Set the field delimiter (one single-byte character only).
 public function enclosedBy(string $enclosure) : self
 ```
 Set the field enclosure character (one single-byte character only).
+
+- **non-empty-string** $enclosure A single byte character.
+
+**Returns:**  self The receiver.
 
 
 ------
@@ -105,6 +111,8 @@ Set character sequence that denotes the end of a line (row).
 
 - **non-empty-string** $lineEnding The character(s) that denote the line ending for the target CSV file.
 
+**Returns:**  self The receiver.
+
 
 ------
 ##### headers_first_row
@@ -112,6 +120,10 @@ Set character sequence that denotes the end of a line (row).
 public function headers_first_row(bool $headersPresent) : self
 ```
 When ``TRUE``, the `$input` parameter is interpreted as containing the CSV data. When `FALSE` it is assumed to be the file path to the relevant CSV document.
+
+- **bool** $headersPresent `TRUE` if the first row are the column headers.
+
+**Returns:**  self The receiver.
 
 
 ------
@@ -122,6 +134,10 @@ public function skip(int $rows) : self
 Additionally skip over the given number or rows before reading begins. This method has no effect once reading has begun, unless the importer is reset.
 
 If the given value exceeds the number of rows in the CSV then the importer will raise an E_USER_WARNING at the time of internal initialisation.
+
+- **int** $rows The number of rows to skip.
+
+**Returns:**  self The receiver.
 
 
 **See:**  reset
@@ -135,6 +151,8 @@ public function custom_headers(array $headers) : self
 Assigns the given array as the headers for the import, which are the resulting keys in the associative array produced for each row that is read in. If this is set and $headersAreFirstRow is set to ``TRUE`` then the custom headers will override it, however the first row will still be skipped over.
 
 - **list<string>** $headers The custom headers to assign.
+
+**Returns:**  self The receiver
 
 
 ------
