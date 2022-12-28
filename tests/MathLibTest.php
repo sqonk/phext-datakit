@@ -174,4 +174,24 @@ class MathLibTest extends TestCase
         $this->assertSame(1, math::correlation_spearman([], []));
         $this->assertSame(false, math::correlation_spearman([1,2,3,4], [6,2,8]));
     }
+    
+    public function testNfRoundTo3(): void 
+    {
+        $this->assertEquals('1000.276', math::nf_round(1000.2755, precision:3));
+    }
+    
+    public function testNfRoundTo3Down(): void 
+    {
+        $this->assertEquals('1000.275', math::nf_round(1000.2755, precision:3, mode:PHP_ROUND_HALF_DOWN));
+    }
+    
+    public function testNfRoundDown(): void 
+    {
+        $this->assertEquals('1000.27', math::nf_round(1000.275, precision:2, mode:PHP_ROUND_HALF_DOWN));
+    }
+    
+    public function testNfRoundUp(): void 
+    {
+        $this->assertEquals('1000.28', math::nf_round(1000.275, precision:2));
+    }
 }
