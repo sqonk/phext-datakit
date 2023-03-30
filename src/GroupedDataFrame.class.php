@@ -163,7 +163,7 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
 	    $filtered = [];
         foreach ($this->sets as $key => $df) {
             if ($condition($df, $key)) {
-                $filtered[] = $df;
+                $filtered[$key] = $df;
             }
         }
         return new static($filtered, $this->column);
