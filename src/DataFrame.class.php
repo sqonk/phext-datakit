@@ -53,6 +53,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     protected ?array $headers = [];
     
     /** 
+     * @var ?list<string> 
+     */
+    protected array $keep = [];
+    
+    /** 
      * @var array<string, callable>
      */
     protected array $transformers = [];
@@ -208,12 +213,47 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     {
         if (! $headers)
             $headers = $this->headers;
+        
+        foreach ($this->keep as $h => $index)
+        {
+            if (! array_key_exists(key:$h, array:$headers)) 
+            {
+                $value = $this->row($index)[$h];
+                foreach ($data as &$row) {
+                    $row[$h] = $value;
+                }
+                $headers[] = $h;
+            }
+        }
+        
         $copy = new DataFrame($data, $headers);
         $copy->transformers = $this->transformers;
         $copy->indexHeader = $this->indexHeader;
         $copy->showGenericIndexes = $this->showGenericIndexes;
         $copy->showHeaders = $this->showHeaders;
         return $copy;
+    }
+    
+    /**
+     * Keep a specific value (at a single index) for one or more columns when the data frame is
+     * cloned. If the data being cloned already has values for a particular column requested
+     * then it maintains its copy and the data is not overwritten.
+     * 
+     * This method is useful for holding onto certain columns when performing a reductive 
+     * operation that produces a new frame with a single row.
+     * 
+     * -- parameters:
+     * @param mixed $index The row index to take the corresponding column values from.
+     * @param string ...$columns One or more columns to take the values from at the corresponding row index.
+     * 
+     * @return self A reference the object.
+     */
+    public function keep(mixed $index, string ...$columns): self 
+    {
+        foreach ($columns as $h) {
+            $this->keep[$h] = $index;
+        }
+        return $this;
     }
     
     /**
@@ -530,7 +570,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
      * more columns. If no columns are specified then the operation
      * applies to all.
      * 
-     * Callback format: `myFunc($value, $column, $rowIndex) -> bool`
+     * Callback format: `myFunc($value, $column, $rowIndex): bool`
      * 
      * For a row to make it into the filtered set then only ONE
      * of the columns need to equate to true from the callback.
