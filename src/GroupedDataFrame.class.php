@@ -144,7 +144,30 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
         return implode("\n", $out);
     }
 	
-	
+    /**
+     * Run a filter on the set of data frames, reducing the set to only the frames which pass
+     * the desired condition.
+     * 
+     * This method runs through each frame, passing it to the given callback. If the result is
+     * FALSE then then the frame is removed from the filtered group as a consequence.
+     * 
+     * -- parameters:
+     * @param callable $condition Your custom callback that tests each frame for qualification. See callback format below.
+     * 
+     * @return static A new GroupedDataFrame containing only the data frames that qualified.
+     * 
+     * Callback format: `myFunc(DataFrame $dataFrame, mixed $key): bool` 
+     */
+	public function filter_sets(callable $condition): static 
+	{
+	    $filtered = [];
+        foreach ($this->sets as $key => $df) {
+            if ($condition($df, $key)) {
+                $filtered[] = $df;
+            }
+        }
+        return new static($filtered, $this->column);
+	}
     
     /**
      * Combine all frames within the group back into a singular DataFrame.
