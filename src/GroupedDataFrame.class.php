@@ -127,8 +127,8 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
             }
             return new GroupedDataFrame($result, $this->column);
         }
-        else
-            return $result;
+        
+        return $result;
     }
     
     public function __get(mixed $key): mixed {
