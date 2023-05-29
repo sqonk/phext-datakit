@@ -1,7 +1,7 @@
 # PHEXT Datakit
 
 [![Minimum PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208-yellow)](https://php.net/)
-[![License](https://sqonk.com/opensource/license.svg)](license.txt) [![Build Status](https://app.travis-ci.com/sqonk/phext-datakit.svg?branch=master)](https://app.travis-ci.com/sqonk/phext-datakit)
+[![License](https://sqonk.com/opensource/license.svg)](license.txt)
 
 Datakit is a library that assists with data analysis and research. It includes classes for working with tables of data and deriving statistical information, importing those tables from file formats such as CSV, a class wrapper with statistical methods for PHP arrays, as well as memory efficient packed arrays.
 
