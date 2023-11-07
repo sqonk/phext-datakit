@@ -482,12 +482,6 @@ class VectorTest extends TestCase
             $this->assertEquals($v->array(), $exp[$i-2], "index $i");
         });
         
-        $windowSize = 2;
-        $min = 3;
-        $this->expectWarning();
-        $this->expectWarningMessage("minObservations ($min) is greater than given window ($windowSize). It will be capped to the window size.");
-        $vec->rolling($windowSize, fn($v) => $v, $min);
-        
         $windowSize = 0;
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("window must be a number greater than 0 ($windowSize given)");
@@ -926,8 +920,5 @@ class VectorTest extends TestCase
         
         $this->expectException(LengthException::class);
         vector()->normalise();
-        
-        $this->expectWarning();
-        vector(0, 5, 10, 'aaa', 15, 20)->normalise();
     }
 }

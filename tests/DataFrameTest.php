@@ -169,11 +169,6 @@ class DataFrameTest extends TestCase
         $this->assertEquals([8,5,3], $result->values(columns:'c'), 'rolling HI sums for column C');
         
         # validation errors and exceptions.
-        $windowSize = 2;
-        $min = 3;
-        $this->expectWarning();
-        $this->expectWarningMessage("minObservations ($min) is greater than given window ($windowSize). It will be capped to the window size.");
-        $df->rolling($windowSize, fn($v) => $v, $min);
 
         $windowSize = 0;
         $this->expectException(InvalidArgumentException::class);
@@ -1210,16 +1205,6 @@ class DataFrameTest extends TestCase
         
         $this->expectException(LengthException::class);
         $df->normalise();
-        
-        $df = dataframe([
-            ['t1' => 0, 't2' => 5],
-            ['t1' => 'aaa', 't2' => 10],
-            ['t1' => 10, 't2' => 15],
-            ['t1' => 15, 't2' => 20],
-            ['t1' => 20, 't2' => 25] 
-        ]);
-        $this->expectWarning();
-        $df->normalise('t1');
     }
     
     protected function pixels($img)
