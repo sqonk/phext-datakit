@@ -397,7 +397,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
   /**
    * Return the row at $index.
    *
-   * @return array<string, string>
+   * @return array<string, mixed>
    */
   public function row(mixed $index): array
   {
