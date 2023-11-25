@@ -367,17 +367,12 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    *
    * -- parameters:
    * @param bool $includeIndex If TRUE then use the DataFrame indexes as the keys in the array.
-   * @param string|list<string> ...$columns One or more columns that should be used in the resulting array, all columns if null is supplied.
-   *
-   *  The columns can be supplied as a set of variable arguments or an array as the second argument.
+   * @param string|list<string> $columns One or more columns that should be used in the resulting array, all columns if null is supplied. Defaults to all columns.
    *
    * @return array<mixed> An array containing all of the data in the object.
   */
-  public function flattened(bool $includeIndex = true, string|array ...$columns): array
+  public function flattened(bool $includeIndex = true, string|array $columns = ''): array
   {
-    if (count($columns) == 1 and is_array($columns[0])) {
-      $columns = $columns[0];
-    }
     $columns = $this->determineColumns($columns);
     $out = [];
     foreach ($this->data as $index => $row) {

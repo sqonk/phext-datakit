@@ -2392,7 +2392,7 @@ _____	____________	___________	____________	___________	___________
 2    	         4.7	        3.2	         1.3	        0.2	Iris-setosa
 */
 
-$out = $dataset->flattened(false, 'sepal-length', 'sepal-width', 'class');
+$out = $dataset->flattened(includeIndex:false, columns:['sepal-length', 'sepal-width', 'class']);
 println($out);
 /*
 array (
