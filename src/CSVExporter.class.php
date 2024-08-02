@@ -66,11 +66,12 @@ class CSVExporter
    */
   public function __construct(string $path = '')
   {
-    if (! $path) {
-      $this->path = 'php://memory';
+    if (!$path) {
+      $path = 'php://memory';
     }
+    $this->path = $path;
   }
-    
+
   public function __destruct()
   {
     $this->closeFH();
