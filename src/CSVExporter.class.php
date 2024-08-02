@@ -1,23 +1,24 @@
 <?php
+
 namespace sqonk\phext\datakit;
 
 /**
-*
-* Data Kit
-*
-* @package		phext
-* @subpackage	datakit
-* @version		1
-*
-* @license		MIT see license.txt
-* @copyright	2019 Sqonk Pty Ltd.
-*
-*
-* This file is distributed
-* on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-* express or implied. See the License for the specific language governing
-* permissions and limitations under the License.
-*/
+ *
+ * Data Kit
+ *
+ * @package		phext
+ * @subpackage	datakit
+ * @version		1
+ *
+ * @license		MIT see license.txt
+ * @copyright	2019 Sqonk Pty Ltd.
+ *
+ *
+ * This file is distributed
+ * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing
+ * permissions and limitations under the License.
+ */
 
 use sqonk\phext\core\arrays;
 use sqonk\phext\core\strings;
@@ -43,21 +44,21 @@ class CSVExporter
    * @var list<string>
    */
   protected array $headers = [];
-    
+
   /**
    * @var array<string, string>
    */
   protected array $field_map = [];
-    
+
   protected string $path;
-    
+
   /**
    * @var ?resource
    */
   protected $fh;
   protected bool $headersWritten = false;
-    
-    
+
+
   /**
    * Create a new CSV Exporter.
    *
@@ -79,7 +80,7 @@ class CSVExporter
       unlink($this->path);
     }
   }
-    
+
   protected function closeFH(): void
   {
     if ($this->fh) {
@@ -88,28 +89,28 @@ class CSVExporter
       $this->fh = null;
     }
   }
-    
+
   /**
    * @return resource The file handle.
    */
   protected function fh()
   {
-    if (! $this->fh) {
+    if (!$this->fh) {
       $this->fh = fopen($this->path, 'w');
-      if (! $this->headersWritten) {
+      if (!$this->headersWritten) {
         $this->writeHeaders();
       }
     }
     return $this->fh;
   }
-    
+
   protected function writeHeaders(): void
   {
     $fh = $this->fh;
     fputcsv($fh, $this->headers);
     $this->headersWritten = true;
   }
-    
+
   /**
    * Return the current header-to-key map.
    *
@@ -119,7 +120,7 @@ class CSVExporter
   {
     return $this->field_map;
   }
-    
+
   /**
    * Set a map for the exporter, which is series of column headers and array keys
    * that will be used to automatically build the CSV from one or more objects or
@@ -141,10 +142,10 @@ class CSVExporter
     }
     $this->field_map = $fieldMap;
     $this->headers = array_keys($fieldMap);
-        
+
     return true;
   }
-    
+
   /**
    * Map a column header to a set array key that will be used to acquire the corresponding
    * value from each record.
@@ -165,10 +166,10 @@ class CSVExporter
     }
     $this->field_map[$header] = $key;
     $this->headers[] = $header;
-        
+
     return true;
   }
-    
+
   /**
    * Return the current set of human-readable column headers.
    *
@@ -178,7 +179,7 @@ class CSVExporter
   {
     return $this->headers;
   }
-    
+
   /**
    * Set the column headers for the exporter.
    *
@@ -200,15 +201,15 @@ class CSVExporter
       trigger_error('Can not set field map after headers have already been output.', E_USER_WARNING);
       return false;
     }
-        
+
     $this->headers = $headers;
-        
+
     if (count($this->field_map) > 0) {
       trigger_error("## WARNING: subsequent call to set_headers after the field map was set. This may upset your column order if it is not intentional.", E_USER_NOTICE);
     }
     return true;
   }
-    
+
   /**
    * Add a series of values as the next row in the CSV.
    *
@@ -220,10 +221,10 @@ class CSVExporter
   public function add_raw_row(array $row): self
   {
     fputcsv($this->fh(), $row);
-        
+
     return $this;
   }
-    
+
   /**
    * Add a single record to the CSV. This method differs from `add_raw_row()` in that the provided array or object
    * should be associative where the keys correspond to the column headers.
@@ -238,24 +239,24 @@ class CSVExporter
    */
   public function add_record(mixed $record): self
   {
-    if (! is_array($record) and ! $record instanceof \ArrayAccess) {
+    if (!is_array($record) and !$record instanceof \ArrayAccess) {
       throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');
     }
     if (count($this->field_map) == 0) {
       throw new \RuntimeException('Tried to add record before the field map was provided.');
     }
-        
+
     $keys = array_values($this->field_map);
     $row = [];
     foreach ($keys as $k) {
       $row[] = $record[$k] ?? '';
     }
-        
+
     $this->add_raw_row($row);
-        
+
     return $this;
   }
-    
+
   /**
    * Add multiple records to the CSV.
    *
@@ -270,17 +271,17 @@ class CSVExporter
    */
   public function add_records(mixed $records): self
   {
-    if (! is_array($records) and ! $records instanceof \ArrayAccess) {
+    if (!is_array($records) and !$records instanceof \ArrayAccess) {
       throw new \InvalidArgumentException('Record must be either an array or an object that implements ArrayAccess');
     }
-        
+
     foreach ($records as $r) {
       $this->add_record($r);
     }
-        
+
     return $this;
   }
-    
+
   /**
    * Convert the CSV in its current state to a string.
    */
@@ -290,7 +291,7 @@ class CSVExporter
     if ($pos == 0) {
       return '';
     }
-        
+
     rewind($this->fh());
     return trim(fread($this->fh(), $pos));
   }
