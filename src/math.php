@@ -54,7 +54,7 @@ class math
    * @param list<int|float> $a
    * @param bool $sample [optional] Defaults to false
    *
-   * @return float|bool The standard deviation or FALSE on error.
+   * @return float|false The standard deviation or FALSE on error.
    */
   public static function standard_deviation(array $a, bool $sample = false): float|false
   {
