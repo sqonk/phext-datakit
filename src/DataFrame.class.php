@@ -83,7 +83,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 
   public static function empty_frames(): bool
   {
-    return defined('EMPTY_DATAFRAMES') && EMPTY_DATAFRAMES; // @phpstan-ignore-line
+    return defined('EMPTY_DATAFRAMES') && constant('EMPTY_DATAFRAMES');
   }
 
   // -------- Class Interfaces
@@ -737,11 +737,13 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
 
 
   /**
+   * Return the count of the number of rows of either a single column
+   * or all columns.
+   * 
+   * @return int|static 
    * If a column is specified then return the number of rows
-   * containing a value for it.
-   *
-   * If no column is given then return a new DataFrame containing
-   * the counts for all columns.
+   * containing a value for it. If no column is given then return a 
+   * new DataFrame containing the counts for all columns.
    */
   public function size(?string $column = null): int|static
   {
@@ -1945,7 +1947,9 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    */
   public function summary(): string
   {
-    $count = $this->size()->data();
+    /** @var DataFrame */
+    $sizeDF = $this->size();
+    $count = $sizeDF->data();
     $std = $this->std()->data();
     $avg = $this->avg()->data();
     $min = $this->min()->data();
