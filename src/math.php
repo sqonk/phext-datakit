@@ -56,7 +56,7 @@ class math
    *
    * @return float|bool The standard deviation or FALSE on error.
    */
-  public static function standard_deviation(array $a, bool $sample = false): float|bool
+  public static function standard_deviation(array $a, bool $sample = false): float|false
   {
     $n = count($a);
     if ($n === 0) {
