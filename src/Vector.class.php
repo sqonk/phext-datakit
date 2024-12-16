@@ -550,7 +550,7 @@ final class Vector implements \ArrayAccess, \Countable, \IteratorAggregate
   public function occurs_in(string $heystack): bool|string
   {
     foreach ($this->_array as $value) {
-      if (strings::contains($heystack, $value)) {
+      if (str_contains($heystack, $value)) {
         return $value;
       }
     }

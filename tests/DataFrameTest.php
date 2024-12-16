@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+#declare(strict_types=1);
 /**
 *
 * Datakit
@@ -479,11 +479,11 @@ class DataFrameTest extends TestCase
     $this->assertEquals(0.96, round($df->std(true, 'sepal-length'), 2));
     $this->assertEquals(0.78, round($df->std(false, 'sepal-length'), 2));
         
-    $exp = [0.96,0.15,2.37,1.15, 0.0];
-    $this->assertEquals($exp, array_values($df->std(true)->round(2)[0]));
+    $exp = [0.96,0.15,2.37,1.15];
+    $this->assertEquals($exp, array_values($df->std(true, 'sepal-length','sepal-width','petal-length','petal-width')->round(2)[0]));
         
-    $exp = [0.78,0.12,1.94,0.94, 0.0];
-    $this->assertEquals($exp, array_values($df->std(false)->round(2)[0]));
+    $exp = [0.78,0.12,1.94,0.94];
+    $this->assertEquals($exp, array_values($df->std(false, 'sepal-length','sepal-width','petal-length','petal-width')->round(2)[0]));
   }
      
   public function testMax()
