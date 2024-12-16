@@ -82,7 +82,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
     
   public static function empty_frames(): bool
   {
-    return defined('EMPTY_DATAFRAMES') && EMPTY_DATAFRAMES;
+    return defined('EMPTY_DATAFRAMES') && EMPTY_DATAFRAMES; // @phpstan-ignore-line
   }
     
   // -------- Class Interfaces
