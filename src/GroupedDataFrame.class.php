@@ -29,8 +29,8 @@ use sqonk\phext\core\arrays;
  * This class is used internally by DataFrame and you should not
  * need to instantiate it yourself under most conditions.
  *
- * @implements \IteratorAggregate<mixed, list<array<string, string>>>
- * @implements \ArrayAccess<mixed, list<array<string, string>>>
+ * @implements \IteratorAggregate<mixed, DataFrame>
+ * @implements \ArrayAccess<mixed, DataFrame>
  */
 final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAccess
 {
