@@ -22,6 +22,7 @@ namespace sqonk\phext\datakit;
  * permissions and limitations under the License.
  */
 
+use Error;
 use sqonk\phext\plotlib\BulkPlot;
 use sqonk\phext\core\arrays;
 use sqonk\phext\core\strings;
@@ -578,14 +579,45 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
   }
 
   /**
+   * Filter the DataFrame using a basic value comparison in strict mode.
+   * 
+   * @param string|int|float $value The value to filter by.
+   * @param string $column The column to do the filtering on.
+   * @param bool $strictCompare When TRUE the value comparison is strict and also compares data type.
+   * @return null|DataFrame 
+   * A new dataframe containing the filtered subset. Depending on whether EMPTY_FRAMES has been declared
+   * this method will either return an empty frame or NULL when no results are found.
+   * @throws Error 
+   */
+  public function filter_by_value(string|int|float $value, string $column, bool $strictCompare = false): ?DataFrame
+  {
+    $filtered = [];
+    foreach ($this->data as $index => $row) {
+      if (isset($row[$column])) {
+        if (($strictCompare && $row[$column] === $value) || (!$strictCompare && $row[$column] == $value)) {
+          $filtered[$index] = $row;
+        }
+      }
+    }
+    return (count($filtered) > 0 or self::empty_frames()) ? $this->clone($filtered) : null;
+  }
+
+  /**
    * Filter the DataFrame using the provided callback and one or
    * more columns. If no columns are specified then the operation
    * applies to all.
-   *
+   * 
    * Callback format: `myFunc($value, $column, $rowIndex): bool`
    *
    * For a row to make it into the filtered set then only ONE
    * of the columns need to equate to true from the callback.
+   * 
+   * @param callable $callback The callback to use to determine which rows pass.
+   * @param string ...$columns The columns to filter by.
+   * @return null|DataFrame 
+   * A new dataframe containing the filtered subset. Depending on whether EMPTY_FRAMES has been declared
+   * this method will either return an empty frame or NULL when no results are found.
+   * @throws Error 
    */
   public function filter(callable $callback, string ...$columns): ?DataFrame
   {
