@@ -297,11 +297,12 @@ class CSVImporter implements \Iterator
       $h = str_getcsv(
         string:$this->handle[$this->arrayIndex],
         enclosure:$this->enclosure,
-        separator:$this->delim
+        separator:$this->delim,
+        escape: '\\'
       );
       $this->arrayIndex++;
     } else {
-      $h = fgetcsv(stream:$this->handle, enclosure:$this->enclosure, separator:$this->delim);
+      $h = fgetcsv(stream:$this->handle, enclosure:$this->enclosure, separator:$this->delim, escape: '\\');
     }
     $this->rowCount++;
         

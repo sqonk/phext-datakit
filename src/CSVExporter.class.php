@@ -107,7 +107,7 @@ class CSVExporter
   protected function writeHeaders(): void
   {
     $fh = $this->fh;
-    fputcsv($fh, $this->headers);
+    fputcsv($fh, $this->headers, escape: '\\');
     $this->headersWritten = true;
   }
 
@@ -220,7 +220,7 @@ class CSVExporter
    */
   public function add_raw_row(array $row): self
   {
-    fputcsv($this->fh(), $row);
+    fputcsv($this->fh(), $row, escape: '\\');
 
     return $this;
   }
