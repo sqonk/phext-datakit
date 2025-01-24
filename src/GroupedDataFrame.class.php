@@ -207,12 +207,12 @@ final class GroupedDataFrame implements \Countable, \IteratorAggregate, \ArrayAc
    *
    * -- parameters:
    * @param string $dir Path to the directory/folder to export the CSV to. Defaults to the current working directory.
-   * @param list<string> $columns Which columns to export.
+   * @param ?list<string> $columns Which columns to export.
    * @param string $delimiter CSV delimiter.
    *
    * @return ?list<string>
    */
-  public function export(string $dir = '.', array $columns = null, string $delimiter = ','): ?array
+  public function export(string $dir = '.', ?array $columns = null, string $delimiter = ','): ?array
   {
     if (php_sapi_name() == 'cli' && $dir !== null && ! file_exists($dir)) {
       mkdir($dir, 0777, true);

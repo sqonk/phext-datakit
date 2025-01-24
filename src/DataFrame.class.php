@@ -1217,7 +1217,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    * If no column is specified then the check runs over
    * all columns.
    */
-  public function any(mixed $value, string $column = null): bool
+  public function any(mixed $value, ?string $column = null): bool
   {
     foreach ($this->data as $row) {
       if ($column !== null) {
@@ -1883,11 +1883,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    *
    * -- parameters:
    * @param string $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
-   * @param list<string> $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+   * @param ?list<string> $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
    *
    * @return DataFrame A matrix of values representing the closeness of the adjoining values.
    */
-  public function correlation(string $method, array $columns = null): DataFrame
+  public function correlation(string $method, ?array $columns = null): DataFrame
   {
     $columns = $this->determineColumns($columns);
     $matrix = [];
@@ -1916,7 +1916,7 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    *
    * @return DataFrame A matrix of values representing the closeness of the adjoining values.
    */
-  public function corr(string $method, array $columns = null): DataFrame
+  public function corr(string $method, ?array $columns = null): DataFrame
   {
     return $this->correlation($method, $columns);
   }
@@ -2760,11 +2760,11 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
    *
    * -- parameters:
    * @param string $filePath: The destination file.
-   * @param list<string> $columns: The columns to export, or all if null is supplied.
+   * @param ?list<string> $columns: The columns to export, or all if null is supplied.
    * @param string $delimiter: The character that separates each column.
    * @param bool $includeIndex: When TRUE, adds the data frame row index as the first column.
    */
-  public function export(string $filePath, array $columns = null, string $delimiter = ',', bool $includeIndex = true): void
+  public function export(string $filePath, ?array $columns = null, string $delimiter = ',', bool $includeIndex = true): void
   {
     $columns = $this->determineColumns($columns);
 

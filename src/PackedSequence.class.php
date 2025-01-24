@@ -301,7 +301,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
    * Pop an item off the end of the array. If $poppedValue is provided
    * then it is filled with the value that was removed.
    */
-  public function pop(int|float|string &$poppedValue = null): self
+  public function pop(int|float|string|null &$poppedValue = null): self
   {
     if ($this->count() == 0) {
       trigger_error('Tried to pop a sequence that has no elements.', E_USER_WARNING);
@@ -317,7 +317,7 @@ class PackedSequence implements \ArrayAccess, \Countable, \Iterator
    * Shift an item off the start of the array. If $shiftedItem is provided
    * then it is filled with the value that was removed.
    */
-  public function shift(int|float|string &$shiftedItem = null): self
+  public function shift(int|float|string|null &$shiftedItem = null): self
   {
     if ($this->count() == 0) {
       trigger_error('Tried to shift a sequence that has no elements.', E_USER_WARNING);
