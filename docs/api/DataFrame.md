@@ -1086,9 +1086,13 @@ Add multiple new rows to the DataFrame where each row is an associative array wh
 
 This method is designed for adding large sets of data to the frame quickly.
 
-Do not use new or unknown keys not already present in the DataFrame.
+Do not use new or unknown keys not already present in the DataFrame. If the dataframe is currently empty then the headers will be extrapolated from first row in the set.
 
-- **array<string,** mixed>[] $rows The new row to add.
+- **array<string,** mixed>[] $rows
+The array of rows to add. If the frame is currently empty, the internal array
+is assigned directly to the array that was passed in. If on the other hand the operation
+is adding to existing data then the given array will be appeneded to the end of
+the internal array.
 
 **Returns:**  self The receiver.
 
