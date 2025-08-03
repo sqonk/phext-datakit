@@ -26,7 +26,7 @@ Many of these methods are ported from open source code, freely available on the 
 ------
 ##### standard_deviation
 ```php
-static public function standard_deviation(array $a, bool $sample = false) : float|bool
+static public function standard_deviation(array $a, bool $sample = false) : float|false
 ```
 Compute the standard deviation of the values in an array.
 
@@ -43,7 +43,7 @@ the extension does (although as an E_USER_WARNING, not E_WARNING).
 - **list<int|float>** $a
 - **bool** $sample [optional] Defaults to false
 
-**Returns:**  float|bool The standard deviation or `FALSE` on error.
+**Returns:**  float|false The standard deviation or `FALSE` on error.
 
 
 ------

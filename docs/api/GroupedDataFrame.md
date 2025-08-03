@@ -5,7 +5,7 @@ The GroupedDataFrame is a special class that manages a group of normal DataFrame
 
 This class is used internally by DataFrame and you should not need to instantiate it yourself under most conditions.
 
-@implements \IteratorAggregate<mixed, list<array<string, string>>> @implements \ArrayAccess<mixed, list<array<string, string>>>
+@implements \IteratorAggregate<mixed, DataFrame> @implements \ArrayAccess<mixed, DataFrame>
 #### Methods
 - [getIterator](#getiterator)
 - [offsetSet](#offsetset)
@@ -17,6 +17,7 @@ This class is used internally by DataFrame and you should not need to instantiat
 - [__call](#__call)
 - [__get](#__get)
 - [__tostring](#__tostring)
+- [filter_sets](#filter_sets)
 - [combine](#combine)
 - [export](#export)
 
@@ -104,6 +105,22 @@ No documentation available.
 
 
 ------
+##### filter_sets
+```php
+public function filter_sets(callable $condition) : static
+```
+Run a filter on the set of data frames, reducing the set to only the frames which pass the desired condition.
+
+This method runs through each frame, passing it to the given callback. If the result is `FALSE` then then the frame is removed from the filtered group as a consequence.
+
+- **callable** $condition Your custom callback that tests each frame for qualification. See callback format below.
+
+**Returns:**  static A new GroupedDataFrame containing only the data frames that qualified.
+
+Callback format: `myFunc(DataFrame $dataFrame, mixed $key): bool`
+
+
+------
 ##### combine
 ```php
 public function combine(bool $keepIndexes = true) : sqonk\phext\datakit\DataFrame
@@ -125,7 +142,7 @@ public function export(string $dir = '.', array $columns = null, string $delimit
 Functional map to the standard export within DataFrame.
 
 - **string** $dir Path to the directory/folder to export the CSV to. Defaults to the current working directory.
-- **list<string>** $columns Which columns to export.
+- **?list<string>** $columns Which columns to export.
 - **string** $delimiter CSV delimiter.
 
 **Returns:**  ?list<string>
