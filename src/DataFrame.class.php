@@ -2432,6 +2432,34 @@ final class DataFrame implements \ArrayAccess, \Countable, \IteratorAggregate
   }
 
   /**
+   * Add multiple new rows to the DataFrame where each row 
+   * is an associative array where the keys should correspond to one or more
+   * of the column headers in the DataFrame.
+   *
+   * This method is designed for adding large sets of data to the frame quickly.
+   *
+   * ** Do not use new or unknown keys not already present
+   * in the DataFrame.
+   *
+   * -- parameters:
+   * @param array<string, mixed>[] $rows The new row to add.
+   *
+   * @return self The receiver.
+   */
+  public function fast_add_rows(array $rows): self
+  {
+    if (count($this->data) == 0) {
+      $this->data = $rows;
+      if (count($rows) > 0 and ! $this->headers) {
+        $this->headers = array_keys($rows[0]);
+      }
+    } else {
+      $this->data = array_merge($this->data, $rows);
+    }
+    return $this;
+  }
+
+  /**
    * Add a new column to the DataFrame using the provided
    * callback to supply the data. The callback will be called
    * for every row currently in the DataFrame.

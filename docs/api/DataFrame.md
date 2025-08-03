@@ -20,6 +20,7 @@ Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
 - [__construct](#__construct)
 - [copy](#copy)
 - [clone](#clone)
+- [keep](#keep)
 - [display_headers](#display_headers)
 - [display_generic_indexes](#display_generic_indexes)
 - [index](#index)
@@ -37,6 +38,7 @@ Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
 - [change_header](#change_header)
 - [reindex_rows](#reindex_rows)
 - [reindex_rows_with_column](#reindex_rows_with_column)
+- [filter_by_value](#filter_by_value)
 - [filter](#filter)
 - [unanfilter](#unanfilter)
 - [ufilter](#ufilter)
@@ -90,6 +92,7 @@ Adheres to interfaces, ArrayAccess, Countable, IteratorAggregate
 - [transform](#transform)
 - [replace](#replace)
 - [add_row](#add_row)
+- [fast_add_rows](#fast_add_rows)
 - [add_column](#add_column)
 - [apply_display_transformer](#apply_display_transformer)
 - [plot](#plot)
@@ -224,6 +227,21 @@ Produce a copy of the dataframe consisting of only the supplied data. All other 
 
 
 ------
+##### keep
+```php
+public function keep(mixed $index, string ...$columns) : self
+```
+Keep a specific value (at a single index) for one or more columns when the data frame is cloned. If the data being cloned already has values for a particular column requested then it maintains its copy and the data is not overwritten.
+
+This method is useful for holding onto certain columns when performing a reductive operation that produces a new frame with a single row.
+
+- **mixed** $index The row index to take the corresponding column values from.
+- **string** ...$columns One or more columns to take the values from at the corresponding row index.
+
+**Returns:**  self A reference the object.
+
+
+------
 ##### display_headers
 ```php
 public function display_headers(bool $display = null) : static|bool
@@ -295,14 +313,12 @@ Return the associative array containing all the data within the DataFrame.
 ------
 ##### flattened
 ```php
-public function flattened(bool $includeIndex = true, array|string ...$columns) : array
+public function flattened(bool $includeIndex = true, array|string $columns = '') : array
 ```
 Flatten the DataFrame into a native array.
 
 - **bool** $includeIndex If `TRUE` then use the DataFrame indexes as the keys in the array.
-- **string|list<string>** ...$columns One or more columns that should be used in the resulting array, all columns if null is supplied.
-
-The columns can be supplied as a set of variable arguments or an array as the second argument.
+- **string|list<string>** $columns One or more columns that should be used in the resulting array, all columns if null is supplied. Defaults to all columns.
 
 **Returns:**  array<mixed> An array containing all of the data in the object.
 
@@ -314,7 +330,7 @@ public function row(mixed $index) : array
 ```
 Return the row at $index.
 
-**Returns:**  array<string, string>
+**Returns:**  array<string, mixed>
 
 
 ------
@@ -399,15 +415,29 @@ Push one of the columns out to become the row index. If $inPlace is `TRUE` then 
 
 
 ------
+##### filter_by_value
+```php
+public function filter_by_value(string|int|float $value, string $column, bool $strictCompare = false) : ?sqonk\phext\datakit\DataFrame
+```
+Filter the DataFrame using a basic value comparison in strict mode.
+
+@param string|int|float $value The value to filter by. @param string $column The column to do the filtering on. @param bool $strictCompare When `TRUE` the value comparison is strict and also compares data type. **Returns:**  null|DataFrame A new dataframe containing the filtered subset. Depending on whether EMPTY_FRAMES has been declared this method will either return an empty frame or `NULL` when no results are found. 
+**Throws:**  Error
+
+
+------
 ##### filter
 ```php
 public function filter(callable $callback, string ...$columns) : ?sqonk\phext\datakit\DataFrame
 ```
 Filter the DataFrame using the provided callback and one or more columns. If no columns are specified then the operation applies to all.
 
-Callback format: `myFunc($value, $column, $rowIndex) -> bool`
+Callback format: `myFunc($value, $column, $rowIndex): bool`
 
 For a row to make it into the filtered set then only ONE of the columns need to equate to true from the callback.
+
+@param callable $callback The callback to use to determine which rows pass. @param string ...$columns The columns to filter by. **Returns:**  null|DataFrame A new dataframe containing the filtered subset. Depending on whether EMPTY_FRAMES has been declared this method will either return an empty frame or `NULL` when no results are found. 
+**Throws:**  Error
 
 
 ------
@@ -469,9 +499,9 @@ Return an array containing both the number of rows and columns.
 ```php
 public function size(string $column = null) : static|int
 ```
-If a column is specified then return the number of rows containing a value for it.
+Return the count of the number of rows of either a single column or all columns.
 
-If no column is given then return a new DataFrame containing the counts for all columns.
+**Returns:**  int|static If a column is specified then return the number of rows containing a value for it. If no column is given then return a new DataFrame containing the counts for all columns.
 
 
 ------
@@ -878,7 +908,7 @@ public function correlation(string $method, array $columns = null) : sqonk\phext
 Run a correlation over one or more columns to find similarities in values.
 
 - **string** $method Correlation method to use. Accepted values are 'pearson' or 'spearman'.
-- **list<string>** $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
+- **?list<string>** $columns Columns to use for the correlation. If no column is specified then the operation runs over all columns.
 
 **Returns:**  DataFrame A matrix of values representing the closeness of the adjoining values.
 
@@ -1041,8 +1071,24 @@ $index is an optional keyed index to store the row against. If left empty then t
 
 Do not use new or unknown keys not already present in the DataFrame.
 
-- **array<string,** string> $row The new row to add.
+- **array<string,** mixed> $row The new row to add.
 - **mixed** $index An optional custom index to apply to the row.
+
+**Returns:**  self The receiver.
+
+
+------
+##### fast_add_rows
+```php
+public function fast_add_rows(array $rows) : self
+```
+Add multiple new rows to the DataFrame where each row is an associative array where the keys should correspond to one or more of the column headers in the DataFrame.
+
+This method is designed for adding large sets of data to the frame quickly.
+
+Do not use new or unknown keys not already present in the DataFrame.
+
+- **array<string,** mixed>[] $rows The new row to add.
 
 **Returns:**  self The receiver.
 
@@ -1166,7 +1212,7 @@ public function export(string $filePath, array $columns = null, string $delimite
 Export the DataFrame to a delimited text file (CSV).
 
 - **string** $filePath: The destination file.
-- **list<string>** $columns: The columns to export, or all if null is supplied.
+- **?list<string>** $columns: The columns to export, or all if null is supplied.
 - **string** $delimiter: The character that separates each column.
 - **bool** $includeIndex: When `TRUE`, adds the data frame row index as the first column.
 

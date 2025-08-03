@@ -199,7 +199,7 @@ class DataFrameTest extends TestCase
 
   public function testAddRow()
   {
-    [$df, $data] = $this->_loadFrame();
+    [$df, $_] = $this->_loadFrame();
 
     $row = ['sepal-length' => '7.1', 'sepal-width' => '3.5', 'petal-length' => '4.7', 'petal-width' =>  '1.6', 'class' => 'Iris-versicolor'];
     $df->add_row($row);
@@ -1354,5 +1354,26 @@ class DataFrameTest extends TestCase
     foreach (genericPlot() as $i => $img) {
       $this->compareImages($img, "gen_$i");
     }
+  }
+
+  # positioned right at the end because of the requirement of EMPTY_DATAFRAMES.
+  public function testFastAddRows(): void
+  {
+    define('EMPTY_DATAFRAMES', true);
+    $df = new DataFrame();
+    $rows = [
+      ['a' => 1, 'b' => 2, 'c' => 3],
+      ['a' => 4, 'b' => 5, 'c' => 6]
+    ];
+    $df->fast_add_rows($rows);
+    $this->assertSame(expected: $rows, actual: $df->data());
+
+    $extra_rows = [
+      ['a' => 9, 'b' => 99, 'c' => 123],
+      ['a' => 42, 'b' => 54, 'c' => 64]
+    ];
+    $df = new DataFrame($rows);
+    $df->fast_add_rows($extra_rows);
+    $this->assertSame(expected: array_merge($rows, $extra_rows), actual: $df->data());
   }
 }
